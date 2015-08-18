@@ -19,8 +19,8 @@ project(PYTHONOCC)
 
 # set pythonOCC version
 set(PYTHONOCC_VERSION_MAJOR 0)
-set(PYTHONOCC_VERSION_MINOR 16)
-set(PYTHONOCC_VERSION_PATCH 1)
+set(PYTHONOCC_VERSION_MINOR 17)
+set(PYTHONOCC_VERSION_PATCH 0)
 #  Empty for official releases, set to -dev, -rc1, etc for development releases
 set(PYTHONOCC_VERSION_DEVEL -dev)
 
@@ -100,12 +100,13 @@ set(PYTHONOCC_INSTALL_DIRECTORY ${python_lib}/OCC CACHE PATH "pythonOCC install 
 
 # List of OCE shared libraries to link with
 # TODO: this should be build from the module list
-set(OCE_MODEL_LIBRARIES TKernel TKMath TKAdvTools TKG2d TKG3d TKGeomBase TKBRep TKGeomAlgo
+set(OCE_MODEL_LIBRARIES TKernel TKMath TKG2d TKG3d TKGeomBase TKBRep TKGeomAlgo
     TKTopAlgo TKPrim TKBO TKHLR TKMesh TKShHealing TKXMesh TKBool TKFillet TKFeat TKOffset)
 set(OCE_VISUALIZATION_LIBRARIES TKService TKV3d TKMeshVS TKOpenGl)
 set(OCE_DATAEXCHANGE_LIBRARIES TKSTL TKXSBase TKSTEPBase TKIGES TKSTEPAttr TKSTEP209
     TKSTEP TKVRML)
 set(OCE_OCAF_LIBRARIES TKLCAF TKXCAF TKXDESTEP TKXDEIGES)
+set(OCE_VTK_LIBRARIES TKIVtk)
 
 ######################################################
 # Configure Build settings according to the platform #
@@ -179,6 +180,7 @@ include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/OCE_Modules.cmake)
 option_with_default(PYTHONOCC_WRAP_VISU "Compile Visualisation" TRUE)
 option_with_default(PYTHONOCC_WRAP_DATAEXCHANGE "Compile DataExchange wrapper" TRUE)
 option_with_default(PYTHONOCC_WRAP_OCAF "Compile OCE Application Framework wrapper" TRUE)
+option_with_default(PYTHONOCC_WRAP_VTk "Compile VTK Integration Services wrapper" TRUE)
 
 ###################
 # Wrapper Modules #
@@ -247,6 +249,18 @@ if(PYTHONOCC_WRAP_OCAF)
   endforeach(OCE_MODULE)
 endif(PYTHONOCC_WRAP_OCAF)
 
+########
+# VTK #
+########
+if(PYTHONOCC_WRAP_VTK)
+  foreach(OCE_MODULE ${OCE_TOOLKIT_VTK})
+    set(FILE ${SWIG_FILES_PATH}/${OCE_MODULE}.i)
+    set_source_files_properties(${FILE} PROPERTIES CPLUSPLUS ON)
+    swig_add_module(${OCE_MODULE} python ${FILE})
+    swig_link_libraries(${OCE_MODULE} ${PYTHON_LIBRARIES} ${OCE_MODEL_LIBRARIES} ${OCE_VTK_LIBRARIES})
+  endforeach(OCE_MODULE)
+endif(PYTHONOCC_WRAP_VTK)
+
 ################
 # Installation #
 ################
@@ -280,6 +294,14 @@ foreach(OCE_MODULE ${OCE_TOOLKIT_OCAF})
     install(FILES ${BUILD_DIR}/_${OCE_MODULE}.${EXTENSION} DESTINATION ${PYTHONOCC_INSTALL_DIRECTORY} )
 endforeach(OCE_MODULE)
 endif(PYTHONOCC_WRAP_OCAF)
+if(PYTHONOCC_WRAP_VTK)
+foreach(OCE_MODULE ${OCE_TOOLKIT_VTK})
+    install(FILES ${BUILD_DIR}/${OCE_MODULE}.py DESTINATION ${PYTHONOCC_INSTALL_DIRECTORY} )
+    install(FILES ${BUILD_DIR}/_${OCE_MODULE}.${EXTENSION} DESTINATION ${PYTHONOCC_INSTALL_DIRECTORY} )
+endforeach(OCE_MODULE)
+endif(PYTHONOCC_WRAP_VTK)
+
+
 
 # install third part modules
 if(PYTHONOCC_WRAP_VISU)
@@ -309,7 +331,7 @@ set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "pythonOCC")
 set(CPACK_PACKAGE_VENDOR "Thomas Paviot (tpaviot@gmail.com)")
 set(CPACK_SET_DESTDIR "ON")
 set(CPACK_PACKAGE_DESCRIPTION "A 3D CAD/CAM python package")
-set(CPACK_PACKAGE_VERSION "0.16.0")
+set(CPACK_PACKAGE_VERSION "0.17.0")
 set(CPACK_PACKAGE_VERSION_MAJOR ${PYTHONOCC_VERSION_MAJOR})
 set(CPACK_PACKAGE_VERSION_MINOR ${PYTHONOCC_VERSION_MINOR})
 set(CPACK_PACKAGE_VERSION_PATCH ${PYTHONOCC_VERSION_PATCH})
