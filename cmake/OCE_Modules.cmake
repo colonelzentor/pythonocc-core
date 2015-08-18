@@ -35,13 +35,6 @@ LIST(APPEND OCE_TOOLKIT_MODEL
         gp
         TColgp
         TopLoc
-# TKAdvTools
-        Dynamic
-        Materials
-        Expr
-        ExprIntrp
-        GraphDS
-        GraphTools
 # TKG2d
         Geom2d
         LProp
@@ -246,7 +239,6 @@ LIST(APPEND OCE_TOOLKIT_DATAEXCHANGE
 # TKXSBase
         Interface
         IFSelect
-        XSControl
         )
 
 LIST(APPEND OCE_TOOLKIT_OCAF
@@ -265,3 +257,12 @@ LIST(APPEND OCE_TOOLKIT_OCAF
 # TKXDEIGES
         IGESCAFControl
         )
+
+LIST(APPEND OCE_TOOLKIT_VTK
+# TKIVtk
+        IVtk
+        IVtkOCC
+        IVtkVTK
+        IVtkTools
+        )
+
