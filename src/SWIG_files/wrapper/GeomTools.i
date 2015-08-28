@@ -1,5 +1,5 @@
 /*
-Copyright 2008-2014 Thomas Paviot (tpaviot@gmail.com)
+Copyright 2008-2015 Thomas Paviot (tpaviot@gmail.com)
 
 
 This file is part of pythonOCC.
@@ -28,7 +28,6 @@ along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
 %}
 
 %include ../common/CommonIncludes.i
-%include ../common/StandardDefines.i
 %include ../common/ExceptionCatcher.i
 %include ../common/FunctionTransformers.i
 %include ../common/Operators.i
@@ -42,9 +41,9 @@ along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
 /* end public enums declaration */
 
 %rename(geomtools) GeomTools;
-%nodefaultctor GeomTools;
 class GeomTools {
 	public:
+		%feature("compactdefaultargs") Dump;
 		%feature("autodoc", "	* A set of Curves from Geom2d. Dumps the surface on the stream.
 
 	:param S:
@@ -54,6 +53,7 @@ class GeomTools {
 	:rtype: void
 ") Dump;
 		static void Dump (const Handle_Geom_Surface & S,Standard_OStream & OS);
+		%feature("compactdefaultargs") Write;
 		%feature("autodoc", "	* Writes the surface on the stream.
 
 	:param S:
@@ -63,6 +63,7 @@ class GeomTools {
 	:rtype: void
 ") Write;
 		static void Write (const Handle_Geom_Surface & S,Standard_OStream & OS);
+		%feature("compactdefaultargs") Read;
 		%feature("autodoc", "	* Reads the surface from the stream.
 
 	:param S:
@@ -72,6 +73,7 @@ class GeomTools {
 	:rtype: void
 ") Read;
 		static void Read (Handle_Geom_Surface & S,Standard_IStream & IS);
+		%feature("compactdefaultargs") Dump;
 		%feature("autodoc", "	* Dumps the Curve on the stream.
 
 	:param C:
@@ -81,6 +83,7 @@ class GeomTools {
 	:rtype: void
 ") Dump;
 		static void Dump (const Handle_Geom_Curve & C,Standard_OStream & OS);
+		%feature("compactdefaultargs") Write;
 		%feature("autodoc", "	* Writes the Curve on the stream.
 
 	:param C:
@@ -90,6 +93,7 @@ class GeomTools {
 	:rtype: void
 ") Write;
 		static void Write (const Handle_Geom_Curve & C,Standard_OStream & OS);
+		%feature("compactdefaultargs") Read;
 		%feature("autodoc", "	* Reads the Curve from the stream.
 
 	:param C:
@@ -99,6 +103,7 @@ class GeomTools {
 	:rtype: void
 ") Read;
 		static void Read (Handle_Geom_Curve & C,Standard_IStream & IS);
+		%feature("compactdefaultargs") Dump;
 		%feature("autodoc", "	* Dumps the Curve on the stream.
 
 	:param C:
@@ -108,6 +113,7 @@ class GeomTools {
 	:rtype: void
 ") Dump;
 		static void Dump (const Handle_Geom2d_Curve & C,Standard_OStream & OS);
+		%feature("compactdefaultargs") Write;
 		%feature("autodoc", "	* Writes the Curve on the stream.
 
 	:param C:
@@ -117,6 +123,7 @@ class GeomTools {
 	:rtype: void
 ") Write;
 		static void Write (const Handle_Geom2d_Curve & C,Standard_OStream & OS);
+		%feature("compactdefaultargs") Read;
 		%feature("autodoc", "	* Reads the Curve from the stream.
 
 	:param C:
@@ -126,14 +133,26 @@ class GeomTools {
 	:rtype: void
 ") Read;
 		static void Read (Handle_Geom2d_Curve & C,Standard_IStream & IS);
+		%feature("compactdefaultargs") SetUndefinedTypeHandler;
 		%feature("autodoc", "	:param aHandler:
 	:type aHandler: Handle_GeomTools_UndefinedTypeHandler &
 	:rtype: void
 ") SetUndefinedTypeHandler;
 		static void SetUndefinedTypeHandler (const Handle_GeomTools_UndefinedTypeHandler & aHandler);
+		%feature("compactdefaultargs") GetUndefinedTypeHandler;
 		%feature("autodoc", "	:rtype: Handle_GeomTools_UndefinedTypeHandler
 ") GetUndefinedTypeHandler;
 		static Handle_GeomTools_UndefinedTypeHandler GetUndefinedTypeHandler ();
+		%feature("compactdefaultargs") GetReal;
+		%feature("autodoc", "	* Reads the Standard_Real value from the stream. Zero is read in case of error
+
+	:param IS:
+	:type IS: Standard_IStream &
+	:param theValue:
+	:type theValue: float &
+	:rtype: void
+") GetReal;
+		static void GetReal (Standard_IStream & IS,Standard_Real &OutValue);
 };
 
 
@@ -154,16 +173,19 @@ def __del__(self):
 %nodefaultctor GeomTools_Curve2dSet;
 class GeomTools_Curve2dSet {
 	public:
+		%feature("compactdefaultargs") GeomTools_Curve2dSet;
 		%feature("autodoc", "	* Returns an empty set of Curves.
 
 	:rtype: None
 ") GeomTools_Curve2dSet;
 		 GeomTools_Curve2dSet ();
+		%feature("compactdefaultargs") Clear;
 		%feature("autodoc", "	* Clears the content of the set.
 
 	:rtype: None
 ") Clear;
 		void Clear ();
+		%feature("compactdefaultargs") Add;
 		%feature("autodoc", "	* Incorporate a new Curve in the set and returns its index.
 
 	:param C:
@@ -171,13 +193,15 @@ class GeomTools_Curve2dSet {
 	:rtype: int
 ") Add;
 		Standard_Integer Add (const Handle_Geom2d_Curve & C);
+		%feature("compactdefaultargs") Curve2d;
 		%feature("autodoc", "	* Returns the Curve of index <I>.
 
 	:param I:
-	:type I: Standard_Integer
+	:type I: int
 	:rtype: Handle_Geom2d_Curve
 ") Curve2d;
 		Handle_Geom2d_Curve Curve2d (const Standard_Integer I);
+		%feature("compactdefaultargs") Index;
 		%feature("autodoc", "	* Returns the index of <L>.
 
 	:param C:
@@ -208,7 +232,8 @@ class GeomTools_Curve2dSet {
             std::stringstream s(src);
             self->Read(s);}
         };
-        		%feature("autodoc", "	* Dumps the curve on the stream, if compact is True use the compact format that can be read back.
+        		%feature("compactdefaultargs") PrintCurve2d;
+		%feature("autodoc", "	* Dumps the curve on the stream, if compact is True use the compact format that can be read back.
 
 	:param C:
 	:type C: Handle_Geom2d_Curve &
@@ -219,6 +244,7 @@ class GeomTools_Curve2dSet {
 	:rtype: void
 ") PrintCurve2d;
 		static void PrintCurve2d (const Handle_Geom2d_Curve & C,Standard_OStream & OS,const Standard_Boolean compact = Standard_False);
+		%feature("compactdefaultargs") ReadCurve2d;
 		%feature("autodoc", "	* Reads the curve from the stream. The curve is assumed to have been writtent with the Print method (compact = True).
 
 	:param IS:
@@ -228,11 +254,13 @@ class GeomTools_Curve2dSet {
 	:rtype: Standard_IStream
 ") ReadCurve2d;
 		static Standard_IStream & ReadCurve2d (Standard_IStream & IS,Handle_Geom2d_Curve & C);
+		%feature("compactdefaultargs") SetProgress;
 		%feature("autodoc", "	:param PR:
 	:type PR: Handle_Message_ProgressIndicator &
 	:rtype: None
 ") SetProgress;
 		void SetProgress (const Handle_Message_ProgressIndicator & PR);
+		%feature("compactdefaultargs") GetProgress;
 		%feature("autodoc", "	:rtype: Handle_Message_ProgressIndicator
 ") GetProgress;
 		Handle_Message_ProgressIndicator GetProgress ();
@@ -256,16 +284,19 @@ def __del__(self):
 %nodefaultctor GeomTools_CurveSet;
 class GeomTools_CurveSet {
 	public:
+		%feature("compactdefaultargs") GeomTools_CurveSet;
 		%feature("autodoc", "	* Returns an empty set of Curves.
 
 	:rtype: None
 ") GeomTools_CurveSet;
 		 GeomTools_CurveSet ();
+		%feature("compactdefaultargs") Clear;
 		%feature("autodoc", "	* Clears the content of the set.
 
 	:rtype: None
 ") Clear;
 		void Clear ();
+		%feature("compactdefaultargs") Add;
 		%feature("autodoc", "	* Incorporate a new Curve in the set and returns its index.
 
 	:param C:
@@ -273,13 +304,15 @@ class GeomTools_CurveSet {
 	:rtype: int
 ") Add;
 		Standard_Integer Add (const Handle_Geom_Curve & C);
+		%feature("compactdefaultargs") Curve;
 		%feature("autodoc", "	* Returns the Curve of index <I>.
 
 	:param I:
-	:type I: Standard_Integer
+	:type I: int
 	:rtype: Handle_Geom_Curve
 ") Curve;
 		Handle_Geom_Curve Curve (const Standard_Integer I);
+		%feature("compactdefaultargs") Index;
 		%feature("autodoc", "	* Returns the index of <L>.
 
 	:param C:
@@ -310,7 +343,8 @@ class GeomTools_CurveSet {
             std::stringstream s(src);
             self->Read(s);}
         };
-        		%feature("autodoc", "	* Dumps the curve on the stream, if compact is True use the compact format that can be read back.
+        		%feature("compactdefaultargs") PrintCurve;
+		%feature("autodoc", "	* Dumps the curve on the stream, if compact is True use the compact format that can be read back.
 
 	:param C:
 	:type C: Handle_Geom_Curve &
@@ -321,6 +355,7 @@ class GeomTools_CurveSet {
 	:rtype: void
 ") PrintCurve;
 		static void PrintCurve (const Handle_Geom_Curve & C,Standard_OStream & OS,const Standard_Boolean compact = Standard_False);
+		%feature("compactdefaultargs") ReadCurve;
 		%feature("autodoc", "	* Reads the curve from the stream. The curve is assumed to have been writtent with the Print method (compact = True).
 
 	:param IS:
@@ -330,11 +365,13 @@ class GeomTools_CurveSet {
 	:rtype: Standard_IStream
 ") ReadCurve;
 		static Standard_IStream & ReadCurve (Standard_IStream & IS,Handle_Geom_Curve & C);
+		%feature("compactdefaultargs") SetProgress;
 		%feature("autodoc", "	:param PR:
 	:type PR: Handle_Message_ProgressIndicator &
 	:rtype: None
 ") SetProgress;
 		void SetProgress (const Handle_Message_ProgressIndicator & PR);
+		%feature("compactdefaultargs") GetProgress;
 		%feature("autodoc", "	:rtype: Handle_Message_ProgressIndicator
 ") GetProgress;
 		Handle_Message_ProgressIndicator GetProgress ();
@@ -358,16 +395,19 @@ def __del__(self):
 %nodefaultctor GeomTools_SurfaceSet;
 class GeomTools_SurfaceSet {
 	public:
+		%feature("compactdefaultargs") GeomTools_SurfaceSet;
 		%feature("autodoc", "	* Returns an empty set of Surfaces.
 
 	:rtype: None
 ") GeomTools_SurfaceSet;
 		 GeomTools_SurfaceSet ();
+		%feature("compactdefaultargs") Clear;
 		%feature("autodoc", "	* Clears the content of the set.
 
 	:rtype: None
 ") Clear;
 		void Clear ();
+		%feature("compactdefaultargs") Add;
 		%feature("autodoc", "	* Incorporate a new Surface in the set and returns its index.
 
 	:param S:
@@ -375,13 +415,15 @@ class GeomTools_SurfaceSet {
 	:rtype: int
 ") Add;
 		Standard_Integer Add (const Handle_Geom_Surface & S);
+		%feature("compactdefaultargs") Surface;
 		%feature("autodoc", "	* Returns the Surface of index <I>.
 
 	:param I:
-	:type I: Standard_Integer
+	:type I: int
 	:rtype: Handle_Geom_Surface
 ") Surface;
 		Handle_Geom_Surface Surface (const Standard_Integer I);
+		%feature("compactdefaultargs") Index;
 		%feature("autodoc", "	* Returns the index of <L>.
 
 	:param S:
@@ -412,7 +454,8 @@ class GeomTools_SurfaceSet {
             std::stringstream s(src);
             self->Read(s);}
         };
-        		%feature("autodoc", "	* Dumps the surface on the stream, if compact is True use the compact format that can be read back.
+        		%feature("compactdefaultargs") PrintSurface;
+		%feature("autodoc", "	* Dumps the surface on the stream, if compact is True use the compact format that can be read back.
 
 	:param S:
 	:type S: Handle_Geom_Surface &
@@ -423,6 +466,7 @@ class GeomTools_SurfaceSet {
 	:rtype: void
 ") PrintSurface;
 		static void PrintSurface (const Handle_Geom_Surface & S,Standard_OStream & OS,const Standard_Boolean compact = Standard_False);
+		%feature("compactdefaultargs") ReadSurface;
 		%feature("autodoc", "	* Reads the surface from the stream. The surface is assumed to have been writtent with the Print method (compact = True).
 
 	:param IS:
@@ -432,11 +476,13 @@ class GeomTools_SurfaceSet {
 	:rtype: Standard_IStream
 ") ReadSurface;
 		static Standard_IStream & ReadSurface (Standard_IStream & IS,Handle_Geom_Surface & S);
+		%feature("compactdefaultargs") SetProgress;
 		%feature("autodoc", "	:param PR:
 	:type PR: Handle_Message_ProgressIndicator &
 	:rtype: None
 ") SetProgress;
 		void SetProgress (const Handle_Message_ProgressIndicator & PR);
+		%feature("compactdefaultargs") GetProgress;
 		%feature("autodoc", "	:rtype: Handle_Message_ProgressIndicator
 ") GetProgress;
 		Handle_Message_ProgressIndicator GetProgress ();
@@ -460,9 +506,11 @@ def __del__(self):
 %nodefaultctor GeomTools_UndefinedTypeHandler;
 class GeomTools_UndefinedTypeHandler : public MMgt_TShared {
 	public:
+		%feature("compactdefaultargs") GeomTools_UndefinedTypeHandler;
 		%feature("autodoc", "	:rtype: None
 ") GeomTools_UndefinedTypeHandler;
 		 GeomTools_UndefinedTypeHandler ();
+		%feature("compactdefaultargs") PrintCurve;
 		%feature("autodoc", "	:param C:
 	:type C: Handle_Geom_Curve &
 	:param OS:
@@ -472,8 +520,9 @@ class GeomTools_UndefinedTypeHandler : public MMgt_TShared {
 	:rtype: void
 ") PrintCurve;
 		virtual void PrintCurve (const Handle_Geom_Curve & C,Standard_OStream & OS,const Standard_Boolean compact = Standard_False);
+		%feature("compactdefaultargs") ReadCurve;
 		%feature("autodoc", "	:param ctype:
-	:type ctype: Standard_Integer
+	:type ctype: int
 	:param IS:
 	:type IS: Standard_IStream &
 	:param C:
@@ -481,6 +530,7 @@ class GeomTools_UndefinedTypeHandler : public MMgt_TShared {
 	:rtype: Standard_IStream
 ") ReadCurve;
 		virtual Standard_IStream & ReadCurve (const Standard_Integer ctype,Standard_IStream & IS,Handle_Geom_Curve & C);
+		%feature("compactdefaultargs") PrintCurve2d;
 		%feature("autodoc", "	:param C:
 	:type C: Handle_Geom2d_Curve &
 	:param OS:
@@ -490,8 +540,9 @@ class GeomTools_UndefinedTypeHandler : public MMgt_TShared {
 	:rtype: void
 ") PrintCurve2d;
 		virtual void PrintCurve2d (const Handle_Geom2d_Curve & C,Standard_OStream & OS,const Standard_Boolean compact = Standard_False);
+		%feature("compactdefaultargs") ReadCurve2d;
 		%feature("autodoc", "	:param ctype:
-	:type ctype: Standard_Integer
+	:type ctype: int
 	:param IS:
 	:type IS: Standard_IStream &
 	:param C:
@@ -499,6 +550,7 @@ class GeomTools_UndefinedTypeHandler : public MMgt_TShared {
 	:rtype: Standard_IStream
 ") ReadCurve2d;
 		virtual Standard_IStream & ReadCurve2d (const Standard_Integer ctype,Standard_IStream & IS,Handle_Geom2d_Curve & C);
+		%feature("compactdefaultargs") PrintSurface;
 		%feature("autodoc", "	:param S:
 	:type S: Handle_Geom_Surface &
 	:param OS:
@@ -508,8 +560,9 @@ class GeomTools_UndefinedTypeHandler : public MMgt_TShared {
 	:rtype: void
 ") PrintSurface;
 		virtual void PrintSurface (const Handle_Geom_Surface & S,Standard_OStream & OS,const Standard_Boolean compact = Standard_False);
+		%feature("compactdefaultargs") ReadSurface;
 		%feature("autodoc", "	:param ctype:
-	:type ctype: Standard_Integer
+	:type ctype: int
 	:param IS:
 	:type IS: Standard_IStream &
 	:param S:

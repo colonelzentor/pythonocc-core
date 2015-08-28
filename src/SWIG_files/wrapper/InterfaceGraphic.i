@@ -1,5 +1,5 @@
 /*
-Copyright 2008-2014 Thomas Paviot (tpaviot@gmail.com)
+Copyright 2008-2015 Thomas Paviot (tpaviot@gmail.com)
 
 
 This file is part of pythonOCC.
@@ -28,7 +28,6 @@ along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
 %}
 
 %include ../common/CommonIncludes.i
-%include ../common/StandardDefines.i
 %include ../common/ExceptionCatcher.i
 %include ../common/FunctionTransformers.i
 %include ../common/Operators.i
@@ -36,22 +35,28 @@ along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
 %include InterfaceGraphic_headers.i
 
 /* typedefs */
-typedef TEL_TRANSFORM_PERSISTENCE * tel_transform_persistence;
+typedef int Tint;
 typedef TEL_TEXTURE_COORD * tel_texture_coord;
-typedef double Tdouble;
+typedef TEL_POFFSET_PARAM * tel_poffset_param;
 typedef unsigned short Techar;
-typedef TEL_POINT * tel_point;
+typedef double Tdouble;
 typedef TEL_COLOUR * tel_colour;
 typedef signed char Tchar;
-typedef union Points;
-typedef int Tint;
-typedef float CALL_DEF_MATRIX4X4 [ 4 ] [ 4 ];
-typedef float Tfloat;
+typedef TEL_TRANSFORM_PERSISTENCE * tel_transform_persistence;
+typedef TEL_POINT * tel_point;
 typedef unsigned int Tuint;
-typedef TEL_POFFSET_PARAM * tel_poffset_param;
+typedef float Tfloat;
+typedef float CALL_DEF_MATRIX4X4 [ 4 ][4];
 typedef char Tbool;
 /* end typedefs declaration */
 
 /* public enums */
+enum TelCullMode {
+	TelCullUndefined = - 1,
+	TelCullNone = 0,
+	TelCullFront = 1,
+	TelCullBack = 2,
+};
+
 /* end public enums declaration */
 

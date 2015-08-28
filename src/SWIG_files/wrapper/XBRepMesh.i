@@ -1,5 +1,5 @@
 /*
-Copyright 2008-2014 Thomas Paviot (tpaviot@gmail.com)
+Copyright 2008-2015 Thomas Paviot (tpaviot@gmail.com)
 
 
 This file is part of pythonOCC.
@@ -28,7 +28,6 @@ along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
 %}
 
 %include ../common/CommonIncludes.i
-%include ../common/StandardDefines.i
 %include ../common/ExceptionCatcher.i
 %include ../common/FunctionTransformers.i
 %include ../common/Operators.i
@@ -42,9 +41,9 @@ along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
 /* end public enums declaration */
 
 %rename(xbrepmesh) XBRepMesh;
-%nodefaultctor XBRepMesh;
 class XBRepMesh {
 	public:
+		%feature("compactdefaultargs") Discret;
 		%feature("autodoc", "	:param theShape:
 	:type theShape: TopoDS_Shape &
 	:param theDeflection:
@@ -52,10 +51,10 @@ class XBRepMesh {
 	:param theAngle:
 	:type theAngle: float
 	:param theAlgo:
-	:type theAlgo: BRepMesh_PDiscretRoot &
+	:type theAlgo: BRepMesh_DiscretRoot * &
 	:rtype: int
 ") Discret;
-		static Standard_Integer Discret (const TopoDS_Shape & theShape,const Standard_Real theDeflection,const Standard_Real theAngle,BRepMesh_PDiscretRoot & theAlgo);
+		static Standard_Integer Discret (const TopoDS_Shape & theShape,const Standard_Real theDeflection,const Standard_Real theAngle,BRepMesh_DiscretRoot * & theAlgo);
 };
 
 

@@ -1,5 +1,5 @@
 /*
-Copyright 2008-2014 Thomas Paviot (tpaviot@gmail.com)
+Copyright 2008-2015 Thomas Paviot (tpaviot@gmail.com)
 
 
 This file is part of pythonOCC.
@@ -28,7 +28,6 @@ along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
 %}
 
 %include ../common/CommonIncludes.i
-%include ../common/StandardDefines.i
 %include ../common/ExceptionCatcher.i
 %include ../common/FunctionTransformers.i
 %include ../common/Operators.i
@@ -39,14 +38,5 @@ along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
 /* end typedefs declaration */
 
 /* public enums */
-enum Primitives_Direction {
-	Primitives_XMin = 0,
-	Primitives_XMax = 1,
-	Primitives_YMin = 2,
-	Primitives_YMax = 3,
-	Primitives_ZMin = 4,
-	Primitives_ZMax = 5,
-};
-
 /* end public enums declaration */
 

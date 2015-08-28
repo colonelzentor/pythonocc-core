@@ -1,5 +1,5 @@
 /*
-Copyright 2008-2014 Thomas Paviot (tpaviot@gmail.com)
+Copyright 2008-2015 Thomas Paviot (tpaviot@gmail.com)
 
 
 This file is part of pythonOCC.
@@ -28,7 +28,6 @@ along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
 %}
 
 %include ../common/CommonIncludes.i
-%include ../common/StandardDefines.i
 %include ../common/ExceptionCatcher.i
 %include ../common/FunctionTransformers.i
 %include ../common/Operators.i
@@ -39,53 +38,11 @@ along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
 /* end typedefs declaration */
 
 /* public enums */
-enum GeomAbs_BSplKnotDistribution {
-	GeomAbs_NonUniform = 0,
-	GeomAbs_Uniform = 1,
-	GeomAbs_QuasiUniform = 2,
-	GeomAbs_PiecewiseBezier = 3,
-};
-
-enum GeomAbs_CurveForm {
-	GeomAbs_PolylineForm = 0,
-	GeomAbs_CircularForm = 1,
-	GeomAbs_EllipticForm = 2,
-	GeomAbs_HyperbolicForm = 3,
-	GeomAbs_ParabolicForm = 4,
-	GeomAbs_OtherCurveForm = 5,
-};
-
-enum GeomAbs_CurveType {
-	GeomAbs_Line = 0,
-	GeomAbs_Circle = 1,
-	GeomAbs_Ellipse = 2,
-	GeomAbs_Hyperbola = 3,
-	GeomAbs_Parabola = 4,
-	GeomAbs_BezierCurve = 5,
-	GeomAbs_BSplineCurve = 6,
-	GeomAbs_OtherCurve = 7,
-};
-
-enum GeomAbs_IsoType {
-	GeomAbs_IsoU = 0,
-	GeomAbs_IsoV = 1,
-	GeomAbs_NoneIso = 2,
-};
-
-enum GeomAbs_JoinType {
-	GeomAbs_Arc = 0,
-	GeomAbs_Tangent = 1,
-	GeomAbs_Intersection = 2,
-};
-
-enum GeomAbs_Shape {
-	GeomAbs_C0 = 0,
-	GeomAbs_G1 = 1,
-	GeomAbs_C1 = 2,
-	GeomAbs_G2 = 3,
-	GeomAbs_C2 = 4,
-	GeomAbs_C3 = 5,
-	GeomAbs_CN = 6,
+enum GeomAbs_UVSense {
+	GeomAbs_SameUV = 0,
+	GeomAbs_SameU = 1,
+	GeomAbs_SameV = 2,
+	GeomAbs_OppositeUV = 3,
 };
 
 enum GeomAbs_SurfaceForm {
@@ -114,11 +71,53 @@ enum GeomAbs_SurfaceType {
 	GeomAbs_OtherSurface = 10,
 };
 
-enum GeomAbs_UVSense {
-	GeomAbs_SameUV = 0,
-	GeomAbs_SameU = 1,
-	GeomAbs_SameV = 2,
-	GeomAbs_OppositeUV = 3,
+enum GeomAbs_IsoType {
+	GeomAbs_IsoU = 0,
+	GeomAbs_IsoV = 1,
+	GeomAbs_NoneIso = 2,
+};
+
+enum GeomAbs_Shape {
+	GeomAbs_C0 = 0,
+	GeomAbs_G1 = 1,
+	GeomAbs_C1 = 2,
+	GeomAbs_G2 = 3,
+	GeomAbs_C2 = 4,
+	GeomAbs_C3 = 5,
+	GeomAbs_CN = 6,
+};
+
+enum GeomAbs_JoinType {
+	GeomAbs_Arc = 0,
+	GeomAbs_Tangent = 1,
+	GeomAbs_Intersection = 2,
+};
+
+enum GeomAbs_BSplKnotDistribution {
+	GeomAbs_NonUniform = 0,
+	GeomAbs_Uniform = 1,
+	GeomAbs_QuasiUniform = 2,
+	GeomAbs_PiecewiseBezier = 3,
+};
+
+enum GeomAbs_CurveType {
+	GeomAbs_Line = 0,
+	GeomAbs_Circle = 1,
+	GeomAbs_Ellipse = 2,
+	GeomAbs_Hyperbola = 3,
+	GeomAbs_Parabola = 4,
+	GeomAbs_BezierCurve = 5,
+	GeomAbs_BSplineCurve = 6,
+	GeomAbs_OtherCurve = 7,
+};
+
+enum GeomAbs_CurveForm {
+	GeomAbs_PolylineForm = 0,
+	GeomAbs_CircularForm = 1,
+	GeomAbs_EllipticForm = 2,
+	GeomAbs_HyperbolicForm = 3,
+	GeomAbs_ParabolicForm = 4,
+	GeomAbs_OtherCurveForm = 5,
 };
 
 /* end public enums declaration */

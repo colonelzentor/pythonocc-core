@@ -1,5 +1,5 @@
 /*
-Copyright 2008-2014 Thomas Paviot (tpaviot@gmail.com)
+Copyright 2008-2015 Thomas Paviot (tpaviot@gmail.com)
 
 
 This file is part of pythonOCC.
@@ -28,7 +28,6 @@ along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
 %}
 
 %include ../common/CommonIncludes.i
-%include ../common/StandardDefines.i
 %include ../common/ExceptionCatcher.i
 %include ../common/FunctionTransformers.i
 %include ../common/Operators.i
@@ -42,10 +41,10 @@ along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
 /* end public enums declaration */
 
 %rename(hermit) Hermit;
-%nodefaultctor Hermit;
 class Hermit {
 	public:
-		%feature("autodoc", "	* //!returns the correct spline a(u) which will  be multiplicated with BS later.
+		%feature("compactdefaultargs") Solution;
+		%feature("autodoc", "	* returns the correct spline a(u) which will be multiplicated with BS later.
 
 	:param BS:
 	:type BS: Handle_Geom_BSplineCurve &
@@ -56,7 +55,8 @@ class Hermit {
 	:rtype: Handle_Geom2d_BSplineCurve
 ") Solution;
 		static Handle_Geom2d_BSplineCurve Solution (const Handle_Geom_BSplineCurve & BS,const Standard_Real TolPoles = 0.000001,const Standard_Real TolKnots = 0.000001);
-		%feature("autodoc", "	* //!returns the correct spline a(u) which will  be multiplicated with BS later.
+		%feature("compactdefaultargs") Solution;
+		%feature("autodoc", "	* returns the correct spline a(u) which will be multiplicated with BS later.
 
 	:param BS:
 	:type BS: Handle_Geom2d_BSplineCurve &
@@ -67,7 +67,8 @@ class Hermit {
 	:rtype: Handle_Geom2d_BSplineCurve
 ") Solution;
 		static Handle_Geom2d_BSplineCurve Solution (const Handle_Geom2d_BSplineCurve & BS,const Standard_Real TolPoles = 0.000001,const Standard_Real TolKnots = 0.000001);
-		%feature("autodoc", "	* //!returns the knots to insert to a(u) to  stay with a constant sign and in the  tolerances.
+		%feature("compactdefaultargs") Solutionbis;
+		%feature("autodoc", "	* returns the knots to insert to a(u) to stay with a constant sign and in the tolerances.
 
 	:param BS:
 	:type BS: Handle_Geom_BSplineCurve &

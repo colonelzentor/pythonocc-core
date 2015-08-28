@@ -18,6 +18,8 @@
 */
 
 #include "Visualization.h"
+#include "Graphic3d_GraphicDriver.hxx"
+#include "OpenGl_GraphicDriver.hxx"
 
 
 Display3d::Display3d()
@@ -43,7 +45,8 @@ void Display3d::Init(long window_handle)
   printf("Aspect_DisplayConnection created.\n");
   if (GetGraphicDriver().IsNull())
   {
-  GetGraphicDriver() = Graphic3d::InitGraphicDriver (aDisplayConnection);
+  // GetGraphicDriver() = Graphic3d::InitGraphicDriver (aDisplayConnection);
+  GetGraphicDriver() = new OpenGl_GraphicDriver(aDisplayConnection);
   }
   printf("Graphic_Driver created.\n");
   // Create Graphic Device and Window

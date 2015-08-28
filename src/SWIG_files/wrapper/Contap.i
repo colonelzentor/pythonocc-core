@@ -1,5 +1,5 @@
 /*
-Copyright 2008-2014 Thomas Paviot (tpaviot@gmail.com)
+Copyright 2008-2015 Thomas Paviot (tpaviot@gmail.com)
 
 
 This file is part of pythonOCC.
@@ -28,7 +28,6 @@ along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
 %}
 
 %include ../common/CommonIncludes.i
-%include ../common/StandardDefines.i
 %include ../common/ExceptionCatcher.i
 %include ../common/FunctionTransformers.i
 %include ../common/Operators.i
@@ -39,13 +38,6 @@ along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
 /* end typedefs declaration */
 
 /* public enums */
-enum Contap_IType {
-	Contap_Lin = 0,
-	Contap_Circle = 1,
-	Contap_Walking = 2,
-	Contap_Restriction = 3,
-};
-
 enum Contap_TFunction {
 	Contap_ContourStd = 0,
 	Contap_ContourPrs = 1,
@@ -53,14 +45,131 @@ enum Contap_TFunction {
 	Contap_DraftPrs = 3,
 };
 
+enum Contap_IType {
+	Contap_Lin = 0,
+	Contap_Circle = 1,
+	Contap_Walking = 2,
+	Contap_Restriction = 3,
+};
+
 /* end public enums declaration */
 
+%nodefaultctor Contap_ArcFunction;
+class Contap_ArcFunction : public math_FunctionWithDerivative {
+	public:
+		%feature("compactdefaultargs") Contap_ArcFunction;
+		%feature("autodoc", "	:rtype: None
+") Contap_ArcFunction;
+		 Contap_ArcFunction ();
+		%feature("compactdefaultargs") Set;
+		%feature("autodoc", "	:param S:
+	:type S: Handle_Adaptor3d_HSurface &
+	:rtype: None
+") Set;
+		void Set (const Handle_Adaptor3d_HSurface & S);
+		%feature("compactdefaultargs") Set;
+		%feature("autodoc", "	:param Direction:
+	:type Direction: gp_Dir
+	:rtype: None
+") Set;
+		void Set (const gp_Dir & Direction);
+		%feature("compactdefaultargs") Set;
+		%feature("autodoc", "	:param Direction:
+	:type Direction: gp_Dir
+	:param Angle:
+	:type Angle: float
+	:rtype: None
+") Set;
+		void Set (const gp_Dir & Direction,const Standard_Real Angle);
+		%feature("compactdefaultargs") Set;
+		%feature("autodoc", "	:param Eye:
+	:type Eye: gp_Pnt
+	:rtype: None
+") Set;
+		void Set (const gp_Pnt & Eye);
+		%feature("compactdefaultargs") Set;
+		%feature("autodoc", "	:param Eye:
+	:type Eye: gp_Pnt
+	:param Angle:
+	:type Angle: float
+	:rtype: None
+") Set;
+		void Set (const gp_Pnt & Eye,const Standard_Real Angle);
+		%feature("compactdefaultargs") Set;
+		%feature("autodoc", "	:param A:
+	:type A: Handle_Adaptor2d_HCurve2d &
+	:rtype: None
+") Set;
+		void Set (const Handle_Adaptor2d_HCurve2d & A);
+		%feature("compactdefaultargs") Value;
+		%feature("autodoc", "	:param X:
+	:type X: float
+	:param F:
+	:type F: float &
+	:rtype: bool
+") Value;
+		Standard_Boolean Value (const Standard_Real X,Standard_Real &OutValue);
+		%feature("compactdefaultargs") Derivative;
+		%feature("autodoc", "	:param X:
+	:type X: float
+	:param D:
+	:type D: float &
+	:rtype: bool
+") Derivative;
+		Standard_Boolean Derivative (const Standard_Real X,Standard_Real &OutValue);
+		%feature("compactdefaultargs") Values;
+		%feature("autodoc", "	:param X:
+	:type X: float
+	:param F:
+	:type F: float &
+	:param D:
+	:type D: float &
+	:rtype: bool
+") Values;
+		Standard_Boolean Values (const Standard_Real X,Standard_Real &OutValue,Standard_Real &OutValue);
+		%feature("compactdefaultargs") NbSamples;
+		%feature("autodoc", "	:rtype: int
+") NbSamples;
+		Standard_Integer NbSamples ();
+		%feature("compactdefaultargs") GetStateNumber;
+		%feature("autodoc", "	:rtype: int
+") GetStateNumber;
+		virtual Standard_Integer GetStateNumber ();
+		%feature("compactdefaultargs") Valpoint;
+		%feature("autodoc", "	:param Index:
+	:type Index: int
+	:rtype: gp_Pnt
+") Valpoint;
+		const gp_Pnt  Valpoint (const Standard_Integer Index);
+		%feature("compactdefaultargs") Quadric;
+		%feature("autodoc", "	:rtype: IntSurf_Quadric
+") Quadric;
+		const IntSurf_Quadric & Quadric ();
+};
+
+
+%feature("shadow") Contap_ArcFunction::~Contap_ArcFunction %{
+def __del__(self):
+	try:
+		self.thisown = False
+		GarbageCollector.garbage.collect_object(self)
+	except:
+		pass
+%}
+
+%extend Contap_ArcFunction {
+	void _kill_pointed() {
+		delete $self;
+	}
+};
 %nodefaultctor Contap_ContAna;
 class Contap_ContAna {
 	public:
+		%feature("compactdefaultargs") Contap_ContAna;
 		%feature("autodoc", "	:rtype: None
 ") Contap_ContAna;
 		 Contap_ContAna ();
+		%feature("compactdefaultargs") Perform;
 		%feature("autodoc", "	:param S:
 	:type S: gp_Sphere
 	:param D:
@@ -68,6 +177,7 @@ class Contap_ContAna {
 	:rtype: None
 ") Perform;
 		void Perform (const gp_Sphere & S,const gp_Dir & D);
+		%feature("compactdefaultargs") Perform;
 		%feature("autodoc", "	:param S:
 	:type S: gp_Sphere
 	:param D:
@@ -77,6 +187,7 @@ class Contap_ContAna {
 	:rtype: None
 ") Perform;
 		void Perform (const gp_Sphere & S,const gp_Dir & D,const Standard_Real Ang);
+		%feature("compactdefaultargs") Perform;
 		%feature("autodoc", "	:param S:
 	:type S: gp_Sphere
 	:param Eye:
@@ -84,6 +195,7 @@ class Contap_ContAna {
 	:rtype: None
 ") Perform;
 		void Perform (const gp_Sphere & S,const gp_Pnt & Eye);
+		%feature("compactdefaultargs") Perform;
 		%feature("autodoc", "	:param C:
 	:type C: gp_Cylinder
 	:param D:
@@ -91,6 +203,7 @@ class Contap_ContAna {
 	:rtype: None
 ") Perform;
 		void Perform (const gp_Cylinder & C,const gp_Dir & D);
+		%feature("compactdefaultargs") Perform;
 		%feature("autodoc", "	:param C:
 	:type C: gp_Cylinder
 	:param D:
@@ -100,6 +213,7 @@ class Contap_ContAna {
 	:rtype: None
 ") Perform;
 		void Perform (const gp_Cylinder & C,const gp_Dir & D,const Standard_Real Ang);
+		%feature("compactdefaultargs") Perform;
 		%feature("autodoc", "	:param C:
 	:type C: gp_Cylinder
 	:param Eye:
@@ -107,6 +221,7 @@ class Contap_ContAna {
 	:rtype: None
 ") Perform;
 		void Perform (const gp_Cylinder & C,const gp_Pnt & Eye);
+		%feature("compactdefaultargs") Perform;
 		%feature("autodoc", "	:param C:
 	:type C: gp_Cone
 	:param D:
@@ -114,6 +229,7 @@ class Contap_ContAna {
 	:rtype: None
 ") Perform;
 		void Perform (const gp_Cone & C,const gp_Dir & D);
+		%feature("compactdefaultargs") Perform;
 		%feature("autodoc", "	:param C:
 	:type C: gp_Cone
 	:param D:
@@ -123,6 +239,7 @@ class Contap_ContAna {
 	:rtype: None
 ") Perform;
 		void Perform (const gp_Cone & C,const gp_Dir & D,const Standard_Real Ang);
+		%feature("compactdefaultargs") Perform;
 		%feature("autodoc", "	:param C:
 	:type C: gp_Cone
 	:param Eye:
@@ -130,22 +247,27 @@ class Contap_ContAna {
 	:rtype: None
 ") Perform;
 		void Perform (const gp_Cone & C,const gp_Pnt & Eye);
+		%feature("compactdefaultargs") IsDone;
 		%feature("autodoc", "	:rtype: bool
 ") IsDone;
 		Standard_Boolean IsDone ();
+		%feature("compactdefaultargs") NbContours;
 		%feature("autodoc", "	:rtype: int
 ") NbContours;
 		Standard_Integer NbContours ();
+		%feature("compactdefaultargs") TypeContour;
 		%feature("autodoc", "	* Returns GeomAbs_Line or GeomAbs_Circle, when IsDone() returns True.
 
 	:rtype: GeomAbs_CurveType
 ") TypeContour;
 		GeomAbs_CurveType TypeContour ();
+		%feature("compactdefaultargs") Circle;
 		%feature("autodoc", "	:rtype: gp_Circ
 ") Circle;
 		gp_Circ Circle ();
+		%feature("compactdefaultargs") Line;
 		%feature("autodoc", "	:param Index:
-	:type Index: Standard_Integer
+	:type Index: int
 	:rtype: gp_Lin
 ") Line;
 		gp_Lin Line (const Standard_Integer Index);
@@ -169,14 +291,17 @@ def __del__(self):
 %nodefaultctor Contap_Contour;
 class Contap_Contour {
 	public:
+		%feature("compactdefaultargs") Contap_Contour;
 		%feature("autodoc", "	:rtype: None
 ") Contap_Contour;
 		 Contap_Contour ();
+		%feature("compactdefaultargs") Contap_Contour;
 		%feature("autodoc", "	:param Direction:
 	:type Direction: gp_Vec
 	:rtype: None
 ") Contap_Contour;
 		 Contap_Contour (const gp_Vec & Direction);
+		%feature("compactdefaultargs") Contap_Contour;
 		%feature("autodoc", "	:param Direction:
 	:type Direction: gp_Vec
 	:param Angle:
@@ -184,12 +309,16 @@ class Contap_Contour {
 	:rtype: None
 ") Contap_Contour;
 		 Contap_Contour (const gp_Vec & Direction,const Standard_Real Angle);
+		%feature("compactdefaultargs") Contap_Contour;
 		%feature("autodoc", "	:param Eye:
 	:type Eye: gp_Pnt
 	:rtype: None
 ") Contap_Contour;
 		 Contap_Contour (const gp_Pnt & Eye);
-		%feature("autodoc", "	:param Surf:
+		%feature("compactdefaultargs") Contap_Contour;
+		%feature("autodoc", "	* Creates the contour in a given direction.
+
+	:param Surf:
 	:type Surf: Handle_Adaptor3d_HSurface &
 	:param Domain:
 	:type Domain: Handle_Adaptor3d_TopolTool &
@@ -198,7 +327,10 @@ class Contap_Contour {
 	:rtype: None
 ") Contap_Contour;
 		 Contap_Contour (const Handle_Adaptor3d_HSurface & Surf,const Handle_Adaptor3d_TopolTool & Domain,const gp_Vec & Direction);
-		%feature("autodoc", "	:param Surf:
+		%feature("compactdefaultargs") Contap_Contour;
+		%feature("autodoc", "	* Creates the contour in a given direction.
+
+	:param Surf:
 	:type Surf: Handle_Adaptor3d_HSurface &
 	:param Domain:
 	:type Domain: Handle_Adaptor3d_TopolTool &
@@ -209,7 +341,10 @@ class Contap_Contour {
 	:rtype: None
 ") Contap_Contour;
 		 Contap_Contour (const Handle_Adaptor3d_HSurface & Surf,const Handle_Adaptor3d_TopolTool & Domain,const gp_Vec & Direction,const Standard_Real Angle);
-		%feature("autodoc", "	:param Surf:
+		%feature("compactdefaultargs") Contap_Contour;
+		%feature("autodoc", "	* Creates the contour for a perspective view.
+
+	:param Surf:
 	:type Surf: Handle_Adaptor3d_HSurface &
 	:param Domain:
 	:type Domain: Handle_Adaptor3d_TopolTool &
@@ -218,14 +353,20 @@ class Contap_Contour {
 	:rtype: None
 ") Contap_Contour;
 		 Contap_Contour (const Handle_Adaptor3d_HSurface & Surf,const Handle_Adaptor3d_TopolTool & Domain,const gp_Pnt & Eye);
-		%feature("autodoc", "	:param Surf:
+		%feature("compactdefaultargs") Perform;
+		%feature("autodoc", "	* Creates the contour in a given direction.
+
+	:param Surf:
 	:type Surf: Handle_Adaptor3d_HSurface &
 	:param Domain:
 	:type Domain: Handle_Adaptor3d_TopolTool &
 	:rtype: None
 ") Perform;
 		void Perform (const Handle_Adaptor3d_HSurface & Surf,const Handle_Adaptor3d_TopolTool & Domain);
-		%feature("autodoc", "	:param Surf:
+		%feature("compactdefaultargs") Perform;
+		%feature("autodoc", "	* Creates the contour in a given direction.
+
+	:param Surf:
 	:type Surf: Handle_Adaptor3d_HSurface &
 	:param Domain:
 	:type Domain: Handle_Adaptor3d_TopolTool &
@@ -234,7 +375,10 @@ class Contap_Contour {
 	:rtype: None
 ") Perform;
 		void Perform (const Handle_Adaptor3d_HSurface & Surf,const Handle_Adaptor3d_TopolTool & Domain,const gp_Vec & Direction);
-		%feature("autodoc", "	:param Surf:
+		%feature("compactdefaultargs") Perform;
+		%feature("autodoc", "	* Creates the contour in a given direction.
+
+	:param Surf:
 	:type Surf: Handle_Adaptor3d_HSurface &
 	:param Domain:
 	:type Domain: Handle_Adaptor3d_TopolTool &
@@ -245,7 +389,10 @@ class Contap_Contour {
 	:rtype: None
 ") Perform;
 		void Perform (const Handle_Adaptor3d_HSurface & Surf,const Handle_Adaptor3d_TopolTool & Domain,const gp_Vec & Direction,const Standard_Real Angle);
-		%feature("autodoc", "	:param Surf:
+		%feature("compactdefaultargs") Perform;
+		%feature("autodoc", "	* Creates the contour for a perspective view.
+
+	:param Surf:
 	:type Surf: Handle_Adaptor3d_HSurface &
 	:param Domain:
 	:type Domain: Handle_Adaptor3d_TopolTool &
@@ -254,11 +401,13 @@ class Contap_Contour {
 	:rtype: None
 ") Perform;
 		void Perform (const Handle_Adaptor3d_HSurface & Surf,const Handle_Adaptor3d_TopolTool & Domain,const gp_Pnt & Eye);
+		%feature("compactdefaultargs") Init;
 		%feature("autodoc", "	:param Direction:
 	:type Direction: gp_Vec
 	:rtype: None
 ") Init;
 		void Init (const gp_Vec & Direction);
+		%feature("compactdefaultargs") Init;
 		%feature("autodoc", "	:param Direction:
 	:type Direction: gp_Vec
 	:param Angle:
@@ -266,28 +415,38 @@ class Contap_Contour {
 	:rtype: None
 ") Init;
 		void Init (const gp_Vec & Direction,const Standard_Real Angle);
+		%feature("compactdefaultargs") Init;
 		%feature("autodoc", "	:param Eye:
 	:type Eye: gp_Pnt
 	:rtype: None
 ") Init;
 		void Init (const gp_Pnt & Eye);
+		%feature("compactdefaultargs") IsDone;
 		%feature("autodoc", "	:rtype: bool
 ") IsDone;
 		Standard_Boolean IsDone ();
-		%feature("autodoc", "	:rtype: bool
+		%feature("compactdefaultargs") IsEmpty;
+		%feature("autodoc", "	* Returns true if the is no line.
+
+	:rtype: bool
 ") IsEmpty;
 		Standard_Boolean IsEmpty ();
+		%feature("compactdefaultargs") NbLines;
 		%feature("autodoc", "	:rtype: int
 ") NbLines;
 		Standard_Integer NbLines ();
+		%feature("compactdefaultargs") Line;
 		%feature("autodoc", "	:param Index:
-	:type Index: Standard_Integer
-	:rtype: Contap_TheLineOfContour
+	:type Index: int
+	:rtype: Contap_Line
 ") Line;
-		const Contap_TheLineOfContour & Line (const Standard_Integer Index);
-		%feature("autodoc", "	:rtype: Contap_TheSurfFunctionOfContour
+		const Contap_Line & Line (const Standard_Integer Index);
+		%feature("compactdefaultargs") SurfaceFunction;
+		%feature("autodoc", "	* Returns a reference on the internal SurfaceFunction. This is used to compute tangents on the lines.
+
+	:rtype: Contap_SurfFunction
 ") SurfaceFunction;
-		Contap_TheSurfFunctionOfContour & SurfaceFunction ();
+		Contap_SurfFunction & SurfaceFunction ();
 };
 
 
@@ -305,9 +464,9 @@ def __del__(self):
 		delete $self;
 	}
 };
-%nodefaultctor Contap_HContTool;
 class Contap_HContTool {
 	public:
+		%feature("compactdefaultargs") NbSamplesU;
 		%feature("autodoc", "	:param S:
 	:type S: Handle_Adaptor3d_HSurface &
 	:param u1:
@@ -317,6 +476,7 @@ class Contap_HContTool {
 	:rtype: int
 ") NbSamplesU;
 		static Standard_Integer NbSamplesU (const Handle_Adaptor3d_HSurface & S,const Standard_Real u1,const Standard_Real u2);
+		%feature("compactdefaultargs") NbSamplesV;
 		%feature("autodoc", "	:param S:
 	:type S: Handle_Adaptor3d_HSurface &
 	:param v1:
@@ -326,15 +486,17 @@ class Contap_HContTool {
 	:rtype: int
 ") NbSamplesV;
 		static Standard_Integer NbSamplesV (const Handle_Adaptor3d_HSurface & S,const Standard_Real v1,const Standard_Real v2);
+		%feature("compactdefaultargs") NbSamplePoints;
 		%feature("autodoc", "	:param S:
 	:type S: Handle_Adaptor3d_HSurface &
 	:rtype: int
 ") NbSamplePoints;
 		static Standard_Integer NbSamplePoints (const Handle_Adaptor3d_HSurface & S);
+		%feature("compactdefaultargs") SamplePoint;
 		%feature("autodoc", "	:param S:
 	:type S: Handle_Adaptor3d_HSurface &
 	:param Index:
-	:type Index: Standard_Integer
+	:type Index: int
 	:param U:
 	:type U: float &
 	:param V:
@@ -342,17 +504,26 @@ class Contap_HContTool {
 	:rtype: void
 ") SamplePoint;
 		static void SamplePoint (const Handle_Adaptor3d_HSurface & S,const Standard_Integer Index,Standard_Real &OutValue,Standard_Real &OutValue);
-		%feature("autodoc", "	:param C:
+		%feature("compactdefaultargs") HasBeenSeen;
+		%feature("autodoc", "	* Returns True if all the intersection point and edges are known on the Arc. The intersection point are given as vertices. The intersection edges are given as intervals between two vertices.
+
+	:param C:
 	:type C: Handle_Adaptor2d_HCurve2d &
 	:rtype: bool
 ") HasBeenSeen;
 		static Standard_Boolean HasBeenSeen (const Handle_Adaptor2d_HCurve2d & C);
-		%feature("autodoc", "	:param A:
+		%feature("compactdefaultargs") NbSamplesOnArc;
+		%feature("autodoc", "	* returns the number of points which is used to make a sample on the arc. this number is a function of the Surface and the CurveOnSurface complexity.
+
+	:param A:
 	:type A: Handle_Adaptor2d_HCurve2d &
 	:rtype: int
 ") NbSamplesOnArc;
 		static Standard_Integer NbSamplesOnArc (const Handle_Adaptor2d_HCurve2d & A);
-		%feature("autodoc", "	:param C:
+		%feature("compactdefaultargs") Bounds;
+		%feature("autodoc", "	* Returns the parametric limits on the arc C. These limits must be finite : they are either the real limits of the arc, for a finite arc, or a bounding box for an infinite arc.
+
+	:param C:
 	:type C: Handle_Adaptor2d_HCurve2d &
 	:param Ufirst:
 	:type Ufirst: float &
@@ -361,7 +532,10 @@ class Contap_HContTool {
 	:rtype: void
 ") Bounds;
 		static void Bounds (const Handle_Adaptor2d_HCurve2d & C,Standard_Real &OutValue,Standard_Real &OutValue);
-		%feature("autodoc", "	:param C:
+		%feature("compactdefaultargs") Project;
+		%feature("autodoc", "	* Projects the point P on the arc C. If the methods returns Standard_True, the projection is successful, and Paramproj is the parameter on the arc of the projected point, Ptproj is the projected Point. If the method returns Standard_False, Param proj and Ptproj are not significant.
+
+	:param C:
 	:type C: Handle_Adaptor2d_HCurve2d &
 	:param P:
 	:type P: gp_Pnt2d
@@ -372,29 +546,41 @@ class Contap_HContTool {
 	:rtype: bool
 ") Project;
 		static Standard_Boolean Project (const Handle_Adaptor2d_HCurve2d & C,const gp_Pnt2d & P,Standard_Real &OutValue,gp_Pnt2d & Ptproj);
-		%feature("autodoc", "	:param V:
+		%feature("compactdefaultargs") Tolerance;
+		%feature("autodoc", "	* Returns the parametric tolerance used to consider that the vertex and another point meet, i-e if Abs(parameter(Vertex) - parameter(OtherPnt))<= Tolerance, the points are 'merged'.
+
+	:param V:
 	:type V: Handle_Adaptor3d_HVertex &
 	:param C:
 	:type C: Handle_Adaptor2d_HCurve2d &
 	:rtype: float
 ") Tolerance;
 		static Standard_Real Tolerance (const Handle_Adaptor3d_HVertex & V,const Handle_Adaptor2d_HCurve2d & C);
-		%feature("autodoc", "	:param V:
+		%feature("compactdefaultargs") Parameter;
+		%feature("autodoc", "	* Returns the parameter of the vertex V on the arc A.
+
+	:param V:
 	:type V: Handle_Adaptor3d_HVertex &
 	:param C:
 	:type C: Handle_Adaptor2d_HCurve2d &
 	:rtype: float
 ") Parameter;
 		static Standard_Real Parameter (const Handle_Adaptor3d_HVertex & V,const Handle_Adaptor2d_HCurve2d & C);
-		%feature("autodoc", "	:param C:
+		%feature("compactdefaultargs") NbPoints;
+		%feature("autodoc", "	* Returns the number of intersection points on the arc A.
+
+	:param C:
 	:type C: Handle_Adaptor2d_HCurve2d &
 	:rtype: int
 ") NbPoints;
 		static Standard_Integer NbPoints (const Handle_Adaptor2d_HCurve2d & C);
-		%feature("autodoc", "	:param C:
+		%feature("compactdefaultargs") Value;
+		%feature("autodoc", "	* Returns the value (Pt), the tolerance (Tol), and the parameter (U) on the arc A , of the intersection point of range Index.
+
+	:param C:
 	:type C: Handle_Adaptor2d_HCurve2d &
 	:param Index:
-	:type Index: Standard_Integer
+	:type Index: int
 	:param Pt:
 	:type Pt: gp_Pnt
 	:param Tol:
@@ -404,46 +590,64 @@ class Contap_HContTool {
 	:rtype: void
 ") Value;
 		static void Value (const Handle_Adaptor2d_HCurve2d & C,const Standard_Integer Index,gp_Pnt & Pt,Standard_Real &OutValue,Standard_Real &OutValue);
-		%feature("autodoc", "	:param C:
+		%feature("compactdefaultargs") IsVertex;
+		%feature("autodoc", "	* Returns True if the intersection point of range Index corresponds with a vertex on the arc A.
+
+	:param C:
 	:type C: Handle_Adaptor2d_HCurve2d &
 	:param Index:
-	:type Index: Standard_Integer
+	:type Index: int
 	:rtype: bool
 ") IsVertex;
 		static Standard_Boolean IsVertex (const Handle_Adaptor2d_HCurve2d & C,const Standard_Integer Index);
-		%feature("autodoc", "	:param C:
+		%feature("compactdefaultargs") Vertex;
+		%feature("autodoc", "	* When IsVertex returns True, this method returns the vertex on the arc A.
+
+	:param C:
 	:type C: Handle_Adaptor2d_HCurve2d &
 	:param Index:
-	:type Index: Standard_Integer
+	:type Index: int
 	:param V:
 	:type V: Handle_Adaptor3d_HVertex &
 	:rtype: void
 ") Vertex;
 		static void Vertex (const Handle_Adaptor2d_HCurve2d & C,const Standard_Integer Index,Handle_Adaptor3d_HVertex & V);
-		%feature("autodoc", "	:param C:
+		%feature("compactdefaultargs") NbSegments;
+		%feature("autodoc", "	* returns the number of part of A solution of the of intersection problem.
+
+	:param C:
 	:type C: Handle_Adaptor2d_HCurve2d &
 	:rtype: int
 ") NbSegments;
 		static Standard_Integer NbSegments (const Handle_Adaptor2d_HCurve2d & C);
-		%feature("autodoc", "	:param C:
+		%feature("compactdefaultargs") HasFirstPoint;
+		%feature("autodoc", "	* Returns True when the segment of range Index is not open at the left side. In that case, IndFirst is the range in the list intersection points (see NbPoints) of the one which defines the left bound of the segment. Otherwise, the method has to return False, and IndFirst has no meaning.
+
+	:param C:
 	:type C: Handle_Adaptor2d_HCurve2d &
 	:param Index:
-	:type Index: Standard_Integer
+	:type Index: int
 	:param IndFirst:
-	:type IndFirst: Standard_Integer &
+	:type IndFirst: int &
 	:rtype: bool
 ") HasFirstPoint;
 		static Standard_Boolean HasFirstPoint (const Handle_Adaptor2d_HCurve2d & C,const Standard_Integer Index,Standard_Integer &OutValue);
-		%feature("autodoc", "	:param C:
+		%feature("compactdefaultargs") HasLastPoint;
+		%feature("autodoc", "	* Returns True when the segment of range Index is not open at the right side. In that case, IndLast is the range in the list intersection points (see NbPoints) of the one which defines the right bound of the segment. Otherwise, the method has to return False, and IndLast has no meaning.
+
+	:param C:
 	:type C: Handle_Adaptor2d_HCurve2d &
 	:param Index:
-	:type Index: Standard_Integer
+	:type Index: int
 	:param IndLast:
-	:type IndLast: Standard_Integer &
+	:type IndLast: int &
 	:rtype: bool
 ") HasLastPoint;
 		static Standard_Boolean HasLastPoint (const Handle_Adaptor2d_HCurve2d & C,const Standard_Integer Index,Standard_Integer &OutValue);
-		%feature("autodoc", "	:param C:
+		%feature("compactdefaultargs") IsAllSolution;
+		%feature("autodoc", "	* Returns True when the whole restriction is solution of the intersection problem.
+
+	:param C:
 	:type C: Handle_Adaptor2d_HCurve2d &
 	:rtype: bool
 ") IsAllSolution;
@@ -465,32 +669,40 @@ def __del__(self):
 		delete $self;
 	}
 };
-%nodefaultctor Contap_HCurve2dTool;
 class Contap_HCurve2dTool {
 	public:
+		%feature("compactdefaultargs") FirstParameter;
 		%feature("autodoc", "	:param C:
 	:type C: Handle_Adaptor2d_HCurve2d &
 	:rtype: float
 ") FirstParameter;
 		static Standard_Real FirstParameter (const Handle_Adaptor2d_HCurve2d & C);
+		%feature("compactdefaultargs") LastParameter;
 		%feature("autodoc", "	:param C:
 	:type C: Handle_Adaptor2d_HCurve2d &
 	:rtype: float
 ") LastParameter;
 		static Standard_Real LastParameter (const Handle_Adaptor2d_HCurve2d & C);
+		%feature("compactdefaultargs") Continuity;
 		%feature("autodoc", "	:param C:
 	:type C: Handle_Adaptor2d_HCurve2d &
 	:rtype: GeomAbs_Shape
 ") Continuity;
 		static GeomAbs_Shape Continuity (const Handle_Adaptor2d_HCurve2d & C);
-		%feature("autodoc", "	:param C:
+		%feature("compactdefaultargs") NbIntervals;
+		%feature("autodoc", "	* Returns the number of intervals for continuity <S>. May be one if Continuity(myclass) >= <S>
+
+	:param C:
 	:type C: Handle_Adaptor2d_HCurve2d &
 	:param S:
 	:type S: GeomAbs_Shape
 	:rtype: int
 ") NbIntervals;
 		static Standard_Integer NbIntervals (const Handle_Adaptor2d_HCurve2d & C,const GeomAbs_Shape S);
-		%feature("autodoc", "	:param C:
+		%feature("compactdefaultargs") Intervals;
+		%feature("autodoc", "	* Stores in <T> the parameters bounding the intervals of continuity <S>. //! The array must provide enough room to accomodate for the parameters. i.e. T.Length() > NbIntervals()
+
+	:param C:
 	:type C: Handle_Adaptor2d_HCurve2d &
 	:param T:
 	:type T: TColStd_Array1OfReal &
@@ -499,29 +711,38 @@ class Contap_HCurve2dTool {
 	:rtype: void
 ") Intervals;
 		static void Intervals (const Handle_Adaptor2d_HCurve2d & C,TColStd_Array1OfReal & T,const GeomAbs_Shape S);
+		%feature("compactdefaultargs") IsClosed;
 		%feature("autodoc", "	:param C:
 	:type C: Handle_Adaptor2d_HCurve2d &
 	:rtype: bool
 ") IsClosed;
 		static Standard_Boolean IsClosed (const Handle_Adaptor2d_HCurve2d & C);
+		%feature("compactdefaultargs") IsPeriodic;
 		%feature("autodoc", "	:param C:
 	:type C: Handle_Adaptor2d_HCurve2d &
 	:rtype: bool
 ") IsPeriodic;
 		static Standard_Boolean IsPeriodic (const Handle_Adaptor2d_HCurve2d & C);
+		%feature("compactdefaultargs") Period;
 		%feature("autodoc", "	:param C:
 	:type C: Handle_Adaptor2d_HCurve2d &
 	:rtype: float
 ") Period;
 		static Standard_Real Period (const Handle_Adaptor2d_HCurve2d & C);
-		%feature("autodoc", "	:param C:
+		%feature("compactdefaultargs") Value;
+		%feature("autodoc", "	* Computes the point of parameter U on the curve.
+
+	:param C:
 	:type C: Handle_Adaptor2d_HCurve2d &
 	:param U:
 	:type U: float
 	:rtype: gp_Pnt2d
 ") Value;
 		static gp_Pnt2d Value (const Handle_Adaptor2d_HCurve2d & C,const Standard_Real U);
-		%feature("autodoc", "	:param C:
+		%feature("compactdefaultargs") D0;
+		%feature("autodoc", "	* Computes the point of parameter U on the curve.
+
+	:param C:
 	:type C: Handle_Adaptor2d_HCurve2d &
 	:param U:
 	:type U: float
@@ -530,7 +751,10 @@ class Contap_HCurve2dTool {
 	:rtype: void
 ") D0;
 		static void D0 (const Handle_Adaptor2d_HCurve2d & C,const Standard_Real U,gp_Pnt2d & P);
-		%feature("autodoc", "	:param C:
+		%feature("compactdefaultargs") D1;
+		%feature("autodoc", "	* Computes the point of parameter U on the curve with its first derivative. Raised if the continuity of the current interval is not C1.
+
+	:param C:
 	:type C: Handle_Adaptor2d_HCurve2d &
 	:param U:
 	:type U: float
@@ -541,7 +765,10 @@ class Contap_HCurve2dTool {
 	:rtype: void
 ") D1;
 		static void D1 (const Handle_Adaptor2d_HCurve2d & C,const Standard_Real U,gp_Pnt2d & P,gp_Vec2d & V);
-		%feature("autodoc", "	:param C:
+		%feature("compactdefaultargs") D2;
+		%feature("autodoc", "	* Returns the point P of parameter U, the first and second derivatives V1 and V2. Raised if the continuity of the current interval is not C2.
+
+	:param C:
 	:type C: Handle_Adaptor2d_HCurve2d &
 	:param U:
 	:type U: float
@@ -554,7 +781,10 @@ class Contap_HCurve2dTool {
 	:rtype: void
 ") D2;
 		static void D2 (const Handle_Adaptor2d_HCurve2d & C,const Standard_Real U,gp_Pnt2d & P,gp_Vec2d & V1,gp_Vec2d & V2);
-		%feature("autodoc", "	:param C:
+		%feature("compactdefaultargs") D3;
+		%feature("autodoc", "	* Returns the point P of parameter U, the first, the second and the third derivative. Raised if the continuity of the current interval is not C3.
+
+	:param C:
 	:type C: Handle_Adaptor2d_HCurve2d &
 	:param U:
 	:type U: float
@@ -569,62 +799,79 @@ class Contap_HCurve2dTool {
 	:rtype: void
 ") D3;
 		static void D3 (const Handle_Adaptor2d_HCurve2d & C,const Standard_Real U,gp_Pnt2d & P,gp_Vec2d & V1,gp_Vec2d & V2,gp_Vec2d & V3);
-		%feature("autodoc", "	:param C:
+		%feature("compactdefaultargs") DN;
+		%feature("autodoc", "	* The returned vector gives the value of the derivative for the order of derivation N. Raised if the continuity of the current interval is not CN. Raised if N < 1.
+
+	:param C:
 	:type C: Handle_Adaptor2d_HCurve2d &
 	:param U:
 	:type U: float
 	:param N:
-	:type N: Standard_Integer
+	:type N: int
 	:rtype: gp_Vec2d
 ") DN;
 		static gp_Vec2d DN (const Handle_Adaptor2d_HCurve2d & C,const Standard_Real U,const Standard_Integer N);
-		%feature("autodoc", "	:param C:
+		%feature("compactdefaultargs") Resolution;
+		%feature("autodoc", "	* Returns the parametric resolution corresponding to the real space resolution <R3d>.
+
+	:param C:
 	:type C: Handle_Adaptor2d_HCurve2d &
 	:param R3d:
 	:type R3d: float
 	:rtype: float
 ") Resolution;
 		static Standard_Real Resolution (const Handle_Adaptor2d_HCurve2d & C,const Standard_Real R3d);
-		%feature("autodoc", "	:param C:
+		%feature("compactdefaultargs") GetType;
+		%feature("autodoc", "	* Returns the type of the curve in the current interval : Line, Circle, Ellipse, Hyperbola, Parabola, BezierCurve, BSplineCurve, OtherCurve.
+
+	:param C:
 	:type C: Handle_Adaptor2d_HCurve2d &
 	:rtype: GeomAbs_CurveType
 ") GetType;
 		static GeomAbs_CurveType GetType (const Handle_Adaptor2d_HCurve2d & C);
+		%feature("compactdefaultargs") Line;
 		%feature("autodoc", "	:param C:
 	:type C: Handle_Adaptor2d_HCurve2d &
 	:rtype: gp_Lin2d
 ") Line;
 		static gp_Lin2d Line (const Handle_Adaptor2d_HCurve2d & C);
+		%feature("compactdefaultargs") Circle;
 		%feature("autodoc", "	:param C:
 	:type C: Handle_Adaptor2d_HCurve2d &
 	:rtype: gp_Circ2d
 ") Circle;
 		static gp_Circ2d Circle (const Handle_Adaptor2d_HCurve2d & C);
+		%feature("compactdefaultargs") Ellipse;
 		%feature("autodoc", "	:param C:
 	:type C: Handle_Adaptor2d_HCurve2d &
 	:rtype: gp_Elips2d
 ") Ellipse;
 		static gp_Elips2d Ellipse (const Handle_Adaptor2d_HCurve2d & C);
+		%feature("compactdefaultargs") Hyperbola;
 		%feature("autodoc", "	:param C:
 	:type C: Handle_Adaptor2d_HCurve2d &
 	:rtype: gp_Hypr2d
 ") Hyperbola;
 		static gp_Hypr2d Hyperbola (const Handle_Adaptor2d_HCurve2d & C);
+		%feature("compactdefaultargs") Parabola;
 		%feature("autodoc", "	:param C:
 	:type C: Handle_Adaptor2d_HCurve2d &
 	:rtype: gp_Parab2d
 ") Parabola;
 		static gp_Parab2d Parabola (const Handle_Adaptor2d_HCurve2d & C);
+		%feature("compactdefaultargs") Bezier;
 		%feature("autodoc", "	:param C:
 	:type C: Handle_Adaptor2d_HCurve2d &
 	:rtype: Handle_Geom2d_BezierCurve
 ") Bezier;
 		static Handle_Geom2d_BezierCurve Bezier (const Handle_Adaptor2d_HCurve2d & C);
+		%feature("compactdefaultargs") BSpline;
 		%feature("autodoc", "	:param C:
 	:type C: Handle_Adaptor2d_HCurve2d &
 	:rtype: Handle_Geom2d_BSplineCurve
 ") BSpline;
 		static Handle_Geom2d_BSplineCurve BSpline (const Handle_Adaptor2d_HCurve2d & C);
+		%feature("compactdefaultargs") NbSamples;
 		%feature("autodoc", "	:param C:
 	:type C: Handle_Adaptor2d_HCurve2d &
 	:param U0:
@@ -651,1366 +898,117 @@ def __del__(self):
 		delete $self;
 	}
 };
-%nodefaultctor Contap_SequenceNodeOfSequenceOfIWLineOfTheIWalkingOfContour;
-class Contap_SequenceNodeOfSequenceOfIWLineOfTheIWalkingOfContour : public TCollection_SeqNode {
+%nodefaultctor Contap_Line;
+class Contap_Line {
 	public:
-		%feature("autodoc", "	:param I:
-	:type I: Handle_Contap_TheIWLineOfTheIWalkingOfContour &
-	:param n:
-	:type n: TCollection_SeqNodePtr &
-	:param p:
-	:type p: TCollection_SeqNodePtr &
-	:rtype: None
-") Contap_SequenceNodeOfSequenceOfIWLineOfTheIWalkingOfContour;
-		 Contap_SequenceNodeOfSequenceOfIWLineOfTheIWalkingOfContour (const Handle_Contap_TheIWLineOfTheIWalkingOfContour & I,const TCollection_SeqNodePtr & n,const TCollection_SeqNodePtr & p);
-		%feature("autodoc", "	:rtype: Handle_Contap_TheIWLineOfTheIWalkingOfContour
-") Value;
-		Handle_Contap_TheIWLineOfTheIWalkingOfContour & Value ();
-};
-
-
-%feature("shadow") Contap_SequenceNodeOfSequenceOfIWLineOfTheIWalkingOfContour::~Contap_SequenceNodeOfSequenceOfIWLineOfTheIWalkingOfContour %{
-def __del__(self):
-	try:
-		self.thisown = False
-		GarbageCollector.garbage.collect_object(self)
-	except:
-		pass
-%}
-
-%extend Contap_SequenceNodeOfSequenceOfIWLineOfTheIWalkingOfContour {
-	void _kill_pointed() {
-		delete $self;
-	}
-};
-%extend Contap_SequenceNodeOfSequenceOfIWLineOfTheIWalkingOfContour {
-	Handle_Contap_SequenceNodeOfSequenceOfIWLineOfTheIWalkingOfContour GetHandle() {
-	return *(Handle_Contap_SequenceNodeOfSequenceOfIWLineOfTheIWalkingOfContour*) &$self;
-	}
-};
-
-%nodefaultctor Handle_Contap_SequenceNodeOfSequenceOfIWLineOfTheIWalkingOfContour;
-class Handle_Contap_SequenceNodeOfSequenceOfIWLineOfTheIWalkingOfContour : public Handle_TCollection_SeqNode {
-
-    public:
-        // constructors
-        Handle_Contap_SequenceNodeOfSequenceOfIWLineOfTheIWalkingOfContour();
-        Handle_Contap_SequenceNodeOfSequenceOfIWLineOfTheIWalkingOfContour(const Handle_Contap_SequenceNodeOfSequenceOfIWLineOfTheIWalkingOfContour &aHandle);
-        Handle_Contap_SequenceNodeOfSequenceOfIWLineOfTheIWalkingOfContour(const Contap_SequenceNodeOfSequenceOfIWLineOfTheIWalkingOfContour *anItem);
-        void Nullify();
-        Standard_Boolean IsNull() const;
-        static const Handle_Contap_SequenceNodeOfSequenceOfIWLineOfTheIWalkingOfContour DownCast(const Handle_Standard_Transient &AnObject);
-
-};
-%extend Handle_Contap_SequenceNodeOfSequenceOfIWLineOfTheIWalkingOfContour {
-    Contap_SequenceNodeOfSequenceOfIWLineOfTheIWalkingOfContour* GetObject() {
-    return (Contap_SequenceNodeOfSequenceOfIWLineOfTheIWalkingOfContour*)$self->Access();
-    }
-};
-%feature("shadow") Handle_Contap_SequenceNodeOfSequenceOfIWLineOfTheIWalkingOfContour::~Handle_Contap_SequenceNodeOfSequenceOfIWLineOfTheIWalkingOfContour %{
-def __del__(self):
-    try:
-        self.thisown = False
-        GarbageCollector.garbage.collect_object(self)
-    except:
-        pass
-%}
-
-%extend Handle_Contap_SequenceNodeOfSequenceOfIWLineOfTheIWalkingOfContour {
-    void _kill_pointed() {
-        delete $self;
-    }
-};
-
-%nodefaultctor Contap_SequenceNodeOfSequenceOfPathPointOfTheSearchOfContour;
-class Contap_SequenceNodeOfSequenceOfPathPointOfTheSearchOfContour : public TCollection_SeqNode {
-	public:
-		%feature("autodoc", "	:param I:
-	:type I: Contap_ThePathPointOfTheSearchOfContour &
-	:param n:
-	:type n: TCollection_SeqNodePtr &
-	:param p:
-	:type p: TCollection_SeqNodePtr &
-	:rtype: None
-") Contap_SequenceNodeOfSequenceOfPathPointOfTheSearchOfContour;
-		 Contap_SequenceNodeOfSequenceOfPathPointOfTheSearchOfContour (const Contap_ThePathPointOfTheSearchOfContour & I,const TCollection_SeqNodePtr & n,const TCollection_SeqNodePtr & p);
-		%feature("autodoc", "	:rtype: Contap_ThePathPointOfTheSearchOfContour
-") Value;
-		Contap_ThePathPointOfTheSearchOfContour & Value ();
-};
-
-
-%feature("shadow") Contap_SequenceNodeOfSequenceOfPathPointOfTheSearchOfContour::~Contap_SequenceNodeOfSequenceOfPathPointOfTheSearchOfContour %{
-def __del__(self):
-	try:
-		self.thisown = False
-		GarbageCollector.garbage.collect_object(self)
-	except:
-		pass
-%}
-
-%extend Contap_SequenceNodeOfSequenceOfPathPointOfTheSearchOfContour {
-	void _kill_pointed() {
-		delete $self;
-	}
-};
-%extend Contap_SequenceNodeOfSequenceOfPathPointOfTheSearchOfContour {
-	Handle_Contap_SequenceNodeOfSequenceOfPathPointOfTheSearchOfContour GetHandle() {
-	return *(Handle_Contap_SequenceNodeOfSequenceOfPathPointOfTheSearchOfContour*) &$self;
-	}
-};
-
-%nodefaultctor Handle_Contap_SequenceNodeOfSequenceOfPathPointOfTheSearchOfContour;
-class Handle_Contap_SequenceNodeOfSequenceOfPathPointOfTheSearchOfContour : public Handle_TCollection_SeqNode {
-
-    public:
-        // constructors
-        Handle_Contap_SequenceNodeOfSequenceOfPathPointOfTheSearchOfContour();
-        Handle_Contap_SequenceNodeOfSequenceOfPathPointOfTheSearchOfContour(const Handle_Contap_SequenceNodeOfSequenceOfPathPointOfTheSearchOfContour &aHandle);
-        Handle_Contap_SequenceNodeOfSequenceOfPathPointOfTheSearchOfContour(const Contap_SequenceNodeOfSequenceOfPathPointOfTheSearchOfContour *anItem);
-        void Nullify();
-        Standard_Boolean IsNull() const;
-        static const Handle_Contap_SequenceNodeOfSequenceOfPathPointOfTheSearchOfContour DownCast(const Handle_Standard_Transient &AnObject);
-
-};
-%extend Handle_Contap_SequenceNodeOfSequenceOfPathPointOfTheSearchOfContour {
-    Contap_SequenceNodeOfSequenceOfPathPointOfTheSearchOfContour* GetObject() {
-    return (Contap_SequenceNodeOfSequenceOfPathPointOfTheSearchOfContour*)$self->Access();
-    }
-};
-%feature("shadow") Handle_Contap_SequenceNodeOfSequenceOfPathPointOfTheSearchOfContour::~Handle_Contap_SequenceNodeOfSequenceOfPathPointOfTheSearchOfContour %{
-def __del__(self):
-    try:
-        self.thisown = False
-        GarbageCollector.garbage.collect_object(self)
-    except:
-        pass
-%}
-
-%extend Handle_Contap_SequenceNodeOfSequenceOfPathPointOfTheSearchOfContour {
-    void _kill_pointed() {
-        delete $self;
-    }
-};
-
-%nodefaultctor Contap_SequenceNodeOfSequenceOfSegmentOfTheSearchOfContour;
-class Contap_SequenceNodeOfSequenceOfSegmentOfTheSearchOfContour : public TCollection_SeqNode {
-	public:
-		%feature("autodoc", "	:param I:
-	:type I: Contap_TheSegmentOfTheSearchOfContour &
-	:param n:
-	:type n: TCollection_SeqNodePtr &
-	:param p:
-	:type p: TCollection_SeqNodePtr &
-	:rtype: None
-") Contap_SequenceNodeOfSequenceOfSegmentOfTheSearchOfContour;
-		 Contap_SequenceNodeOfSequenceOfSegmentOfTheSearchOfContour (const Contap_TheSegmentOfTheSearchOfContour & I,const TCollection_SeqNodePtr & n,const TCollection_SeqNodePtr & p);
-		%feature("autodoc", "	:rtype: Contap_TheSegmentOfTheSearchOfContour
-") Value;
-		Contap_TheSegmentOfTheSearchOfContour & Value ();
-};
-
-
-%feature("shadow") Contap_SequenceNodeOfSequenceOfSegmentOfTheSearchOfContour::~Contap_SequenceNodeOfSequenceOfSegmentOfTheSearchOfContour %{
-def __del__(self):
-	try:
-		self.thisown = False
-		GarbageCollector.garbage.collect_object(self)
-	except:
-		pass
-%}
-
-%extend Contap_SequenceNodeOfSequenceOfSegmentOfTheSearchOfContour {
-	void _kill_pointed() {
-		delete $self;
-	}
-};
-%extend Contap_SequenceNodeOfSequenceOfSegmentOfTheSearchOfContour {
-	Handle_Contap_SequenceNodeOfSequenceOfSegmentOfTheSearchOfContour GetHandle() {
-	return *(Handle_Contap_SequenceNodeOfSequenceOfSegmentOfTheSearchOfContour*) &$self;
-	}
-};
-
-%nodefaultctor Handle_Contap_SequenceNodeOfSequenceOfSegmentOfTheSearchOfContour;
-class Handle_Contap_SequenceNodeOfSequenceOfSegmentOfTheSearchOfContour : public Handle_TCollection_SeqNode {
-
-    public:
-        // constructors
-        Handle_Contap_SequenceNodeOfSequenceOfSegmentOfTheSearchOfContour();
-        Handle_Contap_SequenceNodeOfSequenceOfSegmentOfTheSearchOfContour(const Handle_Contap_SequenceNodeOfSequenceOfSegmentOfTheSearchOfContour &aHandle);
-        Handle_Contap_SequenceNodeOfSequenceOfSegmentOfTheSearchOfContour(const Contap_SequenceNodeOfSequenceOfSegmentOfTheSearchOfContour *anItem);
-        void Nullify();
-        Standard_Boolean IsNull() const;
-        static const Handle_Contap_SequenceNodeOfSequenceOfSegmentOfTheSearchOfContour DownCast(const Handle_Standard_Transient &AnObject);
-
-};
-%extend Handle_Contap_SequenceNodeOfSequenceOfSegmentOfTheSearchOfContour {
-    Contap_SequenceNodeOfSequenceOfSegmentOfTheSearchOfContour* GetObject() {
-    return (Contap_SequenceNodeOfSequenceOfSegmentOfTheSearchOfContour*)$self->Access();
-    }
-};
-%feature("shadow") Handle_Contap_SequenceNodeOfSequenceOfSegmentOfTheSearchOfContour::~Handle_Contap_SequenceNodeOfSequenceOfSegmentOfTheSearchOfContour %{
-def __del__(self):
-    try:
-        self.thisown = False
-        GarbageCollector.garbage.collect_object(self)
-    except:
-        pass
-%}
-
-%extend Handle_Contap_SequenceNodeOfSequenceOfSegmentOfTheSearchOfContour {
-    void _kill_pointed() {
-        delete $self;
-    }
-};
-
-%nodefaultctor Contap_SequenceNodeOfTheSequenceOfLineOfContour;
-class Contap_SequenceNodeOfTheSequenceOfLineOfContour : public TCollection_SeqNode {
-	public:
-		%feature("autodoc", "	:param I:
-	:type I: Contap_TheLineOfContour &
-	:param n:
-	:type n: TCollection_SeqNodePtr &
-	:param p:
-	:type p: TCollection_SeqNodePtr &
-	:rtype: None
-") Contap_SequenceNodeOfTheSequenceOfLineOfContour;
-		 Contap_SequenceNodeOfTheSequenceOfLineOfContour (const Contap_TheLineOfContour & I,const TCollection_SeqNodePtr & n,const TCollection_SeqNodePtr & p);
-		%feature("autodoc", "	:rtype: Contap_TheLineOfContour
-") Value;
-		Contap_TheLineOfContour & Value ();
-};
-
-
-%feature("shadow") Contap_SequenceNodeOfTheSequenceOfLineOfContour::~Contap_SequenceNodeOfTheSequenceOfLineOfContour %{
-def __del__(self):
-	try:
-		self.thisown = False
-		GarbageCollector.garbage.collect_object(self)
-	except:
-		pass
-%}
-
-%extend Contap_SequenceNodeOfTheSequenceOfLineOfContour {
-	void _kill_pointed() {
-		delete $self;
-	}
-};
-%extend Contap_SequenceNodeOfTheSequenceOfLineOfContour {
-	Handle_Contap_SequenceNodeOfTheSequenceOfLineOfContour GetHandle() {
-	return *(Handle_Contap_SequenceNodeOfTheSequenceOfLineOfContour*) &$self;
-	}
-};
-
-%nodefaultctor Handle_Contap_SequenceNodeOfTheSequenceOfLineOfContour;
-class Handle_Contap_SequenceNodeOfTheSequenceOfLineOfContour : public Handle_TCollection_SeqNode {
-
-    public:
-        // constructors
-        Handle_Contap_SequenceNodeOfTheSequenceOfLineOfContour();
-        Handle_Contap_SequenceNodeOfTheSequenceOfLineOfContour(const Handle_Contap_SequenceNodeOfTheSequenceOfLineOfContour &aHandle);
-        Handle_Contap_SequenceNodeOfTheSequenceOfLineOfContour(const Contap_SequenceNodeOfTheSequenceOfLineOfContour *anItem);
-        void Nullify();
-        Standard_Boolean IsNull() const;
-        static const Handle_Contap_SequenceNodeOfTheSequenceOfLineOfContour DownCast(const Handle_Standard_Transient &AnObject);
-
-};
-%extend Handle_Contap_SequenceNodeOfTheSequenceOfLineOfContour {
-    Contap_SequenceNodeOfTheSequenceOfLineOfContour* GetObject() {
-    return (Contap_SequenceNodeOfTheSequenceOfLineOfContour*)$self->Access();
-    }
-};
-%feature("shadow") Handle_Contap_SequenceNodeOfTheSequenceOfLineOfContour::~Handle_Contap_SequenceNodeOfTheSequenceOfLineOfContour %{
-def __del__(self):
-    try:
-        self.thisown = False
-        GarbageCollector.garbage.collect_object(self)
-    except:
-        pass
-%}
-
-%extend Handle_Contap_SequenceNodeOfTheSequenceOfLineOfContour {
-    void _kill_pointed() {
-        delete $self;
-    }
-};
-
-%nodefaultctor Contap_SequenceNodeOfTheSequenceOfPointOfContour;
-class Contap_SequenceNodeOfTheSequenceOfPointOfContour : public TCollection_SeqNode {
-	public:
-		%feature("autodoc", "	:param I:
-	:type I: Contap_ThePointOfContour &
-	:param n:
-	:type n: TCollection_SeqNodePtr &
-	:param p:
-	:type p: TCollection_SeqNodePtr &
-	:rtype: None
-") Contap_SequenceNodeOfTheSequenceOfPointOfContour;
-		 Contap_SequenceNodeOfTheSequenceOfPointOfContour (const Contap_ThePointOfContour & I,const TCollection_SeqNodePtr & n,const TCollection_SeqNodePtr & p);
-		%feature("autodoc", "	:rtype: Contap_ThePointOfContour
-") Value;
-		Contap_ThePointOfContour & Value ();
-};
-
-
-%feature("shadow") Contap_SequenceNodeOfTheSequenceOfPointOfContour::~Contap_SequenceNodeOfTheSequenceOfPointOfContour %{
-def __del__(self):
-	try:
-		self.thisown = False
-		GarbageCollector.garbage.collect_object(self)
-	except:
-		pass
-%}
-
-%extend Contap_SequenceNodeOfTheSequenceOfPointOfContour {
-	void _kill_pointed() {
-		delete $self;
-	}
-};
-%extend Contap_SequenceNodeOfTheSequenceOfPointOfContour {
-	Handle_Contap_SequenceNodeOfTheSequenceOfPointOfContour GetHandle() {
-	return *(Handle_Contap_SequenceNodeOfTheSequenceOfPointOfContour*) &$self;
-	}
-};
-
-%nodefaultctor Handle_Contap_SequenceNodeOfTheSequenceOfPointOfContour;
-class Handle_Contap_SequenceNodeOfTheSequenceOfPointOfContour : public Handle_TCollection_SeqNode {
-
-    public:
-        // constructors
-        Handle_Contap_SequenceNodeOfTheSequenceOfPointOfContour();
-        Handle_Contap_SequenceNodeOfTheSequenceOfPointOfContour(const Handle_Contap_SequenceNodeOfTheSequenceOfPointOfContour &aHandle);
-        Handle_Contap_SequenceNodeOfTheSequenceOfPointOfContour(const Contap_SequenceNodeOfTheSequenceOfPointOfContour *anItem);
-        void Nullify();
-        Standard_Boolean IsNull() const;
-        static const Handle_Contap_SequenceNodeOfTheSequenceOfPointOfContour DownCast(const Handle_Standard_Transient &AnObject);
-
-};
-%extend Handle_Contap_SequenceNodeOfTheSequenceOfPointOfContour {
-    Contap_SequenceNodeOfTheSequenceOfPointOfContour* GetObject() {
-    return (Contap_SequenceNodeOfTheSequenceOfPointOfContour*)$self->Access();
-    }
-};
-%feature("shadow") Handle_Contap_SequenceNodeOfTheSequenceOfPointOfContour::~Handle_Contap_SequenceNodeOfTheSequenceOfPointOfContour %{
-def __del__(self):
-    try:
-        self.thisown = False
-        GarbageCollector.garbage.collect_object(self)
-    except:
-        pass
-%}
-
-%extend Handle_Contap_SequenceNodeOfTheSequenceOfPointOfContour {
-    void _kill_pointed() {
-        delete $self;
-    }
-};
-
-%nodefaultctor Contap_SequenceOfIWLineOfTheIWalkingOfContour;
-class Contap_SequenceOfIWLineOfTheIWalkingOfContour : public TCollection_BaseSequence {
-	public:
+		%feature("compactdefaultargs") Contap_Line;
 		%feature("autodoc", "	:rtype: None
-") Contap_SequenceOfIWLineOfTheIWalkingOfContour;
-		 Contap_SequenceOfIWLineOfTheIWalkingOfContour ();
-		%feature("autodoc", "	:rtype: None
-") Clear;
-		void Clear ();
-		%feature("autodoc", "	:param Other:
-	:type Other: Contap_SequenceOfIWLineOfTheIWalkingOfContour &
-	:rtype: Contap_SequenceOfIWLineOfTheIWalkingOfContour
-") Assign;
-		const Contap_SequenceOfIWLineOfTheIWalkingOfContour & Assign (const Contap_SequenceOfIWLineOfTheIWalkingOfContour & Other);
-		%feature("autodoc", "	:param Other:
-	:type Other: Contap_SequenceOfIWLineOfTheIWalkingOfContour &
-	:rtype: Contap_SequenceOfIWLineOfTheIWalkingOfContour
-") operator=;
-		const Contap_SequenceOfIWLineOfTheIWalkingOfContour & operator = (const Contap_SequenceOfIWLineOfTheIWalkingOfContour & Other);
-		%feature("autodoc", "	:param T:
-	:type T: Handle_Contap_TheIWLineOfTheIWalkingOfContour &
-	:rtype: None
-") Append;
-		void Append (const Handle_Contap_TheIWLineOfTheIWalkingOfContour & T);
-		%feature("autodoc", "	:param S:
-	:type S: Contap_SequenceOfIWLineOfTheIWalkingOfContour &
-	:rtype: None
-") Append;
-		void Append (Contap_SequenceOfIWLineOfTheIWalkingOfContour & S);
-		%feature("autodoc", "	:param T:
-	:type T: Handle_Contap_TheIWLineOfTheIWalkingOfContour &
-	:rtype: None
-") Prepend;
-		void Prepend (const Handle_Contap_TheIWLineOfTheIWalkingOfContour & T);
-		%feature("autodoc", "	:param S:
-	:type S: Contap_SequenceOfIWLineOfTheIWalkingOfContour &
-	:rtype: None
-") Prepend;
-		void Prepend (Contap_SequenceOfIWLineOfTheIWalkingOfContour & S);
-		%feature("autodoc", "	:param Index:
-	:type Index: Standard_Integer
-	:param T:
-	:type T: Handle_Contap_TheIWLineOfTheIWalkingOfContour &
-	:rtype: None
-") InsertBefore;
-		void InsertBefore (const Standard_Integer Index,const Handle_Contap_TheIWLineOfTheIWalkingOfContour & T);
-		%feature("autodoc", "	:param Index:
-	:type Index: Standard_Integer
-	:param S:
-	:type S: Contap_SequenceOfIWLineOfTheIWalkingOfContour &
-	:rtype: None
-") InsertBefore;
-		void InsertBefore (const Standard_Integer Index,Contap_SequenceOfIWLineOfTheIWalkingOfContour & S);
-		%feature("autodoc", "	:param Index:
-	:type Index: Standard_Integer
-	:param T:
-	:type T: Handle_Contap_TheIWLineOfTheIWalkingOfContour &
-	:rtype: None
-") InsertAfter;
-		void InsertAfter (const Standard_Integer Index,const Handle_Contap_TheIWLineOfTheIWalkingOfContour & T);
-		%feature("autodoc", "	:param Index:
-	:type Index: Standard_Integer
-	:param S:
-	:type S: Contap_SequenceOfIWLineOfTheIWalkingOfContour &
-	:rtype: None
-") InsertAfter;
-		void InsertAfter (const Standard_Integer Index,Contap_SequenceOfIWLineOfTheIWalkingOfContour & S);
-		%feature("autodoc", "	:rtype: Handle_Contap_TheIWLineOfTheIWalkingOfContour
-") First;
-		const Handle_Contap_TheIWLineOfTheIWalkingOfContour & First ();
-		%feature("autodoc", "	:rtype: Handle_Contap_TheIWLineOfTheIWalkingOfContour
-") Last;
-		const Handle_Contap_TheIWLineOfTheIWalkingOfContour & Last ();
-		%feature("autodoc", "	:param Index:
-	:type Index: Standard_Integer
-	:param Sub:
-	:type Sub: Contap_SequenceOfIWLineOfTheIWalkingOfContour &
-	:rtype: None
-") Split;
-		void Split (const Standard_Integer Index,Contap_SequenceOfIWLineOfTheIWalkingOfContour & Sub);
-		%feature("autodoc", "	:param Index:
-	:type Index: Standard_Integer
-	:rtype: Handle_Contap_TheIWLineOfTheIWalkingOfContour
-") Value;
-		const Handle_Contap_TheIWLineOfTheIWalkingOfContour & Value (const Standard_Integer Index);
-		%feature("autodoc", "	:param Index:
-	:type Index: Standard_Integer
-	:param I:
-	:type I: Handle_Contap_TheIWLineOfTheIWalkingOfContour &
-	:rtype: None
-") SetValue;
-		void SetValue (const Standard_Integer Index,const Handle_Contap_TheIWLineOfTheIWalkingOfContour & I);
-		%feature("autodoc", "	:param Index:
-	:type Index: Standard_Integer
-	:rtype: Handle_Contap_TheIWLineOfTheIWalkingOfContour
-") ChangeValue;
-		Handle_Contap_TheIWLineOfTheIWalkingOfContour & ChangeValue (const Standard_Integer Index);
-		%feature("autodoc", "	:param Index:
-	:type Index: Standard_Integer
-	:rtype: None
-") Remove;
-		void Remove (const Standard_Integer Index);
-		%feature("autodoc", "	:param FromIndex:
-	:type FromIndex: Standard_Integer
-	:param ToIndex:
-	:type ToIndex: Standard_Integer
-	:rtype: None
-") Remove;
-		void Remove (const Standard_Integer FromIndex,const Standard_Integer ToIndex);
-};
-
-
-%feature("shadow") Contap_SequenceOfIWLineOfTheIWalkingOfContour::~Contap_SequenceOfIWLineOfTheIWalkingOfContour %{
-def __del__(self):
-	try:
-		self.thisown = False
-		GarbageCollector.garbage.collect_object(self)
-	except:
-		pass
-%}
-
-%extend Contap_SequenceOfIWLineOfTheIWalkingOfContour {
-	void _kill_pointed() {
-		delete $self;
-	}
-};
-%nodefaultctor Contap_SequenceOfPathPointOfTheSearchOfContour;
-class Contap_SequenceOfPathPointOfTheSearchOfContour : public TCollection_BaseSequence {
-	public:
-		%feature("autodoc", "	:rtype: None
-") Contap_SequenceOfPathPointOfTheSearchOfContour;
-		 Contap_SequenceOfPathPointOfTheSearchOfContour ();
-		%feature("autodoc", "	:rtype: None
-") Clear;
-		void Clear ();
-		%feature("autodoc", "	:param Other:
-	:type Other: Contap_SequenceOfPathPointOfTheSearchOfContour &
-	:rtype: Contap_SequenceOfPathPointOfTheSearchOfContour
-") Assign;
-		const Contap_SequenceOfPathPointOfTheSearchOfContour & Assign (const Contap_SequenceOfPathPointOfTheSearchOfContour & Other);
-		%feature("autodoc", "	:param Other:
-	:type Other: Contap_SequenceOfPathPointOfTheSearchOfContour &
-	:rtype: Contap_SequenceOfPathPointOfTheSearchOfContour
-") operator=;
-		const Contap_SequenceOfPathPointOfTheSearchOfContour & operator = (const Contap_SequenceOfPathPointOfTheSearchOfContour & Other);
-		%feature("autodoc", "	:param T:
-	:type T: Contap_ThePathPointOfTheSearchOfContour &
-	:rtype: None
-") Append;
-		void Append (const Contap_ThePathPointOfTheSearchOfContour & T);
-		%feature("autodoc", "	:param S:
-	:type S: Contap_SequenceOfPathPointOfTheSearchOfContour &
-	:rtype: None
-") Append;
-		void Append (Contap_SequenceOfPathPointOfTheSearchOfContour & S);
-		%feature("autodoc", "	:param T:
-	:type T: Contap_ThePathPointOfTheSearchOfContour &
-	:rtype: None
-") Prepend;
-		void Prepend (const Contap_ThePathPointOfTheSearchOfContour & T);
-		%feature("autodoc", "	:param S:
-	:type S: Contap_SequenceOfPathPointOfTheSearchOfContour &
-	:rtype: None
-") Prepend;
-		void Prepend (Contap_SequenceOfPathPointOfTheSearchOfContour & S);
-		%feature("autodoc", "	:param Index:
-	:type Index: Standard_Integer
-	:param T:
-	:type T: Contap_ThePathPointOfTheSearchOfContour &
-	:rtype: None
-") InsertBefore;
-		void InsertBefore (const Standard_Integer Index,const Contap_ThePathPointOfTheSearchOfContour & T);
-		%feature("autodoc", "	:param Index:
-	:type Index: Standard_Integer
-	:param S:
-	:type S: Contap_SequenceOfPathPointOfTheSearchOfContour &
-	:rtype: None
-") InsertBefore;
-		void InsertBefore (const Standard_Integer Index,Contap_SequenceOfPathPointOfTheSearchOfContour & S);
-		%feature("autodoc", "	:param Index:
-	:type Index: Standard_Integer
-	:param T:
-	:type T: Contap_ThePathPointOfTheSearchOfContour &
-	:rtype: None
-") InsertAfter;
-		void InsertAfter (const Standard_Integer Index,const Contap_ThePathPointOfTheSearchOfContour & T);
-		%feature("autodoc", "	:param Index:
-	:type Index: Standard_Integer
-	:param S:
-	:type S: Contap_SequenceOfPathPointOfTheSearchOfContour &
-	:rtype: None
-") InsertAfter;
-		void InsertAfter (const Standard_Integer Index,Contap_SequenceOfPathPointOfTheSearchOfContour & S);
-		%feature("autodoc", "	:rtype: Contap_ThePathPointOfTheSearchOfContour
-") First;
-		const Contap_ThePathPointOfTheSearchOfContour & First ();
-		%feature("autodoc", "	:rtype: Contap_ThePathPointOfTheSearchOfContour
-") Last;
-		const Contap_ThePathPointOfTheSearchOfContour & Last ();
-		%feature("autodoc", "	:param Index:
-	:type Index: Standard_Integer
-	:param Sub:
-	:type Sub: Contap_SequenceOfPathPointOfTheSearchOfContour &
-	:rtype: None
-") Split;
-		void Split (const Standard_Integer Index,Contap_SequenceOfPathPointOfTheSearchOfContour & Sub);
-		%feature("autodoc", "	:param Index:
-	:type Index: Standard_Integer
-	:rtype: Contap_ThePathPointOfTheSearchOfContour
-") Value;
-		const Contap_ThePathPointOfTheSearchOfContour & Value (const Standard_Integer Index);
-		%feature("autodoc", "	:param Index:
-	:type Index: Standard_Integer
-	:param I:
-	:type I: Contap_ThePathPointOfTheSearchOfContour &
-	:rtype: None
-") SetValue;
-		void SetValue (const Standard_Integer Index,const Contap_ThePathPointOfTheSearchOfContour & I);
-		%feature("autodoc", "	:param Index:
-	:type Index: Standard_Integer
-	:rtype: Contap_ThePathPointOfTheSearchOfContour
-") ChangeValue;
-		Contap_ThePathPointOfTheSearchOfContour & ChangeValue (const Standard_Integer Index);
-		%feature("autodoc", "	:param Index:
-	:type Index: Standard_Integer
-	:rtype: None
-") Remove;
-		void Remove (const Standard_Integer Index);
-		%feature("autodoc", "	:param FromIndex:
-	:type FromIndex: Standard_Integer
-	:param ToIndex:
-	:type ToIndex: Standard_Integer
-	:rtype: None
-") Remove;
-		void Remove (const Standard_Integer FromIndex,const Standard_Integer ToIndex);
-};
-
-
-%feature("shadow") Contap_SequenceOfPathPointOfTheSearchOfContour::~Contap_SequenceOfPathPointOfTheSearchOfContour %{
-def __del__(self):
-	try:
-		self.thisown = False
-		GarbageCollector.garbage.collect_object(self)
-	except:
-		pass
-%}
-
-%extend Contap_SequenceOfPathPointOfTheSearchOfContour {
-	void _kill_pointed() {
-		delete $self;
-	}
-};
-%nodefaultctor Contap_SequenceOfSegmentOfTheSearchOfContour;
-class Contap_SequenceOfSegmentOfTheSearchOfContour : public TCollection_BaseSequence {
-	public:
-		%feature("autodoc", "	:rtype: None
-") Contap_SequenceOfSegmentOfTheSearchOfContour;
-		 Contap_SequenceOfSegmentOfTheSearchOfContour ();
-		%feature("autodoc", "	:rtype: None
-") Clear;
-		void Clear ();
-		%feature("autodoc", "	:param Other:
-	:type Other: Contap_SequenceOfSegmentOfTheSearchOfContour &
-	:rtype: Contap_SequenceOfSegmentOfTheSearchOfContour
-") Assign;
-		const Contap_SequenceOfSegmentOfTheSearchOfContour & Assign (const Contap_SequenceOfSegmentOfTheSearchOfContour & Other);
-		%feature("autodoc", "	:param Other:
-	:type Other: Contap_SequenceOfSegmentOfTheSearchOfContour &
-	:rtype: Contap_SequenceOfSegmentOfTheSearchOfContour
-") operator=;
-		const Contap_SequenceOfSegmentOfTheSearchOfContour & operator = (const Contap_SequenceOfSegmentOfTheSearchOfContour & Other);
-		%feature("autodoc", "	:param T:
-	:type T: Contap_TheSegmentOfTheSearchOfContour &
-	:rtype: None
-") Append;
-		void Append (const Contap_TheSegmentOfTheSearchOfContour & T);
-		%feature("autodoc", "	:param S:
-	:type S: Contap_SequenceOfSegmentOfTheSearchOfContour &
-	:rtype: None
-") Append;
-		void Append (Contap_SequenceOfSegmentOfTheSearchOfContour & S);
-		%feature("autodoc", "	:param T:
-	:type T: Contap_TheSegmentOfTheSearchOfContour &
-	:rtype: None
-") Prepend;
-		void Prepend (const Contap_TheSegmentOfTheSearchOfContour & T);
-		%feature("autodoc", "	:param S:
-	:type S: Contap_SequenceOfSegmentOfTheSearchOfContour &
-	:rtype: None
-") Prepend;
-		void Prepend (Contap_SequenceOfSegmentOfTheSearchOfContour & S);
-		%feature("autodoc", "	:param Index:
-	:type Index: Standard_Integer
-	:param T:
-	:type T: Contap_TheSegmentOfTheSearchOfContour &
-	:rtype: None
-") InsertBefore;
-		void InsertBefore (const Standard_Integer Index,const Contap_TheSegmentOfTheSearchOfContour & T);
-		%feature("autodoc", "	:param Index:
-	:type Index: Standard_Integer
-	:param S:
-	:type S: Contap_SequenceOfSegmentOfTheSearchOfContour &
-	:rtype: None
-") InsertBefore;
-		void InsertBefore (const Standard_Integer Index,Contap_SequenceOfSegmentOfTheSearchOfContour & S);
-		%feature("autodoc", "	:param Index:
-	:type Index: Standard_Integer
-	:param T:
-	:type T: Contap_TheSegmentOfTheSearchOfContour &
-	:rtype: None
-") InsertAfter;
-		void InsertAfter (const Standard_Integer Index,const Contap_TheSegmentOfTheSearchOfContour & T);
-		%feature("autodoc", "	:param Index:
-	:type Index: Standard_Integer
-	:param S:
-	:type S: Contap_SequenceOfSegmentOfTheSearchOfContour &
-	:rtype: None
-") InsertAfter;
-		void InsertAfter (const Standard_Integer Index,Contap_SequenceOfSegmentOfTheSearchOfContour & S);
-		%feature("autodoc", "	:rtype: Contap_TheSegmentOfTheSearchOfContour
-") First;
-		const Contap_TheSegmentOfTheSearchOfContour & First ();
-		%feature("autodoc", "	:rtype: Contap_TheSegmentOfTheSearchOfContour
-") Last;
-		const Contap_TheSegmentOfTheSearchOfContour & Last ();
-		%feature("autodoc", "	:param Index:
-	:type Index: Standard_Integer
-	:param Sub:
-	:type Sub: Contap_SequenceOfSegmentOfTheSearchOfContour &
-	:rtype: None
-") Split;
-		void Split (const Standard_Integer Index,Contap_SequenceOfSegmentOfTheSearchOfContour & Sub);
-		%feature("autodoc", "	:param Index:
-	:type Index: Standard_Integer
-	:rtype: Contap_TheSegmentOfTheSearchOfContour
-") Value;
-		const Contap_TheSegmentOfTheSearchOfContour & Value (const Standard_Integer Index);
-		%feature("autodoc", "	:param Index:
-	:type Index: Standard_Integer
-	:param I:
-	:type I: Contap_TheSegmentOfTheSearchOfContour &
-	:rtype: None
-") SetValue;
-		void SetValue (const Standard_Integer Index,const Contap_TheSegmentOfTheSearchOfContour & I);
-		%feature("autodoc", "	:param Index:
-	:type Index: Standard_Integer
-	:rtype: Contap_TheSegmentOfTheSearchOfContour
-") ChangeValue;
-		Contap_TheSegmentOfTheSearchOfContour & ChangeValue (const Standard_Integer Index);
-		%feature("autodoc", "	:param Index:
-	:type Index: Standard_Integer
-	:rtype: None
-") Remove;
-		void Remove (const Standard_Integer Index);
-		%feature("autodoc", "	:param FromIndex:
-	:type FromIndex: Standard_Integer
-	:param ToIndex:
-	:type ToIndex: Standard_Integer
-	:rtype: None
-") Remove;
-		void Remove (const Standard_Integer FromIndex,const Standard_Integer ToIndex);
-};
-
-
-%feature("shadow") Contap_SequenceOfSegmentOfTheSearchOfContour::~Contap_SequenceOfSegmentOfTheSearchOfContour %{
-def __del__(self):
-	try:
-		self.thisown = False
-		GarbageCollector.garbage.collect_object(self)
-	except:
-		pass
-%}
-
-%extend Contap_SequenceOfSegmentOfTheSearchOfContour {
-	void _kill_pointed() {
-		delete $self;
-	}
-};
-%nodefaultctor Contap_TheArcFunctionOfContour;
-class Contap_TheArcFunctionOfContour : public math_FunctionWithDerivative {
-	public:
-		%feature("autodoc", "	:rtype: None
-") Contap_TheArcFunctionOfContour;
-		 Contap_TheArcFunctionOfContour ();
-		%feature("autodoc", "	:param S:
-	:type S: Handle_Adaptor3d_HSurface &
-	:rtype: None
-") Set;
-		void Set (const Handle_Adaptor3d_HSurface & S);
-		%feature("autodoc", "	:param Direction:
-	:type Direction: gp_Dir
-	:rtype: None
-") Set;
-		void Set (const gp_Dir & Direction);
-		%feature("autodoc", "	:param Direction:
-	:type Direction: gp_Dir
-	:param Angle:
-	:type Angle: float
-	:rtype: None
-") Set;
-		void Set (const gp_Dir & Direction,const Standard_Real Angle);
-		%feature("autodoc", "	:param Eye:
-	:type Eye: gp_Pnt
-	:rtype: None
-") Set;
-		void Set (const gp_Pnt & Eye);
-		%feature("autodoc", "	:param Eye:
-	:type Eye: gp_Pnt
-	:param Angle:
-	:type Angle: float
-	:rtype: None
-") Set;
-		void Set (const gp_Pnt & Eye,const Standard_Real Angle);
-		%feature("autodoc", "	:param A:
-	:type A: Handle_Adaptor2d_HCurve2d &
-	:rtype: None
-") Set;
-		void Set (const Handle_Adaptor2d_HCurve2d & A);
-		%feature("autodoc", "	:param X:
-	:type X: float
-	:param F:
-	:type F: float &
-	:rtype: bool
-") Value;
-		Standard_Boolean Value (const Standard_Real X,Standard_Real &OutValue);
-		%feature("autodoc", "	:param X:
-	:type X: float
-	:param D:
-	:type D: float &
-	:rtype: bool
-") Derivative;
-		Standard_Boolean Derivative (const Standard_Real X,Standard_Real &OutValue);
-		%feature("autodoc", "	:param X:
-	:type X: float
-	:param F:
-	:type F: float &
-	:param D:
-	:type D: float &
-	:rtype: bool
-") Values;
-		Standard_Boolean Values (const Standard_Real X,Standard_Real &OutValue,Standard_Real &OutValue);
-		%feature("autodoc", "	:rtype: int
-") NbSamples;
-		Standard_Integer NbSamples ();
-		%feature("autodoc", "	:rtype: int
-") GetStateNumber;
-		virtual Standard_Integer GetStateNumber ();
-		%feature("autodoc", "	:param Index:
-	:type Index: Standard_Integer
-	:rtype: gp_Pnt
-") Valpoint;
-		const gp_Pnt  Valpoint (const Standard_Integer Index);
-		%feature("autodoc", "	:rtype: IntSurf_Quadric
-") Quadric;
-		const IntSurf_Quadric & Quadric ();
-};
-
-
-%feature("shadow") Contap_TheArcFunctionOfContour::~Contap_TheArcFunctionOfContour %{
-def __del__(self):
-	try:
-		self.thisown = False
-		GarbageCollector.garbage.collect_object(self)
-	except:
-		pass
-%}
-
-%extend Contap_TheArcFunctionOfContour {
-	void _kill_pointed() {
-		delete $self;
-	}
-};
-%nodefaultctor Contap_TheHSequenceOfPointOfContour;
-class Contap_TheHSequenceOfPointOfContour : public MMgt_TShared {
-	public:
-		%feature("autodoc", "	:rtype: None
-") Contap_TheHSequenceOfPointOfContour;
-		 Contap_TheHSequenceOfPointOfContour ();
-		%feature("autodoc", "	:rtype: bool
-") IsEmpty;
-		Standard_Boolean IsEmpty ();
-		%feature("autodoc", "	:rtype: int
-") Length;
-		Standard_Integer Length ();
-		%feature("autodoc", "	:rtype: None
-") Clear;
-		void Clear ();
-		%feature("autodoc", "	:param anItem:
-	:type anItem: Contap_ThePointOfContour &
-	:rtype: None
-") Append;
-		void Append (const Contap_ThePointOfContour & anItem);
-		%feature("autodoc", "	:param aSequence:
-	:type aSequence: Handle_Contap_TheHSequenceOfPointOfContour &
-	:rtype: None
-") Append;
-		void Append (const Handle_Contap_TheHSequenceOfPointOfContour & aSequence);
-		%feature("autodoc", "	:param anItem:
-	:type anItem: Contap_ThePointOfContour &
-	:rtype: None
-") Prepend;
-		void Prepend (const Contap_ThePointOfContour & anItem);
-		%feature("autodoc", "	:param aSequence:
-	:type aSequence: Handle_Contap_TheHSequenceOfPointOfContour &
-	:rtype: None
-") Prepend;
-		void Prepend (const Handle_Contap_TheHSequenceOfPointOfContour & aSequence);
-		%feature("autodoc", "	:rtype: None
-") Reverse;
-		void Reverse ();
-		%feature("autodoc", "	:param anIndex:
-	:type anIndex: Standard_Integer
-	:param anItem:
-	:type anItem: Contap_ThePointOfContour &
-	:rtype: None
-") InsertBefore;
-		void InsertBefore (const Standard_Integer anIndex,const Contap_ThePointOfContour & anItem);
-		%feature("autodoc", "	:param anIndex:
-	:type anIndex: Standard_Integer
-	:param aSequence:
-	:type aSequence: Handle_Contap_TheHSequenceOfPointOfContour &
-	:rtype: None
-") InsertBefore;
-		void InsertBefore (const Standard_Integer anIndex,const Handle_Contap_TheHSequenceOfPointOfContour & aSequence);
-		%feature("autodoc", "	:param anIndex:
-	:type anIndex: Standard_Integer
-	:param anItem:
-	:type anItem: Contap_ThePointOfContour &
-	:rtype: None
-") InsertAfter;
-		void InsertAfter (const Standard_Integer anIndex,const Contap_ThePointOfContour & anItem);
-		%feature("autodoc", "	:param anIndex:
-	:type anIndex: Standard_Integer
-	:param aSequence:
-	:type aSequence: Handle_Contap_TheHSequenceOfPointOfContour &
-	:rtype: None
-") InsertAfter;
-		void InsertAfter (const Standard_Integer anIndex,const Handle_Contap_TheHSequenceOfPointOfContour & aSequence);
-		%feature("autodoc", "	:param anIndex:
-	:type anIndex: Standard_Integer
-	:param anOtherIndex:
-	:type anOtherIndex: Standard_Integer
-	:rtype: None
-") Exchange;
-		void Exchange (const Standard_Integer anIndex,const Standard_Integer anOtherIndex);
-		%feature("autodoc", "	:param anIndex:
-	:type anIndex: Standard_Integer
-	:rtype: Handle_Contap_TheHSequenceOfPointOfContour
-") Split;
-		Handle_Contap_TheHSequenceOfPointOfContour Split (const Standard_Integer anIndex);
-		%feature("autodoc", "	:param anIndex:
-	:type anIndex: Standard_Integer
-	:param anItem:
-	:type anItem: Contap_ThePointOfContour &
-	:rtype: None
-") SetValue;
-		void SetValue (const Standard_Integer anIndex,const Contap_ThePointOfContour & anItem);
-		%feature("autodoc", "	:param anIndex:
-	:type anIndex: Standard_Integer
-	:rtype: Contap_ThePointOfContour
-") Value;
-		const Contap_ThePointOfContour & Value (const Standard_Integer anIndex);
-		%feature("autodoc", "	:param anIndex:
-	:type anIndex: Standard_Integer
-	:rtype: Contap_ThePointOfContour
-") ChangeValue;
-		Contap_ThePointOfContour & ChangeValue (const Standard_Integer anIndex);
-		%feature("autodoc", "	:param anIndex:
-	:type anIndex: Standard_Integer
-	:rtype: None
-") Remove;
-		void Remove (const Standard_Integer anIndex);
-		%feature("autodoc", "	:param fromIndex:
-	:type fromIndex: Standard_Integer
-	:param toIndex:
-	:type toIndex: Standard_Integer
-	:rtype: None
-") Remove;
-		void Remove (const Standard_Integer fromIndex,const Standard_Integer toIndex);
-		%feature("autodoc", "	:rtype: Contap_TheSequenceOfPointOfContour
-") Sequence;
-		const Contap_TheSequenceOfPointOfContour & Sequence ();
-		%feature("autodoc", "	:rtype: Contap_TheSequenceOfPointOfContour
-") ChangeSequence;
-		Contap_TheSequenceOfPointOfContour & ChangeSequence ();
-		%feature("autodoc", "	:rtype: Handle_Contap_TheHSequenceOfPointOfContour
-") ShallowCopy;
-		Handle_Contap_TheHSequenceOfPointOfContour ShallowCopy ();
-};
-
-
-%feature("shadow") Contap_TheHSequenceOfPointOfContour::~Contap_TheHSequenceOfPointOfContour %{
-def __del__(self):
-	try:
-		self.thisown = False
-		GarbageCollector.garbage.collect_object(self)
-	except:
-		pass
-%}
-
-%extend Contap_TheHSequenceOfPointOfContour {
-	void _kill_pointed() {
-		delete $self;
-	}
-};
-%extend Contap_TheHSequenceOfPointOfContour {
-	Handle_Contap_TheHSequenceOfPointOfContour GetHandle() {
-	return *(Handle_Contap_TheHSequenceOfPointOfContour*) &$self;
-	}
-};
-
-%nodefaultctor Handle_Contap_TheHSequenceOfPointOfContour;
-class Handle_Contap_TheHSequenceOfPointOfContour : public Handle_MMgt_TShared {
-
-    public:
-        // constructors
-        Handle_Contap_TheHSequenceOfPointOfContour();
-        Handle_Contap_TheHSequenceOfPointOfContour(const Handle_Contap_TheHSequenceOfPointOfContour &aHandle);
-        Handle_Contap_TheHSequenceOfPointOfContour(const Contap_TheHSequenceOfPointOfContour *anItem);
-        void Nullify();
-        Standard_Boolean IsNull() const;
-        static const Handle_Contap_TheHSequenceOfPointOfContour DownCast(const Handle_Standard_Transient &AnObject);
-
-};
-%extend Handle_Contap_TheHSequenceOfPointOfContour {
-    Contap_TheHSequenceOfPointOfContour* GetObject() {
-    return (Contap_TheHSequenceOfPointOfContour*)$self->Access();
-    }
-};
-%feature("shadow") Handle_Contap_TheHSequenceOfPointOfContour::~Handle_Contap_TheHSequenceOfPointOfContour %{
-def __del__(self):
-    try:
-        self.thisown = False
-        GarbageCollector.garbage.collect_object(self)
-    except:
-        pass
-%}
-
-%extend Handle_Contap_TheHSequenceOfPointOfContour {
-    void _kill_pointed() {
-        delete $self;
-    }
-};
-
-%nodefaultctor Contap_TheIWLineOfTheIWalkingOfContour;
-class Contap_TheIWLineOfTheIWalkingOfContour : public MMgt_TShared {
-	public:
-		%feature("autodoc", "	:param theAllocator: default value is 0
-	:type theAllocator: IntSurf_Allocator &
-	:rtype: None
-") Contap_TheIWLineOfTheIWalkingOfContour;
-		 Contap_TheIWLineOfTheIWalkingOfContour (const IntSurf_Allocator & theAllocator = 0);
-		%feature("autodoc", "	:rtype: None
-") Reverse;
-		void Reverse ();
-		%feature("autodoc", "	:param Index:
-	:type Index: Standard_Integer
-	:rtype: None
-") Cut;
-		void Cut (const Standard_Integer Index);
-		%feature("autodoc", "	:param P:
-	:type P: IntSurf_PntOn2S &
-	:rtype: None
-") AddPoint;
-		void AddPoint (const IntSurf_PntOn2S & P);
-		%feature("autodoc", "	:param Closed:
-	:type Closed: bool
-	:param HasFirst:
-	:type HasFirst: bool
-	:rtype: None
-") AddStatusFirst;
-		void AddStatusFirst (const Standard_Boolean Closed,const Standard_Boolean HasFirst);
-		%feature("autodoc", "	:param Closed:
-	:type Closed: bool
-	:param HasLast:
-	:type HasLast: bool
-	:param Index:
-	:type Index: Standard_Integer
-	:param P:
-	:type P: IntSurf_PathPoint &
-	:rtype: None
-") AddStatusFirst;
-		void AddStatusFirst (const Standard_Boolean Closed,const Standard_Boolean HasLast,const Standard_Integer Index,const IntSurf_PathPoint & P);
-		%feature("autodoc", "	:param Closed:
-	:type Closed: bool
-	:param HasFirst:
-	:type HasFirst: bool
-	:param HasLast:
-	:type HasLast: bool
-	:rtype: None
-") AddStatusFirstLast;
-		void AddStatusFirstLast (const Standard_Boolean Closed,const Standard_Boolean HasFirst,const Standard_Boolean HasLast);
-		%feature("autodoc", "	:param HasLast:
-	:type HasLast: bool
-	:rtype: None
-") AddStatusLast;
-		void AddStatusLast (const Standard_Boolean HasLast);
-		%feature("autodoc", "	:param HasLast:
-	:type HasLast: bool
-	:param Index:
-	:type Index: Standard_Integer
-	:param P:
-	:type P: IntSurf_PathPoint &
-	:rtype: None
-") AddStatusLast;
-		void AddStatusLast (const Standard_Boolean HasLast,const Standard_Integer Index,const IntSurf_PathPoint & P);
-		%feature("autodoc", "	:param Index:
-	:type Index: Standard_Integer
-	:rtype: None
-") AddIndexPassing;
-		void AddIndexPassing (const Standard_Integer Index);
-		%feature("autodoc", "	:param V:
-	:type V: gp_Vec
-	:param Index:
-	:type Index: Standard_Integer
-	:rtype: None
-") SetTangentVector;
-		void SetTangentVector (const gp_Vec & V,const Standard_Integer Index);
-		%feature("autodoc", "	:param IsTangent:
-	:type IsTangent: bool
-	:rtype: None
-") SetTangencyAtBegining;
-		void SetTangencyAtBegining (const Standard_Boolean IsTangent);
-		%feature("autodoc", "	:param IsTangent:
-	:type IsTangent: bool
-	:rtype: None
-") SetTangencyAtEnd;
-		void SetTangencyAtEnd (const Standard_Boolean IsTangent);
-		%feature("autodoc", "	:rtype: int
-") NbPoints;
-		Standard_Integer NbPoints ();
-		%feature("autodoc", "	:param Index:
-	:type Index: Standard_Integer
-	:rtype: IntSurf_PntOn2S
-") Value;
-		const IntSurf_PntOn2S & Value (const Standard_Integer Index);
-		%feature("autodoc", "	:rtype: Handle_IntSurf_LineOn2S
-") Line;
-		const Handle_IntSurf_LineOn2S & Line ();
-		%feature("autodoc", "	:rtype: bool
-") IsClosed;
-		Standard_Boolean IsClosed ();
-		%feature("autodoc", "	:rtype: bool
-") HasFirstPoint;
-		Standard_Boolean HasFirstPoint ();
-		%feature("autodoc", "	:rtype: bool
-") HasLastPoint;
-		Standard_Boolean HasLastPoint ();
-		%feature("autodoc", "	:rtype: IntSurf_PathPoint
-") FirstPoint;
-		const IntSurf_PathPoint & FirstPoint ();
-		%feature("autodoc", "	:rtype: int
-") FirstPointIndex;
-		Standard_Integer FirstPointIndex ();
-		%feature("autodoc", "	:rtype: IntSurf_PathPoint
-") LastPoint;
-		const IntSurf_PathPoint & LastPoint ();
-		%feature("autodoc", "	:rtype: int
-") LastPointIndex;
-		Standard_Integer LastPointIndex ();
-		%feature("autodoc", "	:rtype: int
-") NbPassingPoint;
-		Standard_Integer NbPassingPoint ();
-		%feature("autodoc", "	:param Index:
-	:type Index: Standard_Integer
-	:param IndexLine:
-	:type IndexLine: Standard_Integer &
-	:param IndexPnts:
-	:type IndexPnts: Standard_Integer &
-	:rtype: None
-") PassingPoint;
-		void PassingPoint (const Standard_Integer Index,Standard_Integer &OutValue,Standard_Integer &OutValue);
-		%feature("autodoc", "	:param Index:
-	:type Index: Standard_Integer &
-	:rtype: gp_Vec
-") TangentVector;
-		const gp_Vec  TangentVector (Standard_Integer &OutValue);
-		%feature("autodoc", "	:rtype: bool
-") IsTangentAtBegining;
-		Standard_Boolean IsTangentAtBegining ();
-		%feature("autodoc", "	:rtype: bool
-") IsTangentAtEnd;
-		Standard_Boolean IsTangentAtEnd ();
-};
-
-
-%feature("shadow") Contap_TheIWLineOfTheIWalkingOfContour::~Contap_TheIWLineOfTheIWalkingOfContour %{
-def __del__(self):
-	try:
-		self.thisown = False
-		GarbageCollector.garbage.collect_object(self)
-	except:
-		pass
-%}
-
-%extend Contap_TheIWLineOfTheIWalkingOfContour {
-	void _kill_pointed() {
-		delete $self;
-	}
-};
-%extend Contap_TheIWLineOfTheIWalkingOfContour {
-	Handle_Contap_TheIWLineOfTheIWalkingOfContour GetHandle() {
-	return *(Handle_Contap_TheIWLineOfTheIWalkingOfContour*) &$self;
-	}
-};
-
-%nodefaultctor Handle_Contap_TheIWLineOfTheIWalkingOfContour;
-class Handle_Contap_TheIWLineOfTheIWalkingOfContour : public Handle_MMgt_TShared {
-
-    public:
-        // constructors
-        Handle_Contap_TheIWLineOfTheIWalkingOfContour();
-        Handle_Contap_TheIWLineOfTheIWalkingOfContour(const Handle_Contap_TheIWLineOfTheIWalkingOfContour &aHandle);
-        Handle_Contap_TheIWLineOfTheIWalkingOfContour(const Contap_TheIWLineOfTheIWalkingOfContour *anItem);
-        void Nullify();
-        Standard_Boolean IsNull() const;
-        static const Handle_Contap_TheIWLineOfTheIWalkingOfContour DownCast(const Handle_Standard_Transient &AnObject);
-
-};
-%extend Handle_Contap_TheIWLineOfTheIWalkingOfContour {
-    Contap_TheIWLineOfTheIWalkingOfContour* GetObject() {
-    return (Contap_TheIWLineOfTheIWalkingOfContour*)$self->Access();
-    }
-};
-%feature("shadow") Handle_Contap_TheIWLineOfTheIWalkingOfContour::~Handle_Contap_TheIWLineOfTheIWalkingOfContour %{
-def __del__(self):
-    try:
-        self.thisown = False
-        GarbageCollector.garbage.collect_object(self)
-    except:
-        pass
-%}
-
-%extend Handle_Contap_TheIWLineOfTheIWalkingOfContour {
-    void _kill_pointed() {
-        delete $self;
-    }
-};
-
-%nodefaultctor Contap_TheIWalkingOfContour;
-class Contap_TheIWalkingOfContour {
-	public:
-		%feature("autodoc", "	:param Epsilon:
-	:type Epsilon: float
-	:param Deflection:
-	:type Deflection: float
-	:param Step:
-	:type Step: float
-	:rtype: None
-") Contap_TheIWalkingOfContour;
-		 Contap_TheIWalkingOfContour (const Standard_Real Epsilon,const Standard_Real Deflection,const Standard_Real Step);
-		%feature("autodoc", "	:param Epsilon:
-	:type Epsilon: float
-	:param Deflection:
-	:type Deflection: float
-	:param Step:
-	:type Step: float
-	:rtype: None
-") SetTolerance;
-		void SetTolerance (const Standard_Real Epsilon,const Standard_Real Deflection,const Standard_Real Step);
-		%feature("autodoc", "	:param Pnts1:
-	:type Pnts1: IntSurf_SequenceOfPathPoint &
-	:param Pnts2:
-	:type Pnts2: IntSurf_SequenceOfInteriorPoint &
-	:param Func:
-	:type Func: Contap_TheSurfFunctionOfContour &
-	:param S:
-	:type S: Handle_Adaptor3d_HSurface &
-	:param Reversed: default value is Standard_False
-	:type Reversed: bool
-	:rtype: None
-") Perform;
-		void Perform (const IntSurf_SequenceOfPathPoint & Pnts1,const IntSurf_SequenceOfInteriorPoint & Pnts2,Contap_TheSurfFunctionOfContour & Func,const Handle_Adaptor3d_HSurface & S,const Standard_Boolean Reversed = Standard_False);
-		%feature("autodoc", "	:param Pnts1:
-	:type Pnts1: IntSurf_SequenceOfPathPoint &
-	:param Func:
-	:type Func: Contap_TheSurfFunctionOfContour &
-	:param S:
-	:type S: Handle_Adaptor3d_HSurface &
-	:param Reversed: default value is Standard_False
-	:type Reversed: bool
-	:rtype: None
-") Perform;
-		void Perform (const IntSurf_SequenceOfPathPoint & Pnts1,Contap_TheSurfFunctionOfContour & Func,const Handle_Adaptor3d_HSurface & S,const Standard_Boolean Reversed = Standard_False);
-		%feature("autodoc", "	:rtype: bool
-") IsDone;
-		Standard_Boolean IsDone ();
-		%feature("autodoc", "	:rtype: int
-") NbLines;
-		Standard_Integer NbLines ();
-		%feature("autodoc", "	:param Index:
-	:type Index: Standard_Integer
-	:rtype: Handle_Contap_TheIWLineOfTheIWalkingOfContour
-") Value;
-		const Handle_Contap_TheIWLineOfTheIWalkingOfContour & Value (const Standard_Integer Index);
-		%feature("autodoc", "	:rtype: int
-") NbSinglePnts;
-		Standard_Integer NbSinglePnts ();
-		%feature("autodoc", "	:param Index:
-	:type Index: Standard_Integer
-	:rtype: IntSurf_PathPoint
-") SinglePnt;
-		const IntSurf_PathPoint & SinglePnt (const Standard_Integer Index);
-};
-
-
-%feature("shadow") Contap_TheIWalkingOfContour::~Contap_TheIWalkingOfContour %{
-def __del__(self):
-	try:
-		self.thisown = False
-		GarbageCollector.garbage.collect_object(self)
-	except:
-		pass
-%}
-
-%extend Contap_TheIWalkingOfContour {
-	void _kill_pointed() {
-		delete $self;
-	}
-};
-%nodefaultctor Contap_TheLineOfContour;
-class Contap_TheLineOfContour {
-	public:
-		%feature("autodoc", "	:rtype: None
-") Contap_TheLineOfContour;
-		 Contap_TheLineOfContour ();
+") Contap_Line;
+		 Contap_Line ();
+		%feature("compactdefaultargs") SetLineOn2S;
 		%feature("autodoc", "	:param L:
 	:type L: Handle_IntSurf_LineOn2S &
 	:rtype: None
 ") SetLineOn2S;
 		void SetLineOn2S (const Handle_IntSurf_LineOn2S & L);
+		%feature("compactdefaultargs") Clear;
 		%feature("autodoc", "	:rtype: None
 ") Clear;
 		void Clear ();
+		%feature("compactdefaultargs") LineOn2S;
 		%feature("autodoc", "	:rtype: Handle_IntSurf_LineOn2S
 ") LineOn2S;
 		const Handle_IntSurf_LineOn2S & LineOn2S ();
+		%feature("compactdefaultargs") ResetSeqOfVertex;
 		%feature("autodoc", "	:rtype: None
 ") ResetSeqOfVertex;
 		void ResetSeqOfVertex ();
+		%feature("compactdefaultargs") Add;
 		%feature("autodoc", "	:param P:
 	:type P: IntSurf_PntOn2S &
 	:rtype: None
 ") Add;
 		void Add (const IntSurf_PntOn2S & P);
+		%feature("compactdefaultargs") SetValue;
 		%feature("autodoc", "	:param L:
 	:type L: gp_Lin
 	:rtype: None
 ") SetValue;
 		void SetValue (const gp_Lin & L);
+		%feature("compactdefaultargs") SetValue;
 		%feature("autodoc", "	:param C:
 	:type C: gp_Circ
 	:rtype: None
 ") SetValue;
 		void SetValue (const gp_Circ & C);
+		%feature("compactdefaultargs") SetValue;
 		%feature("autodoc", "	:param A:
 	:type A: Handle_Adaptor2d_HCurve2d &
 	:rtype: None
 ") SetValue;
 		void SetValue (const Handle_Adaptor2d_HCurve2d & A);
+		%feature("compactdefaultargs") Add;
 		%feature("autodoc", "	:param P:
-	:type P: Contap_ThePointOfContour &
+	:type P: Contap_Point &
 	:rtype: None
 ") Add;
-		void Add (const Contap_ThePointOfContour & P);
+		void Add (const Contap_Point & P);
+		%feature("compactdefaultargs") NbVertex;
 		%feature("autodoc", "	:rtype: int
 ") NbVertex;
 		Standard_Integer NbVertex ();
+		%feature("compactdefaultargs") Vertex;
 		%feature("autodoc", "	:param Index:
-	:type Index: Standard_Integer
-	:rtype: Contap_ThePointOfContour
+	:type Index: int
+	:rtype: Contap_Point
 ") Vertex;
-		Contap_ThePointOfContour & Vertex (const Standard_Integer Index);
-		%feature("autodoc", "	:rtype: Contap_IType
+		Contap_Point & Vertex (const Standard_Integer Index);
+		%feature("compactdefaultargs") TypeContour;
+		%feature("autodoc", "	* Returns Contap_Lin for a line, Contap_Circle for a circle, and Contap_Walking for a Walking line, Contap_Restriction for a part of boundarie.
+
+	:rtype: Contap_IType
 ") TypeContour;
 		Contap_IType TypeContour ();
+		%feature("compactdefaultargs") NbPnts;
 		%feature("autodoc", "	:rtype: int
 ") NbPnts;
 		Standard_Integer NbPnts ();
+		%feature("compactdefaultargs") Point;
 		%feature("autodoc", "	:param Index:
-	:type Index: Standard_Integer
+	:type Index: int
 	:rtype: IntSurf_PntOn2S
 ") Point;
 		const IntSurf_PntOn2S & Point (const Standard_Integer Index);
+		%feature("compactdefaultargs") Line;
 		%feature("autodoc", "	:rtype: gp_Lin
 ") Line;
 		gp_Lin Line ();
+		%feature("compactdefaultargs") Circle;
 		%feature("autodoc", "	:rtype: gp_Circ
 ") Circle;
 		gp_Circ Circle ();
+		%feature("compactdefaultargs") Arc;
 		%feature("autodoc", "	:rtype: Handle_Adaptor2d_HCurve2d
 ") Arc;
 		const Handle_Adaptor2d_HCurve2d & Arc ();
-		%feature("autodoc", "	:param T:
+		%feature("compactdefaultargs") SetTransitionOnS;
+		%feature("autodoc", "	* Set The Tansition of the line.
+
+	:param T:
 	:type T: IntSurf_TypeTrans
 	:rtype: None
 ") SetTransitionOnS;
 		void SetTransitionOnS (const IntSurf_TypeTrans T);
-		%feature("autodoc", "	:rtype: IntSurf_TypeTrans
+		%feature("compactdefaultargs") TransitionOnS;
+		%feature("autodoc", "	* returns IN if at the 'left' of the line, the normale of the surface is oriented to the observator.
+
+	:rtype: IntSurf_TypeTrans
 ") TransitionOnS;
 		IntSurf_TypeTrans TransitionOnS ();
 };
 
 
-%feature("shadow") Contap_TheLineOfContour::~Contap_TheLineOfContour %{
+%feature("shadow") Contap_Line::~Contap_Line %{
 def __del__(self):
 	try:
 		self.thisown = False
@@ -2019,116 +1017,36 @@ def __del__(self):
 		pass
 %}
 
-%extend Contap_TheLineOfContour {
+%extend Contap_Line {
 	void _kill_pointed() {
 		delete $self;
 	}
 };
-%nodefaultctor Contap_ThePathPointOfTheSearchOfContour;
-class Contap_ThePathPointOfTheSearchOfContour {
+%nodefaultctor Contap_Point;
+class Contap_Point {
 	public:
-		%feature("autodoc", "	:rtype: None
-") Contap_ThePathPointOfTheSearchOfContour;
-		 Contap_ThePathPointOfTheSearchOfContour ();
-		%feature("autodoc", "	:param P:
-	:type P: gp_Pnt
-	:param Tol:
-	:type Tol: float
-	:param V:
-	:type V: Handle_Adaptor3d_HVertex &
-	:param A:
-	:type A: Handle_Adaptor2d_HCurve2d &
-	:param Parameter:
-	:type Parameter: float
-	:rtype: None
-") Contap_ThePathPointOfTheSearchOfContour;
-		 Contap_ThePathPointOfTheSearchOfContour (const gp_Pnt & P,const Standard_Real Tol,const Handle_Adaptor3d_HVertex & V,const Handle_Adaptor2d_HCurve2d & A,const Standard_Real Parameter);
-		%feature("autodoc", "	:param P:
-	:type P: gp_Pnt
-	:param Tol:
-	:type Tol: float
-	:param A:
-	:type A: Handle_Adaptor2d_HCurve2d &
-	:param Parameter:
-	:type Parameter: float
-	:rtype: None
-") Contap_ThePathPointOfTheSearchOfContour;
-		 Contap_ThePathPointOfTheSearchOfContour (const gp_Pnt & P,const Standard_Real Tol,const Handle_Adaptor2d_HCurve2d & A,const Standard_Real Parameter);
-		%feature("autodoc", "	:param P:
-	:type P: gp_Pnt
-	:param Tol:
-	:type Tol: float
-	:param V:
-	:type V: Handle_Adaptor3d_HVertex &
-	:param A:
-	:type A: Handle_Adaptor2d_HCurve2d &
-	:param Parameter:
-	:type Parameter: float
-	:rtype: None
-") SetValue;
-		void SetValue (const gp_Pnt & P,const Standard_Real Tol,const Handle_Adaptor3d_HVertex & V,const Handle_Adaptor2d_HCurve2d & A,const Standard_Real Parameter);
-		%feature("autodoc", "	:param P:
-	:type P: gp_Pnt
-	:param Tol:
-	:type Tol: float
-	:param A:
-	:type A: Handle_Adaptor2d_HCurve2d &
-	:param Parameter:
-	:type Parameter: float
-	:rtype: None
-") SetValue;
-		void SetValue (const gp_Pnt & P,const Standard_Real Tol,const Handle_Adaptor2d_HCurve2d & A,const Standard_Real Parameter);
-		%feature("autodoc", "	:rtype: gp_Pnt
-") Value;
-		const gp_Pnt  Value ();
-		%feature("autodoc", "	:rtype: float
-") Tolerance;
-		Standard_Real Tolerance ();
-		%feature("autodoc", "	:rtype: bool
-") IsNew;
-		Standard_Boolean IsNew ();
-		%feature("autodoc", "	:rtype: Handle_Adaptor3d_HVertex
-") Vertex;
-		const Handle_Adaptor3d_HVertex & Vertex ();
-		%feature("autodoc", "	:rtype: Handle_Adaptor2d_HCurve2d
-") Arc;
-		const Handle_Adaptor2d_HCurve2d & Arc ();
-		%feature("autodoc", "	:rtype: float
-") Parameter;
-		Standard_Real Parameter ();
-};
+		%feature("compactdefaultargs") Contap_Point;
+		%feature("autodoc", "	* Empty constructor.
 
+	:rtype: None
+") Contap_Point;
+		 Contap_Point ();
+		%feature("compactdefaultargs") Contap_Point;
+		%feature("autodoc", "	* Creates a point.
 
-%feature("shadow") Contap_ThePathPointOfTheSearchOfContour::~Contap_ThePathPointOfTheSearchOfContour %{
-def __del__(self):
-	try:
-		self.thisown = False
-		GarbageCollector.garbage.collect_object(self)
-	except:
-		pass
-%}
-
-%extend Contap_ThePathPointOfTheSearchOfContour {
-	void _kill_pointed() {
-		delete $self;
-	}
-};
-%nodefaultctor Contap_ThePointOfContour;
-class Contap_ThePointOfContour {
-	public:
-		%feature("autodoc", "	:rtype: None
-") Contap_ThePointOfContour;
-		 Contap_ThePointOfContour ();
-		%feature("autodoc", "	:param Pt:
+	:param Pt:
 	:type Pt: gp_Pnt
 	:param U:
 	:type U: float
 	:param V:
 	:type V: float
 	:rtype: None
-") Contap_ThePointOfContour;
-		 Contap_ThePointOfContour (const gp_Pnt & Pt,const Standard_Real U,const Standard_Real V);
-		%feature("autodoc", "	:param Pt:
+") Contap_Point;
+		 Contap_Point (const gp_Pnt & Pt,const Standard_Real U,const Standard_Real V);
+		%feature("compactdefaultargs") SetValue;
+		%feature("autodoc", "	* Sets the values for a point.
+
+	:param Pt:
 	:type Pt: gp_Pnt
 	:param U:
 	:type U: float
@@ -2137,17 +1055,26 @@ class Contap_ThePointOfContour {
 	:rtype: None
 ") SetValue;
 		void SetValue (const gp_Pnt & Pt,const Standard_Real U,const Standard_Real V);
-		%feature("autodoc", "	:param Para:
+		%feature("compactdefaultargs") SetParameter;
+		%feature("autodoc", "	* Set the value of the parameter on the intersection line.
+
+	:param Para:
 	:type Para: float
 	:rtype: None
 ") SetParameter;
 		void SetParameter (const Standard_Real Para);
-		%feature("autodoc", "	:param V:
+		%feature("compactdefaultargs") SetVertex;
+		%feature("autodoc", "	* Sets the values of a point which is a vertex on the initial facet of restriction of one of the surface.
+
+	:param V:
 	:type V: Handle_Adaptor3d_HVertex &
 	:rtype: None
 ") SetVertex;
 		void SetVertex (const Handle_Adaptor3d_HVertex & V);
-		%feature("autodoc", "	:param A:
+		%feature("compactdefaultargs") SetArc;
+		%feature("autodoc", "	* Sets the value of the arc and of the parameter on this arc of the point.
+
+	:param A:
 	:type A: Handle_Adaptor2d_HCurve2d &
 	:param Param:
 	:type Param: float
@@ -2158,56 +1085,94 @@ class Contap_ThePointOfContour {
 	:rtype: None
 ") SetArc;
 		void SetArc (const Handle_Adaptor2d_HCurve2d & A,const Standard_Real Param,const IntSurf_Transition & TLine,const IntSurf_Transition & TArc);
+		%feature("compactdefaultargs") SetMultiple;
 		%feature("autodoc", "	:rtype: None
 ") SetMultiple;
 		void SetMultiple ();
+		%feature("compactdefaultargs") SetInternal;
 		%feature("autodoc", "	:rtype: None
 ") SetInternal;
 		void SetInternal ();
-		%feature("autodoc", "	:rtype: gp_Pnt
+		%feature("compactdefaultargs") Value;
+		%feature("autodoc", "	* Returns the intersection point (geometric information).
+
+	:rtype: gp_Pnt
 ") Value;
 		const gp_Pnt  Value ();
-		%feature("autodoc", "	:rtype: float
+		%feature("compactdefaultargs") ParameterOnLine;
+		%feature("autodoc", "	* This method returns the parameter of the point on the intersection line. If the points does not belong to an intersection line, the value returned does not have any sens.
+
+	:rtype: float
 ") ParameterOnLine;
 		Standard_Real ParameterOnLine ();
-		%feature("autodoc", "	:param U1:
+		%feature("compactdefaultargs") Parameters;
+		%feature("autodoc", "	* Returns the parameters on the surface of the point.
+
+	:param U1:
 	:type U1: float &
 	:param V1:
 	:type V1: float &
 	:rtype: None
 ") Parameters;
 		void Parameters (Standard_Real &OutValue,Standard_Real &OutValue);
-		%feature("autodoc", "	:rtype: bool
+		%feature("compactdefaultargs") IsOnArc;
+		%feature("autodoc", "	* Returns True when the point is an intersection between the contour and a restriction.
+
+	:rtype: bool
 ") IsOnArc;
 		Standard_Boolean IsOnArc ();
-		%feature("autodoc", "	:rtype: Handle_Adaptor2d_HCurve2d
+		%feature("compactdefaultargs") Arc;
+		%feature("autodoc", "	* Returns the arc of restriction containing the vertex.
+
+	:rtype: Handle_Adaptor2d_HCurve2d
 ") Arc;
 		const Handle_Adaptor2d_HCurve2d & Arc ();
-		%feature("autodoc", "	:rtype: float
+		%feature("compactdefaultargs") ParameterOnArc;
+		%feature("autodoc", "	* Returns the parameter of the point on the arc returned by the method Arc().
+
+	:rtype: float
 ") ParameterOnArc;
 		Standard_Real ParameterOnArc ();
-		%feature("autodoc", "	:rtype: IntSurf_Transition
+		%feature("compactdefaultargs") TransitionOnLine;
+		%feature("autodoc", "	* Returns the transition of the point on the contour.
+
+	:rtype: IntSurf_Transition
 ") TransitionOnLine;
 		const IntSurf_Transition & TransitionOnLine ();
-		%feature("autodoc", "	:rtype: IntSurf_Transition
+		%feature("compactdefaultargs") TransitionOnArc;
+		%feature("autodoc", "	* Returns the transition of the point on the arc.
+
+	:rtype: IntSurf_Transition
 ") TransitionOnArc;
 		const IntSurf_Transition & TransitionOnArc ();
-		%feature("autodoc", "	:rtype: bool
+		%feature("compactdefaultargs") IsVertex;
+		%feature("autodoc", "	* Returns True if the point is a vertex on the initial restriction facet of the surface.
+
+	:rtype: bool
 ") IsVertex;
 		Standard_Boolean IsVertex ();
-		%feature("autodoc", "	:rtype: Handle_Adaptor3d_HVertex
+		%feature("compactdefaultargs") Vertex;
+		%feature("autodoc", "	* Returns the information about the point when it is on the domain of the patch, i-e when the function IsVertex returns True. Otherwise, an exception is raised.
+
+	:rtype: Handle_Adaptor3d_HVertex
 ") Vertex;
 		const Handle_Adaptor3d_HVertex & Vertex ();
-		%feature("autodoc", "	:rtype: bool
+		%feature("compactdefaultargs") IsMultiple;
+		%feature("autodoc", "	* Returns True if the point belongs to several lines.
+
+	:rtype: bool
 ") IsMultiple;
 		Standard_Boolean IsMultiple ();
-		%feature("autodoc", "	:rtype: bool
+		%feature("compactdefaultargs") IsInternal;
+		%feature("autodoc", "	* Returns True if the point is an internal one, i.e if the tangent to the line on the point and the eye direction are parallel.
+
+	:rtype: bool
 ") IsInternal;
 		Standard_Boolean IsInternal ();
 };
 
 
-%feature("shadow") Contap_ThePointOfContour::~Contap_ThePointOfContour %{
+%feature("shadow") Contap_Point::~Contap_Point %{
 def __del__(self):
 	try:
 		self.thisown = False
@@ -2216,65 +1181,32 @@ def __del__(self):
 		pass
 %}
 
-%extend Contap_ThePointOfContour {
+%extend Contap_Point {
 	void _kill_pointed() {
 		delete $self;
 	}
 };
-%nodefaultctor Contap_TheSearchInsideOfContour;
-class Contap_TheSearchInsideOfContour {
+%nodefaultctor Contap_SequenceNodeOfSequenceOfIWLineOfTheIWalking;
+class Contap_SequenceNodeOfSequenceOfIWLineOfTheIWalking : public TCollection_SeqNode {
 	public:
-		%feature("autodoc", "	:rtype: None
-") Contap_TheSearchInsideOfContour;
-		 Contap_TheSearchInsideOfContour ();
-		%feature("autodoc", "	:param F:
-	:type F: Contap_TheSurfFunctionOfContour &
-	:param Surf:
-	:type Surf: Handle_Adaptor3d_HSurface &
-	:param T:
-	:type T: Handle_Adaptor3d_TopolTool &
-	:param Epsilon:
-	:type Epsilon: float
+		%feature("compactdefaultargs") Contap_SequenceNodeOfSequenceOfIWLineOfTheIWalking;
+		%feature("autodoc", "	:param I:
+	:type I: Handle_Contap_TheIWLineOfTheIWalking &
+	:param n:
+	:type n: TCollection_SeqNodePtr &
+	:param p:
+	:type p: TCollection_SeqNodePtr &
 	:rtype: None
-") Contap_TheSearchInsideOfContour;
-		 Contap_TheSearchInsideOfContour (Contap_TheSurfFunctionOfContour & F,const Handle_Adaptor3d_HSurface & Surf,const Handle_Adaptor3d_TopolTool & T,const Standard_Real Epsilon);
-		%feature("autodoc", "	:param F:
-	:type F: Contap_TheSurfFunctionOfContour &
-	:param Surf:
-	:type Surf: Handle_Adaptor3d_HSurface &
-	:param T:
-	:type T: Handle_Adaptor3d_TopolTool &
-	:param Epsilon:
-	:type Epsilon: float
-	:rtype: None
-") Perform;
-		void Perform (Contap_TheSurfFunctionOfContour & F,const Handle_Adaptor3d_HSurface & Surf,const Handle_Adaptor3d_TopolTool & T,const Standard_Real Epsilon);
-		%feature("autodoc", "	:param F:
-	:type F: Contap_TheSurfFunctionOfContour &
-	:param Surf:
-	:type Surf: Handle_Adaptor3d_HSurface &
-	:param UStart:
-	:type UStart: float
-	:param VStart:
-	:type VStart: float
-	:rtype: None
-") Perform;
-		void Perform (Contap_TheSurfFunctionOfContour & F,const Handle_Adaptor3d_HSurface & Surf,const Standard_Real UStart,const Standard_Real VStart);
-		%feature("autodoc", "	:rtype: bool
-") IsDone;
-		Standard_Boolean IsDone ();
-		%feature("autodoc", "	:rtype: int
-") NbPoints;
-		Standard_Integer NbPoints ();
-		%feature("autodoc", "	:param Index:
-	:type Index: Standard_Integer
-	:rtype: IntSurf_InteriorPoint
+") Contap_SequenceNodeOfSequenceOfIWLineOfTheIWalking;
+		 Contap_SequenceNodeOfSequenceOfIWLineOfTheIWalking (const Handle_Contap_TheIWLineOfTheIWalking & I,const TCollection_SeqNodePtr & n,const TCollection_SeqNodePtr & p);
+		%feature("compactdefaultargs") Value;
+		%feature("autodoc", "	:rtype: Handle_Contap_TheIWLineOfTheIWalking
 ") Value;
-		const IntSurf_InteriorPoint & Value (const Standard_Integer Index);
+		Handle_Contap_TheIWLineOfTheIWalking & Value ();
 };
 
 
-%feature("shadow") Contap_TheSearchInsideOfContour::~Contap_TheSearchInsideOfContour %{
+%feature("shadow") Contap_SequenceNodeOfSequenceOfIWLineOfTheIWalking::~Contap_SequenceNodeOfSequenceOfIWLineOfTheIWalking %{
 def __del__(self):
 	try:
 		self.thisown = False
@@ -2283,56 +1215,71 @@ def __del__(self):
 		pass
 %}
 
-%extend Contap_TheSearchInsideOfContour {
+%extend Contap_SequenceNodeOfSequenceOfIWLineOfTheIWalking {
 	void _kill_pointed() {
 		delete $self;
 	}
 };
-%nodefaultctor Contap_TheSearchOfContour;
-class Contap_TheSearchOfContour {
+%extend Contap_SequenceNodeOfSequenceOfIWLineOfTheIWalking {
+	Handle_Contap_SequenceNodeOfSequenceOfIWLineOfTheIWalking GetHandle() {
+	return *(Handle_Contap_SequenceNodeOfSequenceOfIWLineOfTheIWalking*) &$self;
+	}
+};
+
+%nodefaultctor Handle_Contap_SequenceNodeOfSequenceOfIWLineOfTheIWalking;
+class Handle_Contap_SequenceNodeOfSequenceOfIWLineOfTheIWalking : public Handle_TCollection_SeqNode {
+
+    public:
+        // constructors
+        Handle_Contap_SequenceNodeOfSequenceOfIWLineOfTheIWalking();
+        Handle_Contap_SequenceNodeOfSequenceOfIWLineOfTheIWalking(const Handle_Contap_SequenceNodeOfSequenceOfIWLineOfTheIWalking &aHandle);
+        Handle_Contap_SequenceNodeOfSequenceOfIWLineOfTheIWalking(const Contap_SequenceNodeOfSequenceOfIWLineOfTheIWalking *anItem);
+        void Nullify();
+        Standard_Boolean IsNull() const;
+        static const Handle_Contap_SequenceNodeOfSequenceOfIWLineOfTheIWalking DownCast(const Handle_Standard_Transient &AnObject);
+
+};
+%extend Handle_Contap_SequenceNodeOfSequenceOfIWLineOfTheIWalking {
+    Contap_SequenceNodeOfSequenceOfIWLineOfTheIWalking* GetObject() {
+    return (Contap_SequenceNodeOfSequenceOfIWLineOfTheIWalking*)$self->Access();
+    }
+};
+%feature("shadow") Handle_Contap_SequenceNodeOfSequenceOfIWLineOfTheIWalking::~Handle_Contap_SequenceNodeOfSequenceOfIWLineOfTheIWalking %{
+def __del__(self):
+    try:
+        self.thisown = False
+        GarbageCollector.garbage.collect_object(self)
+    except:
+        pass
+%}
+
+%extend Handle_Contap_SequenceNodeOfSequenceOfIWLineOfTheIWalking {
+    void _kill_pointed() {
+        delete $self;
+    }
+};
+
+%nodefaultctor Contap_SequenceNodeOfSequenceOfPathPointOfTheSearch;
+class Contap_SequenceNodeOfSequenceOfPathPointOfTheSearch : public TCollection_SeqNode {
 	public:
-		%feature("autodoc", "	:rtype: None
-") Contap_TheSearchOfContour;
-		 Contap_TheSearchOfContour ();
-		%feature("autodoc", "	:param F:
-	:type F: Contap_TheArcFunctionOfContour &
-	:param Domain:
-	:type Domain: Handle_Adaptor3d_TopolTool &
-	:param TolBoundary:
-	:type TolBoundary: float
-	:param TolTangency:
-	:type TolTangency: float
-	:param RecheckOnRegularity: default value is Standard_False
-	:type RecheckOnRegularity: bool
+		%feature("compactdefaultargs") Contap_SequenceNodeOfSequenceOfPathPointOfTheSearch;
+		%feature("autodoc", "	:param I:
+	:type I: Contap_ThePathPointOfTheSearch &
+	:param n:
+	:type n: TCollection_SeqNodePtr &
+	:param p:
+	:type p: TCollection_SeqNodePtr &
 	:rtype: None
-") Perform;
-		void Perform (Contap_TheArcFunctionOfContour & F,const Handle_Adaptor3d_TopolTool & Domain,const Standard_Real TolBoundary,const Standard_Real TolTangency,const Standard_Boolean RecheckOnRegularity = Standard_False);
-		%feature("autodoc", "	:rtype: bool
-") IsDone;
-		Standard_Boolean IsDone ();
-		%feature("autodoc", "	:rtype: bool
-") AllArcSolution;
-		Standard_Boolean AllArcSolution ();
-		%feature("autodoc", "	:rtype: int
-") NbPoints;
-		Standard_Integer NbPoints ();
-		%feature("autodoc", "	:param Index:
-	:type Index: Standard_Integer
-	:rtype: Contap_ThePathPointOfTheSearchOfContour
-") Point;
-		const Contap_ThePathPointOfTheSearchOfContour & Point (const Standard_Integer Index);
-		%feature("autodoc", "	:rtype: int
-") NbSegments;
-		Standard_Integer NbSegments ();
-		%feature("autodoc", "	:param Index:
-	:type Index: Standard_Integer
-	:rtype: Contap_TheSegmentOfTheSearchOfContour
-") Segment;
-		const Contap_TheSegmentOfTheSearchOfContour & Segment (const Standard_Integer Index);
+") Contap_SequenceNodeOfSequenceOfPathPointOfTheSearch;
+		 Contap_SequenceNodeOfSequenceOfPathPointOfTheSearch (const Contap_ThePathPointOfTheSearch & I,const TCollection_SeqNodePtr & n,const TCollection_SeqNodePtr & p);
+		%feature("compactdefaultargs") Value;
+		%feature("autodoc", "	:rtype: Contap_ThePathPointOfTheSearch
+") Value;
+		Contap_ThePathPointOfTheSearch & Value ();
 };
 
 
-%feature("shadow") Contap_TheSearchOfContour::~Contap_TheSearchOfContour %{
+%feature("shadow") Contap_SequenceNodeOfSequenceOfPathPointOfTheSearch::~Contap_SequenceNodeOfSequenceOfPathPointOfTheSearch %{
 def __del__(self):
 	try:
 		self.thisown = False
@@ -2341,48 +1288,71 @@ def __del__(self):
 		pass
 %}
 
-%extend Contap_TheSearchOfContour {
+%extend Contap_SequenceNodeOfSequenceOfPathPointOfTheSearch {
 	void _kill_pointed() {
 		delete $self;
 	}
 };
-%nodefaultctor Contap_TheSegmentOfTheSearchOfContour;
-class Contap_TheSegmentOfTheSearchOfContour {
+%extend Contap_SequenceNodeOfSequenceOfPathPointOfTheSearch {
+	Handle_Contap_SequenceNodeOfSequenceOfPathPointOfTheSearch GetHandle() {
+	return *(Handle_Contap_SequenceNodeOfSequenceOfPathPointOfTheSearch*) &$self;
+	}
+};
+
+%nodefaultctor Handle_Contap_SequenceNodeOfSequenceOfPathPointOfTheSearch;
+class Handle_Contap_SequenceNodeOfSequenceOfPathPointOfTheSearch : public Handle_TCollection_SeqNode {
+
+    public:
+        // constructors
+        Handle_Contap_SequenceNodeOfSequenceOfPathPointOfTheSearch();
+        Handle_Contap_SequenceNodeOfSequenceOfPathPointOfTheSearch(const Handle_Contap_SequenceNodeOfSequenceOfPathPointOfTheSearch &aHandle);
+        Handle_Contap_SequenceNodeOfSequenceOfPathPointOfTheSearch(const Contap_SequenceNodeOfSequenceOfPathPointOfTheSearch *anItem);
+        void Nullify();
+        Standard_Boolean IsNull() const;
+        static const Handle_Contap_SequenceNodeOfSequenceOfPathPointOfTheSearch DownCast(const Handle_Standard_Transient &AnObject);
+
+};
+%extend Handle_Contap_SequenceNodeOfSequenceOfPathPointOfTheSearch {
+    Contap_SequenceNodeOfSequenceOfPathPointOfTheSearch* GetObject() {
+    return (Contap_SequenceNodeOfSequenceOfPathPointOfTheSearch*)$self->Access();
+    }
+};
+%feature("shadow") Handle_Contap_SequenceNodeOfSequenceOfPathPointOfTheSearch::~Handle_Contap_SequenceNodeOfSequenceOfPathPointOfTheSearch %{
+def __del__(self):
+    try:
+        self.thisown = False
+        GarbageCollector.garbage.collect_object(self)
+    except:
+        pass
+%}
+
+%extend Handle_Contap_SequenceNodeOfSequenceOfPathPointOfTheSearch {
+    void _kill_pointed() {
+        delete $self;
+    }
+};
+
+%nodefaultctor Contap_SequenceNodeOfSequenceOfSegmentOfTheSearch;
+class Contap_SequenceNodeOfSequenceOfSegmentOfTheSearch : public TCollection_SeqNode {
 	public:
-		%feature("autodoc", "	:rtype: None
-") Contap_TheSegmentOfTheSearchOfContour;
-		 Contap_TheSegmentOfTheSearchOfContour ();
-		%feature("autodoc", "	:param A:
-	:type A: Handle_Adaptor2d_HCurve2d &
+		%feature("compactdefaultargs") Contap_SequenceNodeOfSequenceOfSegmentOfTheSearch;
+		%feature("autodoc", "	:param I:
+	:type I: Contap_TheSegmentOfTheSearch &
+	:param n:
+	:type n: TCollection_SeqNodePtr &
+	:param p:
+	:type p: TCollection_SeqNodePtr &
 	:rtype: None
-") SetValue;
-		void SetValue (const Handle_Adaptor2d_HCurve2d & A);
-		%feature("autodoc", "	:param V:
-	:type V: Contap_ThePathPointOfTheSearchOfContour &
-	:param First:
-	:type First: bool
-	:rtype: None
-") SetLimitPoint;
-		void SetLimitPoint (const Contap_ThePathPointOfTheSearchOfContour & V,const Standard_Boolean First);
-		%feature("autodoc", "	:rtype: Handle_Adaptor2d_HCurve2d
-") Curve;
-		const Handle_Adaptor2d_HCurve2d & Curve ();
-		%feature("autodoc", "	:rtype: bool
-") HasFirstPoint;
-		Standard_Boolean HasFirstPoint ();
-		%feature("autodoc", "	:rtype: Contap_ThePathPointOfTheSearchOfContour
-") FirstPoint;
-		const Contap_ThePathPointOfTheSearchOfContour & FirstPoint ();
-		%feature("autodoc", "	:rtype: bool
-") HasLastPoint;
-		Standard_Boolean HasLastPoint ();
-		%feature("autodoc", "	:rtype: Contap_ThePathPointOfTheSearchOfContour
-") LastPoint;
-		const Contap_ThePathPointOfTheSearchOfContour & LastPoint ();
+") Contap_SequenceNodeOfSequenceOfSegmentOfTheSearch;
+		 Contap_SequenceNodeOfSequenceOfSegmentOfTheSearch (const Contap_TheSegmentOfTheSearch & I,const TCollection_SeqNodePtr & n,const TCollection_SeqNodePtr & p);
+		%feature("compactdefaultargs") Value;
+		%feature("autodoc", "	:rtype: Contap_TheSegmentOfTheSearch
+") Value;
+		Contap_TheSegmentOfTheSearch & Value ();
 };
 
 
-%feature("shadow") Contap_TheSegmentOfTheSearchOfContour::~Contap_TheSegmentOfTheSearchOfContour %{
+%feature("shadow") Contap_SequenceNodeOfSequenceOfSegmentOfTheSearch::~Contap_SequenceNodeOfSequenceOfSegmentOfTheSearch %{
 def __del__(self):
 	try:
 		self.thisown = False
@@ -2391,124 +1361,335 @@ def __del__(self):
 		pass
 %}
 
-%extend Contap_TheSegmentOfTheSearchOfContour {
+%extend Contap_SequenceNodeOfSequenceOfSegmentOfTheSearch {
 	void _kill_pointed() {
 		delete $self;
 	}
 };
-%nodefaultctor Contap_TheSequenceOfLineOfContour;
-class Contap_TheSequenceOfLineOfContour : public TCollection_BaseSequence {
+%extend Contap_SequenceNodeOfSequenceOfSegmentOfTheSearch {
+	Handle_Contap_SequenceNodeOfSequenceOfSegmentOfTheSearch GetHandle() {
+	return *(Handle_Contap_SequenceNodeOfSequenceOfSegmentOfTheSearch*) &$self;
+	}
+};
+
+%nodefaultctor Handle_Contap_SequenceNodeOfSequenceOfSegmentOfTheSearch;
+class Handle_Contap_SequenceNodeOfSequenceOfSegmentOfTheSearch : public Handle_TCollection_SeqNode {
+
+    public:
+        // constructors
+        Handle_Contap_SequenceNodeOfSequenceOfSegmentOfTheSearch();
+        Handle_Contap_SequenceNodeOfSequenceOfSegmentOfTheSearch(const Handle_Contap_SequenceNodeOfSequenceOfSegmentOfTheSearch &aHandle);
+        Handle_Contap_SequenceNodeOfSequenceOfSegmentOfTheSearch(const Contap_SequenceNodeOfSequenceOfSegmentOfTheSearch *anItem);
+        void Nullify();
+        Standard_Boolean IsNull() const;
+        static const Handle_Contap_SequenceNodeOfSequenceOfSegmentOfTheSearch DownCast(const Handle_Standard_Transient &AnObject);
+
+};
+%extend Handle_Contap_SequenceNodeOfSequenceOfSegmentOfTheSearch {
+    Contap_SequenceNodeOfSequenceOfSegmentOfTheSearch* GetObject() {
+    return (Contap_SequenceNodeOfSequenceOfSegmentOfTheSearch*)$self->Access();
+    }
+};
+%feature("shadow") Handle_Contap_SequenceNodeOfSequenceOfSegmentOfTheSearch::~Handle_Contap_SequenceNodeOfSequenceOfSegmentOfTheSearch %{
+def __del__(self):
+    try:
+        self.thisown = False
+        GarbageCollector.garbage.collect_object(self)
+    except:
+        pass
+%}
+
+%extend Handle_Contap_SequenceNodeOfSequenceOfSegmentOfTheSearch {
+    void _kill_pointed() {
+        delete $self;
+    }
+};
+
+%nodefaultctor Contap_SequenceNodeOfTheSequenceOfLine;
+class Contap_SequenceNodeOfTheSequenceOfLine : public TCollection_SeqNode {
 	public:
+		%feature("compactdefaultargs") Contap_SequenceNodeOfTheSequenceOfLine;
+		%feature("autodoc", "	:param I:
+	:type I: Contap_Line &
+	:param n:
+	:type n: TCollection_SeqNodePtr &
+	:param p:
+	:type p: TCollection_SeqNodePtr &
+	:rtype: None
+") Contap_SequenceNodeOfTheSequenceOfLine;
+		 Contap_SequenceNodeOfTheSequenceOfLine (const Contap_Line & I,const TCollection_SeqNodePtr & n,const TCollection_SeqNodePtr & p);
+		%feature("compactdefaultargs") Value;
+		%feature("autodoc", "	:rtype: Contap_Line
+") Value;
+		Contap_Line & Value ();
+};
+
+
+%feature("shadow") Contap_SequenceNodeOfTheSequenceOfLine::~Contap_SequenceNodeOfTheSequenceOfLine %{
+def __del__(self):
+	try:
+		self.thisown = False
+		GarbageCollector.garbage.collect_object(self)
+	except:
+		pass
+%}
+
+%extend Contap_SequenceNodeOfTheSequenceOfLine {
+	void _kill_pointed() {
+		delete $self;
+	}
+};
+%extend Contap_SequenceNodeOfTheSequenceOfLine {
+	Handle_Contap_SequenceNodeOfTheSequenceOfLine GetHandle() {
+	return *(Handle_Contap_SequenceNodeOfTheSequenceOfLine*) &$self;
+	}
+};
+
+%nodefaultctor Handle_Contap_SequenceNodeOfTheSequenceOfLine;
+class Handle_Contap_SequenceNodeOfTheSequenceOfLine : public Handle_TCollection_SeqNode {
+
+    public:
+        // constructors
+        Handle_Contap_SequenceNodeOfTheSequenceOfLine();
+        Handle_Contap_SequenceNodeOfTheSequenceOfLine(const Handle_Contap_SequenceNodeOfTheSequenceOfLine &aHandle);
+        Handle_Contap_SequenceNodeOfTheSequenceOfLine(const Contap_SequenceNodeOfTheSequenceOfLine *anItem);
+        void Nullify();
+        Standard_Boolean IsNull() const;
+        static const Handle_Contap_SequenceNodeOfTheSequenceOfLine DownCast(const Handle_Standard_Transient &AnObject);
+
+};
+%extend Handle_Contap_SequenceNodeOfTheSequenceOfLine {
+    Contap_SequenceNodeOfTheSequenceOfLine* GetObject() {
+    return (Contap_SequenceNodeOfTheSequenceOfLine*)$self->Access();
+    }
+};
+%feature("shadow") Handle_Contap_SequenceNodeOfTheSequenceOfLine::~Handle_Contap_SequenceNodeOfTheSequenceOfLine %{
+def __del__(self):
+    try:
+        self.thisown = False
+        GarbageCollector.garbage.collect_object(self)
+    except:
+        pass
+%}
+
+%extend Handle_Contap_SequenceNodeOfTheSequenceOfLine {
+    void _kill_pointed() {
+        delete $self;
+    }
+};
+
+%nodefaultctor Contap_SequenceNodeOfTheSequenceOfPoint;
+class Contap_SequenceNodeOfTheSequenceOfPoint : public TCollection_SeqNode {
+	public:
+		%feature("compactdefaultargs") Contap_SequenceNodeOfTheSequenceOfPoint;
+		%feature("autodoc", "	:param I:
+	:type I: Contap_Point &
+	:param n:
+	:type n: TCollection_SeqNodePtr &
+	:param p:
+	:type p: TCollection_SeqNodePtr &
+	:rtype: None
+") Contap_SequenceNodeOfTheSequenceOfPoint;
+		 Contap_SequenceNodeOfTheSequenceOfPoint (const Contap_Point & I,const TCollection_SeqNodePtr & n,const TCollection_SeqNodePtr & p);
+		%feature("compactdefaultargs") Value;
+		%feature("autodoc", "	:rtype: Contap_Point
+") Value;
+		Contap_Point & Value ();
+};
+
+
+%feature("shadow") Contap_SequenceNodeOfTheSequenceOfPoint::~Contap_SequenceNodeOfTheSequenceOfPoint %{
+def __del__(self):
+	try:
+		self.thisown = False
+		GarbageCollector.garbage.collect_object(self)
+	except:
+		pass
+%}
+
+%extend Contap_SequenceNodeOfTheSequenceOfPoint {
+	void _kill_pointed() {
+		delete $self;
+	}
+};
+%extend Contap_SequenceNodeOfTheSequenceOfPoint {
+	Handle_Contap_SequenceNodeOfTheSequenceOfPoint GetHandle() {
+	return *(Handle_Contap_SequenceNodeOfTheSequenceOfPoint*) &$self;
+	}
+};
+
+%nodefaultctor Handle_Contap_SequenceNodeOfTheSequenceOfPoint;
+class Handle_Contap_SequenceNodeOfTheSequenceOfPoint : public Handle_TCollection_SeqNode {
+
+    public:
+        // constructors
+        Handle_Contap_SequenceNodeOfTheSequenceOfPoint();
+        Handle_Contap_SequenceNodeOfTheSequenceOfPoint(const Handle_Contap_SequenceNodeOfTheSequenceOfPoint &aHandle);
+        Handle_Contap_SequenceNodeOfTheSequenceOfPoint(const Contap_SequenceNodeOfTheSequenceOfPoint *anItem);
+        void Nullify();
+        Standard_Boolean IsNull() const;
+        static const Handle_Contap_SequenceNodeOfTheSequenceOfPoint DownCast(const Handle_Standard_Transient &AnObject);
+
+};
+%extend Handle_Contap_SequenceNodeOfTheSequenceOfPoint {
+    Contap_SequenceNodeOfTheSequenceOfPoint* GetObject() {
+    return (Contap_SequenceNodeOfTheSequenceOfPoint*)$self->Access();
+    }
+};
+%feature("shadow") Handle_Contap_SequenceNodeOfTheSequenceOfPoint::~Handle_Contap_SequenceNodeOfTheSequenceOfPoint %{
+def __del__(self):
+    try:
+        self.thisown = False
+        GarbageCollector.garbage.collect_object(self)
+    except:
+        pass
+%}
+
+%extend Handle_Contap_SequenceNodeOfTheSequenceOfPoint {
+    void _kill_pointed() {
+        delete $self;
+    }
+};
+
+%nodefaultctor Contap_SequenceOfIWLineOfTheIWalking;
+class Contap_SequenceOfIWLineOfTheIWalking : public TCollection_BaseSequence {
+	public:
+		%feature("compactdefaultargs") Contap_SequenceOfIWLineOfTheIWalking;
 		%feature("autodoc", "	:rtype: None
-") Contap_TheSequenceOfLineOfContour;
-		 Contap_TheSequenceOfLineOfContour ();
+") Contap_SequenceOfIWLineOfTheIWalking;
+		 Contap_SequenceOfIWLineOfTheIWalking ();
+		%feature("compactdefaultargs") Contap_SequenceOfIWLineOfTheIWalking;
+		%feature("autodoc", "	:param Other:
+	:type Other: Contap_SequenceOfIWLineOfTheIWalking &
+	:rtype: None
+") Contap_SequenceOfIWLineOfTheIWalking;
+		 Contap_SequenceOfIWLineOfTheIWalking (const Contap_SequenceOfIWLineOfTheIWalking & Other);
+		%feature("compactdefaultargs") Clear;
 		%feature("autodoc", "	:rtype: None
 ") Clear;
 		void Clear ();
+		%feature("compactdefaultargs") Assign;
 		%feature("autodoc", "	:param Other:
-	:type Other: Contap_TheSequenceOfLineOfContour &
-	:rtype: Contap_TheSequenceOfLineOfContour
+	:type Other: Contap_SequenceOfIWLineOfTheIWalking &
+	:rtype: Contap_SequenceOfIWLineOfTheIWalking
 ") Assign;
-		const Contap_TheSequenceOfLineOfContour & Assign (const Contap_TheSequenceOfLineOfContour & Other);
+		const Contap_SequenceOfIWLineOfTheIWalking & Assign (const Contap_SequenceOfIWLineOfTheIWalking & Other);
+		%feature("compactdefaultargs") operator =;
 		%feature("autodoc", "	:param Other:
-	:type Other: Contap_TheSequenceOfLineOfContour &
-	:rtype: Contap_TheSequenceOfLineOfContour
+	:type Other: Contap_SequenceOfIWLineOfTheIWalking &
+	:rtype: Contap_SequenceOfIWLineOfTheIWalking
 ") operator=;
-		const Contap_TheSequenceOfLineOfContour & operator = (const Contap_TheSequenceOfLineOfContour & Other);
+		const Contap_SequenceOfIWLineOfTheIWalking & operator = (const Contap_SequenceOfIWLineOfTheIWalking & Other);
+		%feature("compactdefaultargs") Append;
 		%feature("autodoc", "	:param T:
-	:type T: Contap_TheLineOfContour &
+	:type T: Handle_Contap_TheIWLineOfTheIWalking &
 	:rtype: None
 ") Append;
-		void Append (const Contap_TheLineOfContour & T);
+		void Append (const Handle_Contap_TheIWLineOfTheIWalking & T);
+		%feature("compactdefaultargs") Append;
 		%feature("autodoc", "	:param S:
-	:type S: Contap_TheSequenceOfLineOfContour &
+	:type S: Contap_SequenceOfIWLineOfTheIWalking &
 	:rtype: None
 ") Append;
-		void Append (Contap_TheSequenceOfLineOfContour & S);
+		void Append (Contap_SequenceOfIWLineOfTheIWalking & S);
+		%feature("compactdefaultargs") Prepend;
 		%feature("autodoc", "	:param T:
-	:type T: Contap_TheLineOfContour &
+	:type T: Handle_Contap_TheIWLineOfTheIWalking &
 	:rtype: None
 ") Prepend;
-		void Prepend (const Contap_TheLineOfContour & T);
+		void Prepend (const Handle_Contap_TheIWLineOfTheIWalking & T);
+		%feature("compactdefaultargs") Prepend;
 		%feature("autodoc", "	:param S:
-	:type S: Contap_TheSequenceOfLineOfContour &
+	:type S: Contap_SequenceOfIWLineOfTheIWalking &
 	:rtype: None
 ") Prepend;
-		void Prepend (Contap_TheSequenceOfLineOfContour & S);
+		void Prepend (Contap_SequenceOfIWLineOfTheIWalking & S);
+		%feature("compactdefaultargs") InsertBefore;
 		%feature("autodoc", "	:param Index:
-	:type Index: Standard_Integer
+	:type Index: int
 	:param T:
-	:type T: Contap_TheLineOfContour &
+	:type T: Handle_Contap_TheIWLineOfTheIWalking &
 	:rtype: None
 ") InsertBefore;
-		void InsertBefore (const Standard_Integer Index,const Contap_TheLineOfContour & T);
+		void InsertBefore (const Standard_Integer Index,const Handle_Contap_TheIWLineOfTheIWalking & T);
+		%feature("compactdefaultargs") InsertBefore;
 		%feature("autodoc", "	:param Index:
-	:type Index: Standard_Integer
+	:type Index: int
 	:param S:
-	:type S: Contap_TheSequenceOfLineOfContour &
+	:type S: Contap_SequenceOfIWLineOfTheIWalking &
 	:rtype: None
 ") InsertBefore;
-		void InsertBefore (const Standard_Integer Index,Contap_TheSequenceOfLineOfContour & S);
+		void InsertBefore (const Standard_Integer Index,Contap_SequenceOfIWLineOfTheIWalking & S);
+		%feature("compactdefaultargs") InsertAfter;
 		%feature("autodoc", "	:param Index:
-	:type Index: Standard_Integer
+	:type Index: int
 	:param T:
-	:type T: Contap_TheLineOfContour &
+	:type T: Handle_Contap_TheIWLineOfTheIWalking &
 	:rtype: None
 ") InsertAfter;
-		void InsertAfter (const Standard_Integer Index,const Contap_TheLineOfContour & T);
+		void InsertAfter (const Standard_Integer Index,const Handle_Contap_TheIWLineOfTheIWalking & T);
+		%feature("compactdefaultargs") InsertAfter;
 		%feature("autodoc", "	:param Index:
-	:type Index: Standard_Integer
+	:type Index: int
 	:param S:
-	:type S: Contap_TheSequenceOfLineOfContour &
+	:type S: Contap_SequenceOfIWLineOfTheIWalking &
 	:rtype: None
 ") InsertAfter;
-		void InsertAfter (const Standard_Integer Index,Contap_TheSequenceOfLineOfContour & S);
-		%feature("autodoc", "	:rtype: Contap_TheLineOfContour
+		void InsertAfter (const Standard_Integer Index,Contap_SequenceOfIWLineOfTheIWalking & S);
+		%feature("compactdefaultargs") First;
+		%feature("autodoc", "	:rtype: Handle_Contap_TheIWLineOfTheIWalking
 ") First;
-		const Contap_TheLineOfContour & First ();
-		%feature("autodoc", "	:rtype: Contap_TheLineOfContour
+		const Handle_Contap_TheIWLineOfTheIWalking & First ();
+		%feature("compactdefaultargs") Last;
+		%feature("autodoc", "	:rtype: Handle_Contap_TheIWLineOfTheIWalking
 ") Last;
-		const Contap_TheLineOfContour & Last ();
+		const Handle_Contap_TheIWLineOfTheIWalking & Last ();
+		%feature("compactdefaultargs") Split;
 		%feature("autodoc", "	:param Index:
-	:type Index: Standard_Integer
+	:type Index: int
 	:param Sub:
-	:type Sub: Contap_TheSequenceOfLineOfContour &
+	:type Sub: Contap_SequenceOfIWLineOfTheIWalking &
 	:rtype: None
 ") Split;
-		void Split (const Standard_Integer Index,Contap_TheSequenceOfLineOfContour & Sub);
+		void Split (const Standard_Integer Index,Contap_SequenceOfIWLineOfTheIWalking & Sub);
+		%feature("compactdefaultargs") Value;
 		%feature("autodoc", "	:param Index:
-	:type Index: Standard_Integer
-	:rtype: Contap_TheLineOfContour
+	:type Index: int
+	:rtype: Handle_Contap_TheIWLineOfTheIWalking
 ") Value;
-		const Contap_TheLineOfContour & Value (const Standard_Integer Index);
+		const Handle_Contap_TheIWLineOfTheIWalking & Value (const Standard_Integer Index);
+		%feature("compactdefaultargs") SetValue;
 		%feature("autodoc", "	:param Index:
-	:type Index: Standard_Integer
+	:type Index: int
 	:param I:
-	:type I: Contap_TheLineOfContour &
+	:type I: Handle_Contap_TheIWLineOfTheIWalking &
 	:rtype: None
 ") SetValue;
-		void SetValue (const Standard_Integer Index,const Contap_TheLineOfContour & I);
+		void SetValue (const Standard_Integer Index,const Handle_Contap_TheIWLineOfTheIWalking & I);
+		%feature("compactdefaultargs") ChangeValue;
 		%feature("autodoc", "	:param Index:
-	:type Index: Standard_Integer
-	:rtype: Contap_TheLineOfContour
+	:type Index: int
+	:rtype: Handle_Contap_TheIWLineOfTheIWalking
 ") ChangeValue;
-		Contap_TheLineOfContour & ChangeValue (const Standard_Integer Index);
+		Handle_Contap_TheIWLineOfTheIWalking & ChangeValue (const Standard_Integer Index);
+		%feature("compactdefaultargs") Remove;
 		%feature("autodoc", "	:param Index:
-	:type Index: Standard_Integer
+	:type Index: int
 	:rtype: None
 ") Remove;
 		void Remove (const Standard_Integer Index);
+		%feature("compactdefaultargs") Remove;
 		%feature("autodoc", "	:param FromIndex:
-	:type FromIndex: Standard_Integer
+	:type FromIndex: int
 	:param ToIndex:
-	:type ToIndex: Standard_Integer
+	:type ToIndex: int
 	:rtype: None
 ") Remove;
 		void Remove (const Standard_Integer FromIndex,const Standard_Integer ToIndex);
 };
 
 
-%feature("shadow") Contap_TheSequenceOfLineOfContour::~Contap_TheSequenceOfLineOfContour %{
+%feature("shadow") Contap_SequenceOfIWLineOfTheIWalking::~Contap_SequenceOfIWLineOfTheIWalking %{
 def __del__(self):
 	try:
 		self.thisown = False
@@ -2517,124 +1698,150 @@ def __del__(self):
 		pass
 %}
 
-%extend Contap_TheSequenceOfLineOfContour {
+%extend Contap_SequenceOfIWLineOfTheIWalking {
 	void _kill_pointed() {
 		delete $self;
 	}
 };
-%nodefaultctor Contap_TheSequenceOfPointOfContour;
-class Contap_TheSequenceOfPointOfContour : public TCollection_BaseSequence {
+%nodefaultctor Contap_SequenceOfPathPointOfTheSearch;
+class Contap_SequenceOfPathPointOfTheSearch : public TCollection_BaseSequence {
 	public:
+		%feature("compactdefaultargs") Contap_SequenceOfPathPointOfTheSearch;
 		%feature("autodoc", "	:rtype: None
-") Contap_TheSequenceOfPointOfContour;
-		 Contap_TheSequenceOfPointOfContour ();
+") Contap_SequenceOfPathPointOfTheSearch;
+		 Contap_SequenceOfPathPointOfTheSearch ();
+		%feature("compactdefaultargs") Contap_SequenceOfPathPointOfTheSearch;
+		%feature("autodoc", "	:param Other:
+	:type Other: Contap_SequenceOfPathPointOfTheSearch &
+	:rtype: None
+") Contap_SequenceOfPathPointOfTheSearch;
+		 Contap_SequenceOfPathPointOfTheSearch (const Contap_SequenceOfPathPointOfTheSearch & Other);
+		%feature("compactdefaultargs") Clear;
 		%feature("autodoc", "	:rtype: None
 ") Clear;
 		void Clear ();
+		%feature("compactdefaultargs") Assign;
 		%feature("autodoc", "	:param Other:
-	:type Other: Contap_TheSequenceOfPointOfContour &
-	:rtype: Contap_TheSequenceOfPointOfContour
+	:type Other: Contap_SequenceOfPathPointOfTheSearch &
+	:rtype: Contap_SequenceOfPathPointOfTheSearch
 ") Assign;
-		const Contap_TheSequenceOfPointOfContour & Assign (const Contap_TheSequenceOfPointOfContour & Other);
+		const Contap_SequenceOfPathPointOfTheSearch & Assign (const Contap_SequenceOfPathPointOfTheSearch & Other);
+		%feature("compactdefaultargs") operator =;
 		%feature("autodoc", "	:param Other:
-	:type Other: Contap_TheSequenceOfPointOfContour &
-	:rtype: Contap_TheSequenceOfPointOfContour
+	:type Other: Contap_SequenceOfPathPointOfTheSearch &
+	:rtype: Contap_SequenceOfPathPointOfTheSearch
 ") operator=;
-		const Contap_TheSequenceOfPointOfContour & operator = (const Contap_TheSequenceOfPointOfContour & Other);
+		const Contap_SequenceOfPathPointOfTheSearch & operator = (const Contap_SequenceOfPathPointOfTheSearch & Other);
+		%feature("compactdefaultargs") Append;
 		%feature("autodoc", "	:param T:
-	:type T: Contap_ThePointOfContour &
+	:type T: Contap_ThePathPointOfTheSearch &
 	:rtype: None
 ") Append;
-		void Append (const Contap_ThePointOfContour & T);
+		void Append (const Contap_ThePathPointOfTheSearch & T);
+		%feature("compactdefaultargs") Append;
 		%feature("autodoc", "	:param S:
-	:type S: Contap_TheSequenceOfPointOfContour &
+	:type S: Contap_SequenceOfPathPointOfTheSearch &
 	:rtype: None
 ") Append;
-		void Append (Contap_TheSequenceOfPointOfContour & S);
+		void Append (Contap_SequenceOfPathPointOfTheSearch & S);
+		%feature("compactdefaultargs") Prepend;
 		%feature("autodoc", "	:param T:
-	:type T: Contap_ThePointOfContour &
+	:type T: Contap_ThePathPointOfTheSearch &
 	:rtype: None
 ") Prepend;
-		void Prepend (const Contap_ThePointOfContour & T);
+		void Prepend (const Contap_ThePathPointOfTheSearch & T);
+		%feature("compactdefaultargs") Prepend;
 		%feature("autodoc", "	:param S:
-	:type S: Contap_TheSequenceOfPointOfContour &
+	:type S: Contap_SequenceOfPathPointOfTheSearch &
 	:rtype: None
 ") Prepend;
-		void Prepend (Contap_TheSequenceOfPointOfContour & S);
+		void Prepend (Contap_SequenceOfPathPointOfTheSearch & S);
+		%feature("compactdefaultargs") InsertBefore;
 		%feature("autodoc", "	:param Index:
-	:type Index: Standard_Integer
+	:type Index: int
 	:param T:
-	:type T: Contap_ThePointOfContour &
+	:type T: Contap_ThePathPointOfTheSearch &
 	:rtype: None
 ") InsertBefore;
-		void InsertBefore (const Standard_Integer Index,const Contap_ThePointOfContour & T);
+		void InsertBefore (const Standard_Integer Index,const Contap_ThePathPointOfTheSearch & T);
+		%feature("compactdefaultargs") InsertBefore;
 		%feature("autodoc", "	:param Index:
-	:type Index: Standard_Integer
+	:type Index: int
 	:param S:
-	:type S: Contap_TheSequenceOfPointOfContour &
+	:type S: Contap_SequenceOfPathPointOfTheSearch &
 	:rtype: None
 ") InsertBefore;
-		void InsertBefore (const Standard_Integer Index,Contap_TheSequenceOfPointOfContour & S);
+		void InsertBefore (const Standard_Integer Index,Contap_SequenceOfPathPointOfTheSearch & S);
+		%feature("compactdefaultargs") InsertAfter;
 		%feature("autodoc", "	:param Index:
-	:type Index: Standard_Integer
+	:type Index: int
 	:param T:
-	:type T: Contap_ThePointOfContour &
+	:type T: Contap_ThePathPointOfTheSearch &
 	:rtype: None
 ") InsertAfter;
-		void InsertAfter (const Standard_Integer Index,const Contap_ThePointOfContour & T);
+		void InsertAfter (const Standard_Integer Index,const Contap_ThePathPointOfTheSearch & T);
+		%feature("compactdefaultargs") InsertAfter;
 		%feature("autodoc", "	:param Index:
-	:type Index: Standard_Integer
+	:type Index: int
 	:param S:
-	:type S: Contap_TheSequenceOfPointOfContour &
+	:type S: Contap_SequenceOfPathPointOfTheSearch &
 	:rtype: None
 ") InsertAfter;
-		void InsertAfter (const Standard_Integer Index,Contap_TheSequenceOfPointOfContour & S);
-		%feature("autodoc", "	:rtype: Contap_ThePointOfContour
+		void InsertAfter (const Standard_Integer Index,Contap_SequenceOfPathPointOfTheSearch & S);
+		%feature("compactdefaultargs") First;
+		%feature("autodoc", "	:rtype: Contap_ThePathPointOfTheSearch
 ") First;
-		const Contap_ThePointOfContour & First ();
-		%feature("autodoc", "	:rtype: Contap_ThePointOfContour
+		const Contap_ThePathPointOfTheSearch & First ();
+		%feature("compactdefaultargs") Last;
+		%feature("autodoc", "	:rtype: Contap_ThePathPointOfTheSearch
 ") Last;
-		const Contap_ThePointOfContour & Last ();
+		const Contap_ThePathPointOfTheSearch & Last ();
+		%feature("compactdefaultargs") Split;
 		%feature("autodoc", "	:param Index:
-	:type Index: Standard_Integer
+	:type Index: int
 	:param Sub:
-	:type Sub: Contap_TheSequenceOfPointOfContour &
+	:type Sub: Contap_SequenceOfPathPointOfTheSearch &
 	:rtype: None
 ") Split;
-		void Split (const Standard_Integer Index,Contap_TheSequenceOfPointOfContour & Sub);
+		void Split (const Standard_Integer Index,Contap_SequenceOfPathPointOfTheSearch & Sub);
+		%feature("compactdefaultargs") Value;
 		%feature("autodoc", "	:param Index:
-	:type Index: Standard_Integer
-	:rtype: Contap_ThePointOfContour
+	:type Index: int
+	:rtype: Contap_ThePathPointOfTheSearch
 ") Value;
-		const Contap_ThePointOfContour & Value (const Standard_Integer Index);
+		const Contap_ThePathPointOfTheSearch & Value (const Standard_Integer Index);
+		%feature("compactdefaultargs") SetValue;
 		%feature("autodoc", "	:param Index:
-	:type Index: Standard_Integer
+	:type Index: int
 	:param I:
-	:type I: Contap_ThePointOfContour &
+	:type I: Contap_ThePathPointOfTheSearch &
 	:rtype: None
 ") SetValue;
-		void SetValue (const Standard_Integer Index,const Contap_ThePointOfContour & I);
+		void SetValue (const Standard_Integer Index,const Contap_ThePathPointOfTheSearch & I);
+		%feature("compactdefaultargs") ChangeValue;
 		%feature("autodoc", "	:param Index:
-	:type Index: Standard_Integer
-	:rtype: Contap_ThePointOfContour
+	:type Index: int
+	:rtype: Contap_ThePathPointOfTheSearch
 ") ChangeValue;
-		Contap_ThePointOfContour & ChangeValue (const Standard_Integer Index);
+		Contap_ThePathPointOfTheSearch & ChangeValue (const Standard_Integer Index);
+		%feature("compactdefaultargs") Remove;
 		%feature("autodoc", "	:param Index:
-	:type Index: Standard_Integer
+	:type Index: int
 	:rtype: None
 ") Remove;
 		void Remove (const Standard_Integer Index);
+		%feature("compactdefaultargs") Remove;
 		%feature("autodoc", "	:param FromIndex:
-	:type FromIndex: Standard_Integer
+	:type FromIndex: int
 	:param ToIndex:
-	:type ToIndex: Standard_Integer
+	:type ToIndex: int
 	:rtype: None
 ") Remove;
 		void Remove (const Standard_Integer FromIndex,const Standard_Integer ToIndex);
 };
 
 
-%feature("shadow") Contap_TheSequenceOfPointOfContour::~Contap_TheSequenceOfPointOfContour %{
+%feature("shadow") Contap_SequenceOfPathPointOfTheSearch::~Contap_SequenceOfPathPointOfTheSearch %{
 def __del__(self):
 	try:
 		self.thisown = False
@@ -2643,32 +1850,189 @@ def __del__(self):
 		pass
 %}
 
-%extend Contap_TheSequenceOfPointOfContour {
+%extend Contap_SequenceOfPathPointOfTheSearch {
 	void _kill_pointed() {
 		delete $self;
 	}
 };
-%nodefaultctor Contap_TheSurfFunctionOfContour;
-class Contap_TheSurfFunctionOfContour : public math_FunctionSetWithDerivatives {
+%nodefaultctor Contap_SequenceOfSegmentOfTheSearch;
+class Contap_SequenceOfSegmentOfTheSearch : public TCollection_BaseSequence {
 	public:
+		%feature("compactdefaultargs") Contap_SequenceOfSegmentOfTheSearch;
 		%feature("autodoc", "	:rtype: None
-") Contap_TheSurfFunctionOfContour;
-		 Contap_TheSurfFunctionOfContour ();
+") Contap_SequenceOfSegmentOfTheSearch;
+		 Contap_SequenceOfSegmentOfTheSearch ();
+		%feature("compactdefaultargs") Contap_SequenceOfSegmentOfTheSearch;
+		%feature("autodoc", "	:param Other:
+	:type Other: Contap_SequenceOfSegmentOfTheSearch &
+	:rtype: None
+") Contap_SequenceOfSegmentOfTheSearch;
+		 Contap_SequenceOfSegmentOfTheSearch (const Contap_SequenceOfSegmentOfTheSearch & Other);
+		%feature("compactdefaultargs") Clear;
+		%feature("autodoc", "	:rtype: None
+") Clear;
+		void Clear ();
+		%feature("compactdefaultargs") Assign;
+		%feature("autodoc", "	:param Other:
+	:type Other: Contap_SequenceOfSegmentOfTheSearch &
+	:rtype: Contap_SequenceOfSegmentOfTheSearch
+") Assign;
+		const Contap_SequenceOfSegmentOfTheSearch & Assign (const Contap_SequenceOfSegmentOfTheSearch & Other);
+		%feature("compactdefaultargs") operator =;
+		%feature("autodoc", "	:param Other:
+	:type Other: Contap_SequenceOfSegmentOfTheSearch &
+	:rtype: Contap_SequenceOfSegmentOfTheSearch
+") operator=;
+		const Contap_SequenceOfSegmentOfTheSearch & operator = (const Contap_SequenceOfSegmentOfTheSearch & Other);
+		%feature("compactdefaultargs") Append;
+		%feature("autodoc", "	:param T:
+	:type T: Contap_TheSegmentOfTheSearch &
+	:rtype: None
+") Append;
+		void Append (const Contap_TheSegmentOfTheSearch & T);
+		%feature("compactdefaultargs") Append;
+		%feature("autodoc", "	:param S:
+	:type S: Contap_SequenceOfSegmentOfTheSearch &
+	:rtype: None
+") Append;
+		void Append (Contap_SequenceOfSegmentOfTheSearch & S);
+		%feature("compactdefaultargs") Prepend;
+		%feature("autodoc", "	:param T:
+	:type T: Contap_TheSegmentOfTheSearch &
+	:rtype: None
+") Prepend;
+		void Prepend (const Contap_TheSegmentOfTheSearch & T);
+		%feature("compactdefaultargs") Prepend;
+		%feature("autodoc", "	:param S:
+	:type S: Contap_SequenceOfSegmentOfTheSearch &
+	:rtype: None
+") Prepend;
+		void Prepend (Contap_SequenceOfSegmentOfTheSearch & S);
+		%feature("compactdefaultargs") InsertBefore;
+		%feature("autodoc", "	:param Index:
+	:type Index: int
+	:param T:
+	:type T: Contap_TheSegmentOfTheSearch &
+	:rtype: None
+") InsertBefore;
+		void InsertBefore (const Standard_Integer Index,const Contap_TheSegmentOfTheSearch & T);
+		%feature("compactdefaultargs") InsertBefore;
+		%feature("autodoc", "	:param Index:
+	:type Index: int
+	:param S:
+	:type S: Contap_SequenceOfSegmentOfTheSearch &
+	:rtype: None
+") InsertBefore;
+		void InsertBefore (const Standard_Integer Index,Contap_SequenceOfSegmentOfTheSearch & S);
+		%feature("compactdefaultargs") InsertAfter;
+		%feature("autodoc", "	:param Index:
+	:type Index: int
+	:param T:
+	:type T: Contap_TheSegmentOfTheSearch &
+	:rtype: None
+") InsertAfter;
+		void InsertAfter (const Standard_Integer Index,const Contap_TheSegmentOfTheSearch & T);
+		%feature("compactdefaultargs") InsertAfter;
+		%feature("autodoc", "	:param Index:
+	:type Index: int
+	:param S:
+	:type S: Contap_SequenceOfSegmentOfTheSearch &
+	:rtype: None
+") InsertAfter;
+		void InsertAfter (const Standard_Integer Index,Contap_SequenceOfSegmentOfTheSearch & S);
+		%feature("compactdefaultargs") First;
+		%feature("autodoc", "	:rtype: Contap_TheSegmentOfTheSearch
+") First;
+		const Contap_TheSegmentOfTheSearch & First ();
+		%feature("compactdefaultargs") Last;
+		%feature("autodoc", "	:rtype: Contap_TheSegmentOfTheSearch
+") Last;
+		const Contap_TheSegmentOfTheSearch & Last ();
+		%feature("compactdefaultargs") Split;
+		%feature("autodoc", "	:param Index:
+	:type Index: int
+	:param Sub:
+	:type Sub: Contap_SequenceOfSegmentOfTheSearch &
+	:rtype: None
+") Split;
+		void Split (const Standard_Integer Index,Contap_SequenceOfSegmentOfTheSearch & Sub);
+		%feature("compactdefaultargs") Value;
+		%feature("autodoc", "	:param Index:
+	:type Index: int
+	:rtype: Contap_TheSegmentOfTheSearch
+") Value;
+		const Contap_TheSegmentOfTheSearch & Value (const Standard_Integer Index);
+		%feature("compactdefaultargs") SetValue;
+		%feature("autodoc", "	:param Index:
+	:type Index: int
+	:param I:
+	:type I: Contap_TheSegmentOfTheSearch &
+	:rtype: None
+") SetValue;
+		void SetValue (const Standard_Integer Index,const Contap_TheSegmentOfTheSearch & I);
+		%feature("compactdefaultargs") ChangeValue;
+		%feature("autodoc", "	:param Index:
+	:type Index: int
+	:rtype: Contap_TheSegmentOfTheSearch
+") ChangeValue;
+		Contap_TheSegmentOfTheSearch & ChangeValue (const Standard_Integer Index);
+		%feature("compactdefaultargs") Remove;
+		%feature("autodoc", "	:param Index:
+	:type Index: int
+	:rtype: None
+") Remove;
+		void Remove (const Standard_Integer Index);
+		%feature("compactdefaultargs") Remove;
+		%feature("autodoc", "	:param FromIndex:
+	:type FromIndex: int
+	:param ToIndex:
+	:type ToIndex: int
+	:rtype: None
+") Remove;
+		void Remove (const Standard_Integer FromIndex,const Standard_Integer ToIndex);
+};
+
+
+%feature("shadow") Contap_SequenceOfSegmentOfTheSearch::~Contap_SequenceOfSegmentOfTheSearch %{
+def __del__(self):
+	try:
+		self.thisown = False
+		GarbageCollector.garbage.collect_object(self)
+	except:
+		pass
+%}
+
+%extend Contap_SequenceOfSegmentOfTheSearch {
+	void _kill_pointed() {
+		delete $self;
+	}
+};
+%nodefaultctor Contap_SurfFunction;
+class Contap_SurfFunction : public math_FunctionSetWithDerivatives {
+	public:
+		%feature("compactdefaultargs") Contap_SurfFunction;
+		%feature("autodoc", "	:rtype: None
+") Contap_SurfFunction;
+		 Contap_SurfFunction ();
+		%feature("compactdefaultargs") Set;
 		%feature("autodoc", "	:param S:
 	:type S: Handle_Adaptor3d_HSurface &
 	:rtype: None
 ") Set;
 		void Set (const Handle_Adaptor3d_HSurface & S);
+		%feature("compactdefaultargs") Set;
 		%feature("autodoc", "	:param Eye:
 	:type Eye: gp_Pnt
 	:rtype: None
 ") Set;
 		void Set (const gp_Pnt & Eye);
+		%feature("compactdefaultargs") Set;
 		%feature("autodoc", "	:param Dir:
 	:type Dir: gp_Dir
 	:rtype: None
 ") Set;
 		void Set (const gp_Dir & Dir);
+		%feature("compactdefaultargs") Set;
 		%feature("autodoc", "	:param Dir:
 	:type Dir: gp_Dir
 	:param Angle:
@@ -2676,6 +2040,7 @@ class Contap_TheSurfFunctionOfContour : public math_FunctionSetWithDerivatives {
 	:rtype: None
 ") Set;
 		void Set (const gp_Dir & Dir,const Standard_Real Angle);
+		%feature("compactdefaultargs") Set;
 		%feature("autodoc", "	:param Eye:
 	:type Eye: gp_Pnt
 	:param Angle:
@@ -2683,31 +2048,45 @@ class Contap_TheSurfFunctionOfContour : public math_FunctionSetWithDerivatives {
 	:rtype: None
 ") Set;
 		void Set (const gp_Pnt & Eye,const Standard_Real Angle);
+		%feature("compactdefaultargs") Set;
 		%feature("autodoc", "	:param Tolerance:
 	:type Tolerance: float
 	:rtype: None
 ") Set;
 		void Set (const Standard_Real Tolerance);
-		%feature("autodoc", "	:rtype: int
+		%feature("compactdefaultargs") NbVariables;
+		%feature("autodoc", "	* This method has to return 2.
+
+	:rtype: int
 ") NbVariables;
 		Standard_Integer NbVariables ();
-		%feature("autodoc", "	:rtype: int
+		%feature("compactdefaultargs") NbEquations;
+		%feature("autodoc", "	* This method has to return 1.
+
+	:rtype: int
 ") NbEquations;
 		Standard_Integer NbEquations ();
-		%feature("autodoc", "	:param X:
+		%feature("compactdefaultargs") Value;
+		%feature("autodoc", "	* The dimension of F is 1.
+
+	:param X:
 	:type X: math_Vector &
 	:param F:
 	:type F: math_Vector &
 	:rtype: bool
 ") Value;
 		Standard_Boolean Value (const math_Vector & X,math_Vector & F);
-		%feature("autodoc", "	:param X:
+		%feature("compactdefaultargs") Derivatives;
+		%feature("autodoc", "	* The dimension of D is (1,2).
+
+	:param X:
 	:type X: math_Vector &
 	:param D:
 	:type D: math_Matrix &
 	:rtype: bool
 ") Derivatives;
 		Standard_Boolean Derivatives (const math_Vector & X,math_Matrix & D);
+		%feature("compactdefaultargs") Values;
 		%feature("autodoc", "	:param X:
 	:type X: math_Vector &
 	:param F:
@@ -2717,43 +2096,60 @@ class Contap_TheSurfFunctionOfContour : public math_FunctionSetWithDerivatives {
 	:rtype: bool
 ") Values;
 		Standard_Boolean Values (const math_Vector & X,math_Vector & F,math_Matrix & D);
-		%feature("autodoc", "	:rtype: float
+		%feature("compactdefaultargs") Root;
+		%feature("autodoc", "	* Root is the value of the function at the solution. It is a vector of dimension 1, i-e a real.
+
+	:rtype: float
 ") Root;
 		Standard_Real Root ();
-		%feature("autodoc", "	:rtype: float
+		%feature("compactdefaultargs") Tolerance;
+		%feature("autodoc", "	* Returns the value Tol so that if Abs(Func.Root())<Tol the function is considered null.
+
+	:rtype: float
 ") Tolerance;
 		Standard_Real Tolerance ();
-		%feature("autodoc", "	:rtype: gp_Pnt
+		%feature("compactdefaultargs") Point;
+		%feature("autodoc", "	* Returns the value of the solution point on the surface.
+
+	:rtype: gp_Pnt
 ") Point;
 		const gp_Pnt  Point ();
+		%feature("compactdefaultargs") IsTangent;
 		%feature("autodoc", "	:rtype: bool
 ") IsTangent;
 		Standard_Boolean IsTangent ();
+		%feature("compactdefaultargs") Direction3d;
 		%feature("autodoc", "	:rtype: gp_Vec
 ") Direction3d;
 		const gp_Vec  Direction3d ();
+		%feature("compactdefaultargs") Direction2d;
 		%feature("autodoc", "	:rtype: gp_Dir2d
 ") Direction2d;
 		const gp_Dir2d  Direction2d ();
+		%feature("compactdefaultargs") FunctionType;
 		%feature("autodoc", "	:rtype: Contap_TFunction
 ") FunctionType;
 		Contap_TFunction FunctionType ();
+		%feature("compactdefaultargs") Eye;
 		%feature("autodoc", "	:rtype: gp_Pnt
 ") Eye;
 		const gp_Pnt  Eye ();
+		%feature("compactdefaultargs") Direction;
 		%feature("autodoc", "	:rtype: gp_Dir
 ") Direction;
 		const gp_Dir  Direction ();
+		%feature("compactdefaultargs") Angle;
 		%feature("autodoc", "	:rtype: float
 ") Angle;
 		Standard_Real Angle ();
+		%feature("compactdefaultargs") Surface;
 		%feature("autodoc", "	:rtype: Handle_Adaptor3d_HSurface
 ") Surface;
 		const Handle_Adaptor3d_HSurface & Surface ();
 };
 
 
-%feature("shadow") Contap_TheSurfFunctionOfContour::~Contap_TheSurfFunctionOfContour %{
+%feature("shadow") Contap_SurfFunction::~Contap_SurfFunction %{
 def __del__(self):
 	try:
 		self.thisown = False
@@ -2762,15 +2158,17 @@ def __del__(self):
 		pass
 %}
 
-%extend Contap_TheSurfFunctionOfContour {
+%extend Contap_SurfFunction {
 	void _kill_pointed() {
 		delete $self;
 	}
 };
-%nodefaultctor Contap_TheSurfPropsOfContour;
-class Contap_TheSurfPropsOfContour {
+class Contap_SurfProps {
 	public:
-		%feature("autodoc", "	:param S:
+		%feature("compactdefaultargs") Normale;
+		%feature("autodoc", "	* Computes the point <P>, and normal vector <N> on <S> at parameters U,V.
+
+	:param S:
 	:type S: Handle_Adaptor3d_HSurface &
 	:param U:
 	:type U: float
@@ -2783,7 +2181,10 @@ class Contap_TheSurfPropsOfContour {
 	:rtype: void
 ") Normale;
 		static void Normale (const Handle_Adaptor3d_HSurface & S,const Standard_Real U,const Standard_Real V,gp_Pnt & P,gp_Vec & N);
-		%feature("autodoc", "	:param S:
+		%feature("compactdefaultargs") DerivAndNorm;
+		%feature("autodoc", "	* Computes the point <P>, and normal vector <N> on <S> at parameters U,V.
+
+	:param S:
 	:type S: Handle_Adaptor3d_HSurface &
 	:param U:
 	:type U: float
@@ -2800,7 +2201,10 @@ class Contap_TheSurfPropsOfContour {
 	:rtype: void
 ") DerivAndNorm;
 		static void DerivAndNorm (const Handle_Adaptor3d_HSurface & S,const Standard_Real U,const Standard_Real V,gp_Pnt & P,gp_Vec & d1u,gp_Vec & d1v,gp_Vec & N);
-		%feature("autodoc", "	:param S:
+		%feature("compactdefaultargs") NormAndDn;
+		%feature("autodoc", "	* Computes the point <P>, normal vector <N>, and its derivatives <Dnu> and <Dnv> on <S> at parameters U,V.
+
+	:param S:
 	:type S: Handle_Adaptor3d_HSurface &
 	:param U:
 	:type U: float
@@ -2820,7 +2224,7 @@ class Contap_TheSurfPropsOfContour {
 };
 
 
-%feature("shadow") Contap_TheSurfPropsOfContour::~Contap_TheSurfPropsOfContour %{
+%feature("shadow") Contap_SurfProps::~Contap_SurfProps %{
 def __del__(self):
 	try:
 		self.thisown = False
@@ -2829,7 +2233,1117 @@ def __del__(self):
 		pass
 %}
 
-%extend Contap_TheSurfPropsOfContour {
+%extend Contap_SurfProps {
+	void _kill_pointed() {
+		delete $self;
+	}
+};
+%nodefaultctor Contap_TheHSequenceOfPoint;
+class Contap_TheHSequenceOfPoint : public MMgt_TShared {
+	public:
+		%feature("compactdefaultargs") Contap_TheHSequenceOfPoint;
+		%feature("autodoc", "	:rtype: None
+") Contap_TheHSequenceOfPoint;
+		 Contap_TheHSequenceOfPoint ();
+		%feature("compactdefaultargs") IsEmpty;
+		%feature("autodoc", "	:rtype: bool
+") IsEmpty;
+		Standard_Boolean IsEmpty ();
+		%feature("compactdefaultargs") Length;
+		%feature("autodoc", "	:rtype: int
+") Length;
+		Standard_Integer Length ();
+		%feature("compactdefaultargs") Clear;
+		%feature("autodoc", "	:rtype: None
+") Clear;
+		void Clear ();
+		%feature("compactdefaultargs") Append;
+		%feature("autodoc", "	:param anItem:
+	:type anItem: Contap_Point &
+	:rtype: None
+") Append;
+		void Append (const Contap_Point & anItem);
+		%feature("compactdefaultargs") Append;
+		%feature("autodoc", "	:param aSequence:
+	:type aSequence: Handle_Contap_TheHSequenceOfPoint &
+	:rtype: None
+") Append;
+		void Append (const Handle_Contap_TheHSequenceOfPoint & aSequence);
+		%feature("compactdefaultargs") Prepend;
+		%feature("autodoc", "	:param anItem:
+	:type anItem: Contap_Point &
+	:rtype: None
+") Prepend;
+		void Prepend (const Contap_Point & anItem);
+		%feature("compactdefaultargs") Prepend;
+		%feature("autodoc", "	:param aSequence:
+	:type aSequence: Handle_Contap_TheHSequenceOfPoint &
+	:rtype: None
+") Prepend;
+		void Prepend (const Handle_Contap_TheHSequenceOfPoint & aSequence);
+		%feature("compactdefaultargs") Reverse;
+		%feature("autodoc", "	:rtype: None
+") Reverse;
+		void Reverse ();
+		%feature("compactdefaultargs") InsertBefore;
+		%feature("autodoc", "	:param anIndex:
+	:type anIndex: int
+	:param anItem:
+	:type anItem: Contap_Point &
+	:rtype: None
+") InsertBefore;
+		void InsertBefore (const Standard_Integer anIndex,const Contap_Point & anItem);
+		%feature("compactdefaultargs") InsertBefore;
+		%feature("autodoc", "	:param anIndex:
+	:type anIndex: int
+	:param aSequence:
+	:type aSequence: Handle_Contap_TheHSequenceOfPoint &
+	:rtype: None
+") InsertBefore;
+		void InsertBefore (const Standard_Integer anIndex,const Handle_Contap_TheHSequenceOfPoint & aSequence);
+		%feature("compactdefaultargs") InsertAfter;
+		%feature("autodoc", "	:param anIndex:
+	:type anIndex: int
+	:param anItem:
+	:type anItem: Contap_Point &
+	:rtype: None
+") InsertAfter;
+		void InsertAfter (const Standard_Integer anIndex,const Contap_Point & anItem);
+		%feature("compactdefaultargs") InsertAfter;
+		%feature("autodoc", "	:param anIndex:
+	:type anIndex: int
+	:param aSequence:
+	:type aSequence: Handle_Contap_TheHSequenceOfPoint &
+	:rtype: None
+") InsertAfter;
+		void InsertAfter (const Standard_Integer anIndex,const Handle_Contap_TheHSequenceOfPoint & aSequence);
+		%feature("compactdefaultargs") Exchange;
+		%feature("autodoc", "	:param anIndex:
+	:type anIndex: int
+	:param anOtherIndex:
+	:type anOtherIndex: int
+	:rtype: None
+") Exchange;
+		void Exchange (const Standard_Integer anIndex,const Standard_Integer anOtherIndex);
+		%feature("compactdefaultargs") Split;
+		%feature("autodoc", "	:param anIndex:
+	:type anIndex: int
+	:rtype: Handle_Contap_TheHSequenceOfPoint
+") Split;
+		Handle_Contap_TheHSequenceOfPoint Split (const Standard_Integer anIndex);
+		%feature("compactdefaultargs") SetValue;
+		%feature("autodoc", "	:param anIndex:
+	:type anIndex: int
+	:param anItem:
+	:type anItem: Contap_Point &
+	:rtype: None
+") SetValue;
+		void SetValue (const Standard_Integer anIndex,const Contap_Point & anItem);
+		%feature("compactdefaultargs") Value;
+		%feature("autodoc", "	:param anIndex:
+	:type anIndex: int
+	:rtype: Contap_Point
+") Value;
+		const Contap_Point & Value (const Standard_Integer anIndex);
+		%feature("compactdefaultargs") ChangeValue;
+		%feature("autodoc", "	:param anIndex:
+	:type anIndex: int
+	:rtype: Contap_Point
+") ChangeValue;
+		Contap_Point & ChangeValue (const Standard_Integer anIndex);
+		%feature("compactdefaultargs") Remove;
+		%feature("autodoc", "	:param anIndex:
+	:type anIndex: int
+	:rtype: None
+") Remove;
+		void Remove (const Standard_Integer anIndex);
+		%feature("compactdefaultargs") Remove;
+		%feature("autodoc", "	:param fromIndex:
+	:type fromIndex: int
+	:param toIndex:
+	:type toIndex: int
+	:rtype: None
+") Remove;
+		void Remove (const Standard_Integer fromIndex,const Standard_Integer toIndex);
+		%feature("compactdefaultargs") Sequence;
+		%feature("autodoc", "	:rtype: Contap_TheSequenceOfPoint
+") Sequence;
+		const Contap_TheSequenceOfPoint & Sequence ();
+		%feature("compactdefaultargs") ChangeSequence;
+		%feature("autodoc", "	:rtype: Contap_TheSequenceOfPoint
+") ChangeSequence;
+		Contap_TheSequenceOfPoint & ChangeSequence ();
+		%feature("compactdefaultargs") ShallowCopy;
+		%feature("autodoc", "	:rtype: Handle_Contap_TheHSequenceOfPoint
+") ShallowCopy;
+		Handle_Contap_TheHSequenceOfPoint ShallowCopy ();
+};
+
+
+%feature("shadow") Contap_TheHSequenceOfPoint::~Contap_TheHSequenceOfPoint %{
+def __del__(self):
+	try:
+		self.thisown = False
+		GarbageCollector.garbage.collect_object(self)
+	except:
+		pass
+%}
+
+%extend Contap_TheHSequenceOfPoint {
+	void _kill_pointed() {
+		delete $self;
+	}
+};
+%extend Contap_TheHSequenceOfPoint {
+	Handle_Contap_TheHSequenceOfPoint GetHandle() {
+	return *(Handle_Contap_TheHSequenceOfPoint*) &$self;
+	}
+};
+
+%nodefaultctor Handle_Contap_TheHSequenceOfPoint;
+class Handle_Contap_TheHSequenceOfPoint : public Handle_MMgt_TShared {
+
+    public:
+        // constructors
+        Handle_Contap_TheHSequenceOfPoint();
+        Handle_Contap_TheHSequenceOfPoint(const Handle_Contap_TheHSequenceOfPoint &aHandle);
+        Handle_Contap_TheHSequenceOfPoint(const Contap_TheHSequenceOfPoint *anItem);
+        void Nullify();
+        Standard_Boolean IsNull() const;
+        static const Handle_Contap_TheHSequenceOfPoint DownCast(const Handle_Standard_Transient &AnObject);
+
+};
+%extend Handle_Contap_TheHSequenceOfPoint {
+    Contap_TheHSequenceOfPoint* GetObject() {
+    return (Contap_TheHSequenceOfPoint*)$self->Access();
+    }
+};
+%feature("shadow") Handle_Contap_TheHSequenceOfPoint::~Handle_Contap_TheHSequenceOfPoint %{
+def __del__(self):
+    try:
+        self.thisown = False
+        GarbageCollector.garbage.collect_object(self)
+    except:
+        pass
+%}
+
+%extend Handle_Contap_TheHSequenceOfPoint {
+    void _kill_pointed() {
+        delete $self;
+    }
+};
+
+%nodefaultctor Contap_TheIWLineOfTheIWalking;
+class Contap_TheIWLineOfTheIWalking : public MMgt_TShared {
+	public:
+		%feature("compactdefaultargs") Contap_TheIWLineOfTheIWalking;
+		%feature("autodoc", "	:param theAllocator: default value is 0
+	:type theAllocator: IntSurf_Allocator &
+	:rtype: None
+") Contap_TheIWLineOfTheIWalking;
+		 Contap_TheIWLineOfTheIWalking (const IntSurf_Allocator & theAllocator = 0);
+		%feature("compactdefaultargs") Reverse;
+		%feature("autodoc", "	:rtype: None
+") Reverse;
+		void Reverse ();
+		%feature("compactdefaultargs") Cut;
+		%feature("autodoc", "	:param Index:
+	:type Index: int
+	:rtype: None
+") Cut;
+		void Cut (const Standard_Integer Index);
+		%feature("compactdefaultargs") AddPoint;
+		%feature("autodoc", "	:param P:
+	:type P: IntSurf_PntOn2S &
+	:rtype: None
+") AddPoint;
+		void AddPoint (const IntSurf_PntOn2S & P);
+		%feature("compactdefaultargs") AddStatusFirst;
+		%feature("autodoc", "	:param Closed:
+	:type Closed: bool
+	:param HasFirst:
+	:type HasFirst: bool
+	:rtype: None
+") AddStatusFirst;
+		void AddStatusFirst (const Standard_Boolean Closed,const Standard_Boolean HasFirst);
+		%feature("compactdefaultargs") AddStatusFirst;
+		%feature("autodoc", "	:param Closed:
+	:type Closed: bool
+	:param HasLast:
+	:type HasLast: bool
+	:param Index:
+	:type Index: int
+	:param P:
+	:type P: IntSurf_PathPoint &
+	:rtype: None
+") AddStatusFirst;
+		void AddStatusFirst (const Standard_Boolean Closed,const Standard_Boolean HasLast,const Standard_Integer Index,const IntSurf_PathPoint & P);
+		%feature("compactdefaultargs") AddStatusFirstLast;
+		%feature("autodoc", "	:param Closed:
+	:type Closed: bool
+	:param HasFirst:
+	:type HasFirst: bool
+	:param HasLast:
+	:type HasLast: bool
+	:rtype: None
+") AddStatusFirstLast;
+		void AddStatusFirstLast (const Standard_Boolean Closed,const Standard_Boolean HasFirst,const Standard_Boolean HasLast);
+		%feature("compactdefaultargs") AddStatusLast;
+		%feature("autodoc", "	:param HasLast:
+	:type HasLast: bool
+	:rtype: None
+") AddStatusLast;
+		void AddStatusLast (const Standard_Boolean HasLast);
+		%feature("compactdefaultargs") AddStatusLast;
+		%feature("autodoc", "	:param HasLast:
+	:type HasLast: bool
+	:param Index:
+	:type Index: int
+	:param P:
+	:type P: IntSurf_PathPoint &
+	:rtype: None
+") AddStatusLast;
+		void AddStatusLast (const Standard_Boolean HasLast,const Standard_Integer Index,const IntSurf_PathPoint & P);
+		%feature("compactdefaultargs") AddIndexPassing;
+		%feature("autodoc", "	:param Index:
+	:type Index: int
+	:rtype: None
+") AddIndexPassing;
+		void AddIndexPassing (const Standard_Integer Index);
+		%feature("compactdefaultargs") SetTangentVector;
+		%feature("autodoc", "	:param V:
+	:type V: gp_Vec
+	:param Index:
+	:type Index: int
+	:rtype: None
+") SetTangentVector;
+		void SetTangentVector (const gp_Vec & V,const Standard_Integer Index);
+		%feature("compactdefaultargs") SetTangencyAtBegining;
+		%feature("autodoc", "	:param IsTangent:
+	:type IsTangent: bool
+	:rtype: None
+") SetTangencyAtBegining;
+		void SetTangencyAtBegining (const Standard_Boolean IsTangent);
+		%feature("compactdefaultargs") SetTangencyAtEnd;
+		%feature("autodoc", "	:param IsTangent:
+	:type IsTangent: bool
+	:rtype: None
+") SetTangencyAtEnd;
+		void SetTangencyAtEnd (const Standard_Boolean IsTangent);
+		%feature("compactdefaultargs") NbPoints;
+		%feature("autodoc", "	:rtype: int
+") NbPoints;
+		Standard_Integer NbPoints ();
+		%feature("compactdefaultargs") Value;
+		%feature("autodoc", "	:param Index:
+	:type Index: int
+	:rtype: IntSurf_PntOn2S
+") Value;
+		const IntSurf_PntOn2S & Value (const Standard_Integer Index);
+		%feature("compactdefaultargs") Line;
+		%feature("autodoc", "	:rtype: Handle_IntSurf_LineOn2S
+") Line;
+		const Handle_IntSurf_LineOn2S & Line ();
+		%feature("compactdefaultargs") IsClosed;
+		%feature("autodoc", "	:rtype: bool
+") IsClosed;
+		Standard_Boolean IsClosed ();
+		%feature("compactdefaultargs") HasFirstPoint;
+		%feature("autodoc", "	:rtype: bool
+") HasFirstPoint;
+		Standard_Boolean HasFirstPoint ();
+		%feature("compactdefaultargs") HasLastPoint;
+		%feature("autodoc", "	:rtype: bool
+") HasLastPoint;
+		Standard_Boolean HasLastPoint ();
+		%feature("compactdefaultargs") FirstPoint;
+		%feature("autodoc", "	:rtype: IntSurf_PathPoint
+") FirstPoint;
+		const IntSurf_PathPoint & FirstPoint ();
+		%feature("compactdefaultargs") FirstPointIndex;
+		%feature("autodoc", "	:rtype: int
+") FirstPointIndex;
+		Standard_Integer FirstPointIndex ();
+		%feature("compactdefaultargs") LastPoint;
+		%feature("autodoc", "	:rtype: IntSurf_PathPoint
+") LastPoint;
+		const IntSurf_PathPoint & LastPoint ();
+		%feature("compactdefaultargs") LastPointIndex;
+		%feature("autodoc", "	:rtype: int
+") LastPointIndex;
+		Standard_Integer LastPointIndex ();
+		%feature("compactdefaultargs") NbPassingPoint;
+		%feature("autodoc", "	:rtype: int
+") NbPassingPoint;
+		Standard_Integer NbPassingPoint ();
+		%feature("compactdefaultargs") PassingPoint;
+		%feature("autodoc", "	:param Index:
+	:type Index: int
+	:param IndexLine:
+	:type IndexLine: int &
+	:param IndexPnts:
+	:type IndexPnts: int &
+	:rtype: None
+") PassingPoint;
+		void PassingPoint (const Standard_Integer Index,Standard_Integer &OutValue,Standard_Integer &OutValue);
+		%feature("compactdefaultargs") TangentVector;
+		%feature("autodoc", "	:param Index:
+	:type Index: int &
+	:rtype: gp_Vec
+") TangentVector;
+		const gp_Vec  TangentVector (Standard_Integer &OutValue);
+		%feature("compactdefaultargs") IsTangentAtBegining;
+		%feature("autodoc", "	:rtype: bool
+") IsTangentAtBegining;
+		Standard_Boolean IsTangentAtBegining ();
+		%feature("compactdefaultargs") IsTangentAtEnd;
+		%feature("autodoc", "	:rtype: bool
+") IsTangentAtEnd;
+		Standard_Boolean IsTangentAtEnd ();
+};
+
+
+%feature("shadow") Contap_TheIWLineOfTheIWalking::~Contap_TheIWLineOfTheIWalking %{
+def __del__(self):
+	try:
+		self.thisown = False
+		GarbageCollector.garbage.collect_object(self)
+	except:
+		pass
+%}
+
+%extend Contap_TheIWLineOfTheIWalking {
+	void _kill_pointed() {
+		delete $self;
+	}
+};
+%extend Contap_TheIWLineOfTheIWalking {
+	Handle_Contap_TheIWLineOfTheIWalking GetHandle() {
+	return *(Handle_Contap_TheIWLineOfTheIWalking*) &$self;
+	}
+};
+
+%nodefaultctor Handle_Contap_TheIWLineOfTheIWalking;
+class Handle_Contap_TheIWLineOfTheIWalking : public Handle_MMgt_TShared {
+
+    public:
+        // constructors
+        Handle_Contap_TheIWLineOfTheIWalking();
+        Handle_Contap_TheIWLineOfTheIWalking(const Handle_Contap_TheIWLineOfTheIWalking &aHandle);
+        Handle_Contap_TheIWLineOfTheIWalking(const Contap_TheIWLineOfTheIWalking *anItem);
+        void Nullify();
+        Standard_Boolean IsNull() const;
+        static const Handle_Contap_TheIWLineOfTheIWalking DownCast(const Handle_Standard_Transient &AnObject);
+
+};
+%extend Handle_Contap_TheIWLineOfTheIWalking {
+    Contap_TheIWLineOfTheIWalking* GetObject() {
+    return (Contap_TheIWLineOfTheIWalking*)$self->Access();
+    }
+};
+%feature("shadow") Handle_Contap_TheIWLineOfTheIWalking::~Handle_Contap_TheIWLineOfTheIWalking %{
+def __del__(self):
+    try:
+        self.thisown = False
+        GarbageCollector.garbage.collect_object(self)
+    except:
+        pass
+%}
+
+%extend Handle_Contap_TheIWLineOfTheIWalking {
+    void _kill_pointed() {
+        delete $self;
+    }
+};
+
+%nodefaultctor Contap_TheIWalking;
+class Contap_TheIWalking {
+	public:
+		%feature("compactdefaultargs") Contap_TheIWalking;
+		%feature("autodoc", "	:param Epsilon:
+	:type Epsilon: float
+	:param Deflection:
+	:type Deflection: float
+	:param Step:
+	:type Step: float
+	:rtype: None
+") Contap_TheIWalking;
+		 Contap_TheIWalking (const Standard_Real Epsilon,const Standard_Real Deflection,const Standard_Real Step);
+		%feature("compactdefaultargs") SetTolerance;
+		%feature("autodoc", "	:param Epsilon:
+	:type Epsilon: float
+	:param Deflection:
+	:type Deflection: float
+	:param Step:
+	:type Step: float
+	:rtype: None
+") SetTolerance;
+		void SetTolerance (const Standard_Real Epsilon,const Standard_Real Deflection,const Standard_Real Step);
+		%feature("compactdefaultargs") Perform;
+		%feature("autodoc", "	:param Pnts1:
+	:type Pnts1: IntSurf_SequenceOfPathPoint &
+	:param Pnts2:
+	:type Pnts2: IntSurf_SequenceOfInteriorPoint &
+	:param Func:
+	:type Func: Contap_SurfFunction &
+	:param S:
+	:type S: Handle_Adaptor3d_HSurface &
+	:param Reversed: default value is Standard_False
+	:type Reversed: bool
+	:rtype: None
+") Perform;
+		void Perform (const IntSurf_SequenceOfPathPoint & Pnts1,const IntSurf_SequenceOfInteriorPoint & Pnts2,Contap_SurfFunction & Func,const Handle_Adaptor3d_HSurface & S,const Standard_Boolean Reversed = Standard_False);
+		%feature("compactdefaultargs") Perform;
+		%feature("autodoc", "	:param Pnts1:
+	:type Pnts1: IntSurf_SequenceOfPathPoint &
+	:param Func:
+	:type Func: Contap_SurfFunction &
+	:param S:
+	:type S: Handle_Adaptor3d_HSurface &
+	:param Reversed: default value is Standard_False
+	:type Reversed: bool
+	:rtype: None
+") Perform;
+		void Perform (const IntSurf_SequenceOfPathPoint & Pnts1,Contap_SurfFunction & Func,const Handle_Adaptor3d_HSurface & S,const Standard_Boolean Reversed = Standard_False);
+		%feature("compactdefaultargs") IsDone;
+		%feature("autodoc", "	:rtype: bool
+") IsDone;
+		Standard_Boolean IsDone ();
+		%feature("compactdefaultargs") NbLines;
+		%feature("autodoc", "	:rtype: int
+") NbLines;
+		Standard_Integer NbLines ();
+		%feature("compactdefaultargs") Value;
+		%feature("autodoc", "	:param Index:
+	:type Index: int
+	:rtype: Handle_Contap_TheIWLineOfTheIWalking
+") Value;
+		const Handle_Contap_TheIWLineOfTheIWalking & Value (const Standard_Integer Index);
+		%feature("compactdefaultargs") NbSinglePnts;
+		%feature("autodoc", "	:rtype: int
+") NbSinglePnts;
+		Standard_Integer NbSinglePnts ();
+		%feature("compactdefaultargs") SinglePnt;
+		%feature("autodoc", "	:param Index:
+	:type Index: int
+	:rtype: IntSurf_PathPoint
+") SinglePnt;
+		const IntSurf_PathPoint & SinglePnt (const Standard_Integer Index);
+};
+
+
+%feature("shadow") Contap_TheIWalking::~Contap_TheIWalking %{
+def __del__(self):
+	try:
+		self.thisown = False
+		GarbageCollector.garbage.collect_object(self)
+	except:
+		pass
+%}
+
+%extend Contap_TheIWalking {
+	void _kill_pointed() {
+		delete $self;
+	}
+};
+%nodefaultctor Contap_ThePathPointOfTheSearch;
+class Contap_ThePathPointOfTheSearch {
+	public:
+		%feature("compactdefaultargs") Contap_ThePathPointOfTheSearch;
+		%feature("autodoc", "	:rtype: None
+") Contap_ThePathPointOfTheSearch;
+		 Contap_ThePathPointOfTheSearch ();
+		%feature("compactdefaultargs") Contap_ThePathPointOfTheSearch;
+		%feature("autodoc", "	:param P:
+	:type P: gp_Pnt
+	:param Tol:
+	:type Tol: float
+	:param V:
+	:type V: Handle_Adaptor3d_HVertex &
+	:param A:
+	:type A: Handle_Adaptor2d_HCurve2d &
+	:param Parameter:
+	:type Parameter: float
+	:rtype: None
+") Contap_ThePathPointOfTheSearch;
+		 Contap_ThePathPointOfTheSearch (const gp_Pnt & P,const Standard_Real Tol,const Handle_Adaptor3d_HVertex & V,const Handle_Adaptor2d_HCurve2d & A,const Standard_Real Parameter);
+		%feature("compactdefaultargs") Contap_ThePathPointOfTheSearch;
+		%feature("autodoc", "	:param P:
+	:type P: gp_Pnt
+	:param Tol:
+	:type Tol: float
+	:param A:
+	:type A: Handle_Adaptor2d_HCurve2d &
+	:param Parameter:
+	:type Parameter: float
+	:rtype: None
+") Contap_ThePathPointOfTheSearch;
+		 Contap_ThePathPointOfTheSearch (const gp_Pnt & P,const Standard_Real Tol,const Handle_Adaptor2d_HCurve2d & A,const Standard_Real Parameter);
+		%feature("compactdefaultargs") SetValue;
+		%feature("autodoc", "	:param P:
+	:type P: gp_Pnt
+	:param Tol:
+	:type Tol: float
+	:param V:
+	:type V: Handle_Adaptor3d_HVertex &
+	:param A:
+	:type A: Handle_Adaptor2d_HCurve2d &
+	:param Parameter:
+	:type Parameter: float
+	:rtype: None
+") SetValue;
+		void SetValue (const gp_Pnt & P,const Standard_Real Tol,const Handle_Adaptor3d_HVertex & V,const Handle_Adaptor2d_HCurve2d & A,const Standard_Real Parameter);
+		%feature("compactdefaultargs") SetValue;
+		%feature("autodoc", "	:param P:
+	:type P: gp_Pnt
+	:param Tol:
+	:type Tol: float
+	:param A:
+	:type A: Handle_Adaptor2d_HCurve2d &
+	:param Parameter:
+	:type Parameter: float
+	:rtype: None
+") SetValue;
+		void SetValue (const gp_Pnt & P,const Standard_Real Tol,const Handle_Adaptor2d_HCurve2d & A,const Standard_Real Parameter);
+		%feature("compactdefaultargs") Value;
+		%feature("autodoc", "	:rtype: gp_Pnt
+") Value;
+		const gp_Pnt  Value ();
+		%feature("compactdefaultargs") Tolerance;
+		%feature("autodoc", "	:rtype: float
+") Tolerance;
+		Standard_Real Tolerance ();
+		%feature("compactdefaultargs") IsNew;
+		%feature("autodoc", "	:rtype: bool
+") IsNew;
+		Standard_Boolean IsNew ();
+		%feature("compactdefaultargs") Vertex;
+		%feature("autodoc", "	:rtype: Handle_Adaptor3d_HVertex
+") Vertex;
+		const Handle_Adaptor3d_HVertex & Vertex ();
+		%feature("compactdefaultargs") Arc;
+		%feature("autodoc", "	:rtype: Handle_Adaptor2d_HCurve2d
+") Arc;
+		const Handle_Adaptor2d_HCurve2d & Arc ();
+		%feature("compactdefaultargs") Parameter;
+		%feature("autodoc", "	:rtype: float
+") Parameter;
+		Standard_Real Parameter ();
+};
+
+
+%feature("shadow") Contap_ThePathPointOfTheSearch::~Contap_ThePathPointOfTheSearch %{
+def __del__(self):
+	try:
+		self.thisown = False
+		GarbageCollector.garbage.collect_object(self)
+	except:
+		pass
+%}
+
+%extend Contap_ThePathPointOfTheSearch {
+	void _kill_pointed() {
+		delete $self;
+	}
+};
+%nodefaultctor Contap_TheSearch;
+class Contap_TheSearch {
+	public:
+		%feature("compactdefaultargs") Contap_TheSearch;
+		%feature("autodoc", "	:rtype: None
+") Contap_TheSearch;
+		 Contap_TheSearch ();
+		%feature("compactdefaultargs") Perform;
+		%feature("autodoc", "	:param F:
+	:type F: Contap_ArcFunction &
+	:param Domain:
+	:type Domain: Handle_Adaptor3d_TopolTool &
+	:param TolBoundary:
+	:type TolBoundary: float
+	:param TolTangency:
+	:type TolTangency: float
+	:param RecheckOnRegularity: default value is Standard_False
+	:type RecheckOnRegularity: bool
+	:rtype: None
+") Perform;
+		void Perform (Contap_ArcFunction & F,const Handle_Adaptor3d_TopolTool & Domain,const Standard_Real TolBoundary,const Standard_Real TolTangency,const Standard_Boolean RecheckOnRegularity = Standard_False);
+		%feature("compactdefaultargs") IsDone;
+		%feature("autodoc", "	:rtype: bool
+") IsDone;
+		Standard_Boolean IsDone ();
+		%feature("compactdefaultargs") AllArcSolution;
+		%feature("autodoc", "	:rtype: bool
+") AllArcSolution;
+		Standard_Boolean AllArcSolution ();
+		%feature("compactdefaultargs") NbPoints;
+		%feature("autodoc", "	:rtype: int
+") NbPoints;
+		Standard_Integer NbPoints ();
+		%feature("compactdefaultargs") Point;
+		%feature("autodoc", "	:param Index:
+	:type Index: int
+	:rtype: Contap_ThePathPointOfTheSearch
+") Point;
+		const Contap_ThePathPointOfTheSearch & Point (const Standard_Integer Index);
+		%feature("compactdefaultargs") NbSegments;
+		%feature("autodoc", "	:rtype: int
+") NbSegments;
+		Standard_Integer NbSegments ();
+		%feature("compactdefaultargs") Segment;
+		%feature("autodoc", "	:param Index:
+	:type Index: int
+	:rtype: Contap_TheSegmentOfTheSearch
+") Segment;
+		const Contap_TheSegmentOfTheSearch & Segment (const Standard_Integer Index);
+};
+
+
+%feature("shadow") Contap_TheSearch::~Contap_TheSearch %{
+def __del__(self):
+	try:
+		self.thisown = False
+		GarbageCollector.garbage.collect_object(self)
+	except:
+		pass
+%}
+
+%extend Contap_TheSearch {
+	void _kill_pointed() {
+		delete $self;
+	}
+};
+%nodefaultctor Contap_TheSearchInside;
+class Contap_TheSearchInside {
+	public:
+		%feature("compactdefaultargs") Contap_TheSearchInside;
+		%feature("autodoc", "	:rtype: None
+") Contap_TheSearchInside;
+		 Contap_TheSearchInside ();
+		%feature("compactdefaultargs") Contap_TheSearchInside;
+		%feature("autodoc", "	:param F:
+	:type F: Contap_SurfFunction &
+	:param Surf:
+	:type Surf: Handle_Adaptor3d_HSurface &
+	:param T:
+	:type T: Handle_Adaptor3d_TopolTool &
+	:param Epsilon:
+	:type Epsilon: float
+	:rtype: None
+") Contap_TheSearchInside;
+		 Contap_TheSearchInside (Contap_SurfFunction & F,const Handle_Adaptor3d_HSurface & Surf,const Handle_Adaptor3d_TopolTool & T,const Standard_Real Epsilon);
+		%feature("compactdefaultargs") Perform;
+		%feature("autodoc", "	:param F:
+	:type F: Contap_SurfFunction &
+	:param Surf:
+	:type Surf: Handle_Adaptor3d_HSurface &
+	:param T:
+	:type T: Handle_Adaptor3d_TopolTool &
+	:param Epsilon:
+	:type Epsilon: float
+	:rtype: None
+") Perform;
+		void Perform (Contap_SurfFunction & F,const Handle_Adaptor3d_HSurface & Surf,const Handle_Adaptor3d_TopolTool & T,const Standard_Real Epsilon);
+		%feature("compactdefaultargs") Perform;
+		%feature("autodoc", "	:param F:
+	:type F: Contap_SurfFunction &
+	:param Surf:
+	:type Surf: Handle_Adaptor3d_HSurface &
+	:param UStart:
+	:type UStart: float
+	:param VStart:
+	:type VStart: float
+	:rtype: None
+") Perform;
+		void Perform (Contap_SurfFunction & F,const Handle_Adaptor3d_HSurface & Surf,const Standard_Real UStart,const Standard_Real VStart);
+		%feature("compactdefaultargs") IsDone;
+		%feature("autodoc", "	:rtype: bool
+") IsDone;
+		Standard_Boolean IsDone ();
+		%feature("compactdefaultargs") NbPoints;
+		%feature("autodoc", "	:rtype: int
+") NbPoints;
+		Standard_Integer NbPoints ();
+		%feature("compactdefaultargs") Value;
+		%feature("autodoc", "	:param Index:
+	:type Index: int
+	:rtype: IntSurf_InteriorPoint
+") Value;
+		const IntSurf_InteriorPoint & Value (const Standard_Integer Index);
+};
+
+
+%feature("shadow") Contap_TheSearchInside::~Contap_TheSearchInside %{
+def __del__(self):
+	try:
+		self.thisown = False
+		GarbageCollector.garbage.collect_object(self)
+	except:
+		pass
+%}
+
+%extend Contap_TheSearchInside {
+	void _kill_pointed() {
+		delete $self;
+	}
+};
+%nodefaultctor Contap_TheSegmentOfTheSearch;
+class Contap_TheSegmentOfTheSearch {
+	public:
+		%feature("compactdefaultargs") Contap_TheSegmentOfTheSearch;
+		%feature("autodoc", "	:rtype: None
+") Contap_TheSegmentOfTheSearch;
+		 Contap_TheSegmentOfTheSearch ();
+		%feature("compactdefaultargs") SetValue;
+		%feature("autodoc", "	:param A:
+	:type A: Handle_Adaptor2d_HCurve2d &
+	:rtype: None
+") SetValue;
+		void SetValue (const Handle_Adaptor2d_HCurve2d & A);
+		%feature("compactdefaultargs") SetLimitPoint;
+		%feature("autodoc", "	:param V:
+	:type V: Contap_ThePathPointOfTheSearch &
+	:param First:
+	:type First: bool
+	:rtype: None
+") SetLimitPoint;
+		void SetLimitPoint (const Contap_ThePathPointOfTheSearch & V,const Standard_Boolean First);
+		%feature("compactdefaultargs") Curve;
+		%feature("autodoc", "	:rtype: Handle_Adaptor2d_HCurve2d
+") Curve;
+		const Handle_Adaptor2d_HCurve2d & Curve ();
+		%feature("compactdefaultargs") HasFirstPoint;
+		%feature("autodoc", "	:rtype: bool
+") HasFirstPoint;
+		Standard_Boolean HasFirstPoint ();
+		%feature("compactdefaultargs") FirstPoint;
+		%feature("autodoc", "	:rtype: Contap_ThePathPointOfTheSearch
+") FirstPoint;
+		const Contap_ThePathPointOfTheSearch & FirstPoint ();
+		%feature("compactdefaultargs") HasLastPoint;
+		%feature("autodoc", "	:rtype: bool
+") HasLastPoint;
+		Standard_Boolean HasLastPoint ();
+		%feature("compactdefaultargs") LastPoint;
+		%feature("autodoc", "	:rtype: Contap_ThePathPointOfTheSearch
+") LastPoint;
+		const Contap_ThePathPointOfTheSearch & LastPoint ();
+};
+
+
+%feature("shadow") Contap_TheSegmentOfTheSearch::~Contap_TheSegmentOfTheSearch %{
+def __del__(self):
+	try:
+		self.thisown = False
+		GarbageCollector.garbage.collect_object(self)
+	except:
+		pass
+%}
+
+%extend Contap_TheSegmentOfTheSearch {
+	void _kill_pointed() {
+		delete $self;
+	}
+};
+%nodefaultctor Contap_TheSequenceOfLine;
+class Contap_TheSequenceOfLine : public TCollection_BaseSequence {
+	public:
+		%feature("compactdefaultargs") Contap_TheSequenceOfLine;
+		%feature("autodoc", "	:rtype: None
+") Contap_TheSequenceOfLine;
+		 Contap_TheSequenceOfLine ();
+		%feature("compactdefaultargs") Contap_TheSequenceOfLine;
+		%feature("autodoc", "	:param Other:
+	:type Other: Contap_TheSequenceOfLine &
+	:rtype: None
+") Contap_TheSequenceOfLine;
+		 Contap_TheSequenceOfLine (const Contap_TheSequenceOfLine & Other);
+		%feature("compactdefaultargs") Clear;
+		%feature("autodoc", "	:rtype: None
+") Clear;
+		void Clear ();
+		%feature("compactdefaultargs") Assign;
+		%feature("autodoc", "	:param Other:
+	:type Other: Contap_TheSequenceOfLine &
+	:rtype: Contap_TheSequenceOfLine
+") Assign;
+		const Contap_TheSequenceOfLine & Assign (const Contap_TheSequenceOfLine & Other);
+		%feature("compactdefaultargs") operator =;
+		%feature("autodoc", "	:param Other:
+	:type Other: Contap_TheSequenceOfLine &
+	:rtype: Contap_TheSequenceOfLine
+") operator=;
+		const Contap_TheSequenceOfLine & operator = (const Contap_TheSequenceOfLine & Other);
+		%feature("compactdefaultargs") Append;
+		%feature("autodoc", "	:param T:
+	:type T: Contap_Line &
+	:rtype: None
+") Append;
+		void Append (const Contap_Line & T);
+		%feature("compactdefaultargs") Append;
+		%feature("autodoc", "	:param S:
+	:type S: Contap_TheSequenceOfLine &
+	:rtype: None
+") Append;
+		void Append (Contap_TheSequenceOfLine & S);
+		%feature("compactdefaultargs") Prepend;
+		%feature("autodoc", "	:param T:
+	:type T: Contap_Line &
+	:rtype: None
+") Prepend;
+		void Prepend (const Contap_Line & T);
+		%feature("compactdefaultargs") Prepend;
+		%feature("autodoc", "	:param S:
+	:type S: Contap_TheSequenceOfLine &
+	:rtype: None
+") Prepend;
+		void Prepend (Contap_TheSequenceOfLine & S);
+		%feature("compactdefaultargs") InsertBefore;
+		%feature("autodoc", "	:param Index:
+	:type Index: int
+	:param T:
+	:type T: Contap_Line &
+	:rtype: None
+") InsertBefore;
+		void InsertBefore (const Standard_Integer Index,const Contap_Line & T);
+		%feature("compactdefaultargs") InsertBefore;
+		%feature("autodoc", "	:param Index:
+	:type Index: int
+	:param S:
+	:type S: Contap_TheSequenceOfLine &
+	:rtype: None
+") InsertBefore;
+		void InsertBefore (const Standard_Integer Index,Contap_TheSequenceOfLine & S);
+		%feature("compactdefaultargs") InsertAfter;
+		%feature("autodoc", "	:param Index:
+	:type Index: int
+	:param T:
+	:type T: Contap_Line &
+	:rtype: None
+") InsertAfter;
+		void InsertAfter (const Standard_Integer Index,const Contap_Line & T);
+		%feature("compactdefaultargs") InsertAfter;
+		%feature("autodoc", "	:param Index:
+	:type Index: int
+	:param S:
+	:type S: Contap_TheSequenceOfLine &
+	:rtype: None
+") InsertAfter;
+		void InsertAfter (const Standard_Integer Index,Contap_TheSequenceOfLine & S);
+		%feature("compactdefaultargs") First;
+		%feature("autodoc", "	:rtype: Contap_Line
+") First;
+		const Contap_Line & First ();
+		%feature("compactdefaultargs") Last;
+		%feature("autodoc", "	:rtype: Contap_Line
+") Last;
+		const Contap_Line & Last ();
+		%feature("compactdefaultargs") Split;
+		%feature("autodoc", "	:param Index:
+	:type Index: int
+	:param Sub:
+	:type Sub: Contap_TheSequenceOfLine &
+	:rtype: None
+") Split;
+		void Split (const Standard_Integer Index,Contap_TheSequenceOfLine & Sub);
+		%feature("compactdefaultargs") Value;
+		%feature("autodoc", "	:param Index:
+	:type Index: int
+	:rtype: Contap_Line
+") Value;
+		const Contap_Line & Value (const Standard_Integer Index);
+		%feature("compactdefaultargs") SetValue;
+		%feature("autodoc", "	:param Index:
+	:type Index: int
+	:param I:
+	:type I: Contap_Line &
+	:rtype: None
+") SetValue;
+		void SetValue (const Standard_Integer Index,const Contap_Line & I);
+		%feature("compactdefaultargs") ChangeValue;
+		%feature("autodoc", "	:param Index:
+	:type Index: int
+	:rtype: Contap_Line
+") ChangeValue;
+		Contap_Line & ChangeValue (const Standard_Integer Index);
+		%feature("compactdefaultargs") Remove;
+		%feature("autodoc", "	:param Index:
+	:type Index: int
+	:rtype: None
+") Remove;
+		void Remove (const Standard_Integer Index);
+		%feature("compactdefaultargs") Remove;
+		%feature("autodoc", "	:param FromIndex:
+	:type FromIndex: int
+	:param ToIndex:
+	:type ToIndex: int
+	:rtype: None
+") Remove;
+		void Remove (const Standard_Integer FromIndex,const Standard_Integer ToIndex);
+};
+
+
+%feature("shadow") Contap_TheSequenceOfLine::~Contap_TheSequenceOfLine %{
+def __del__(self):
+	try:
+		self.thisown = False
+		GarbageCollector.garbage.collect_object(self)
+	except:
+		pass
+%}
+
+%extend Contap_TheSequenceOfLine {
+	void _kill_pointed() {
+		delete $self;
+	}
+};
+%nodefaultctor Contap_TheSequenceOfPoint;
+class Contap_TheSequenceOfPoint : public TCollection_BaseSequence {
+	public:
+		%feature("compactdefaultargs") Contap_TheSequenceOfPoint;
+		%feature("autodoc", "	:rtype: None
+") Contap_TheSequenceOfPoint;
+		 Contap_TheSequenceOfPoint ();
+		%feature("compactdefaultargs") Contap_TheSequenceOfPoint;
+		%feature("autodoc", "	:param Other:
+	:type Other: Contap_TheSequenceOfPoint &
+	:rtype: None
+") Contap_TheSequenceOfPoint;
+		 Contap_TheSequenceOfPoint (const Contap_TheSequenceOfPoint & Other);
+		%feature("compactdefaultargs") Clear;
+		%feature("autodoc", "	:rtype: None
+") Clear;
+		void Clear ();
+		%feature("compactdefaultargs") Assign;
+		%feature("autodoc", "	:param Other:
+	:type Other: Contap_TheSequenceOfPoint &
+	:rtype: Contap_TheSequenceOfPoint
+") Assign;
+		const Contap_TheSequenceOfPoint & Assign (const Contap_TheSequenceOfPoint & Other);
+		%feature("compactdefaultargs") operator =;
+		%feature("autodoc", "	:param Other:
+	:type Other: Contap_TheSequenceOfPoint &
+	:rtype: Contap_TheSequenceOfPoint
+") operator=;
+		const Contap_TheSequenceOfPoint & operator = (const Contap_TheSequenceOfPoint & Other);
+		%feature("compactdefaultargs") Append;
+		%feature("autodoc", "	:param T:
+	:type T: Contap_Point &
+	:rtype: None
+") Append;
+		void Append (const Contap_Point & T);
+		%feature("compactdefaultargs") Append;
+		%feature("autodoc", "	:param S:
+	:type S: Contap_TheSequenceOfPoint &
+	:rtype: None
+") Append;
+		void Append (Contap_TheSequenceOfPoint & S);
+		%feature("compactdefaultargs") Prepend;
+		%feature("autodoc", "	:param T:
+	:type T: Contap_Point &
+	:rtype: None
+") Prepend;
+		void Prepend (const Contap_Point & T);
+		%feature("compactdefaultargs") Prepend;
+		%feature("autodoc", "	:param S:
+	:type S: Contap_TheSequenceOfPoint &
+	:rtype: None
+") Prepend;
+		void Prepend (Contap_TheSequenceOfPoint & S);
+		%feature("compactdefaultargs") InsertBefore;
+		%feature("autodoc", "	:param Index:
+	:type Index: int
+	:param T:
+	:type T: Contap_Point &
+	:rtype: None
+") InsertBefore;
+		void InsertBefore (const Standard_Integer Index,const Contap_Point & T);
+		%feature("compactdefaultargs") InsertBefore;
+		%feature("autodoc", "	:param Index:
+	:type Index: int
+	:param S:
+	:type S: Contap_TheSequenceOfPoint &
+	:rtype: None
+") InsertBefore;
+		void InsertBefore (const Standard_Integer Index,Contap_TheSequenceOfPoint & S);
+		%feature("compactdefaultargs") InsertAfter;
+		%feature("autodoc", "	:param Index:
+	:type Index: int
+	:param T:
+	:type T: Contap_Point &
+	:rtype: None
+") InsertAfter;
+		void InsertAfter (const Standard_Integer Index,const Contap_Point & T);
+		%feature("compactdefaultargs") InsertAfter;
+		%feature("autodoc", "	:param Index:
+	:type Index: int
+	:param S:
+	:type S: Contap_TheSequenceOfPoint &
+	:rtype: None
+") InsertAfter;
+		void InsertAfter (const Standard_Integer Index,Contap_TheSequenceOfPoint & S);
+		%feature("compactdefaultargs") First;
+		%feature("autodoc", "	:rtype: Contap_Point
+") First;
+		const Contap_Point & First ();
+		%feature("compactdefaultargs") Last;
+		%feature("autodoc", "	:rtype: Contap_Point
+") Last;
+		const Contap_Point & Last ();
+		%feature("compactdefaultargs") Split;
+		%feature("autodoc", "	:param Index:
+	:type Index: int
+	:param Sub:
+	:type Sub: Contap_TheSequenceOfPoint &
+	:rtype: None
+") Split;
+		void Split (const Standard_Integer Index,Contap_TheSequenceOfPoint & Sub);
+		%feature("compactdefaultargs") Value;
+		%feature("autodoc", "	:param Index:
+	:type Index: int
+	:rtype: Contap_Point
+") Value;
+		const Contap_Point & Value (const Standard_Integer Index);
+		%feature("compactdefaultargs") SetValue;
+		%feature("autodoc", "	:param Index:
+	:type Index: int
+	:param I:
+	:type I: Contap_Point &
+	:rtype: None
+") SetValue;
+		void SetValue (const Standard_Integer Index,const Contap_Point & I);
+		%feature("compactdefaultargs") ChangeValue;
+		%feature("autodoc", "	:param Index:
+	:type Index: int
+	:rtype: Contap_Point
+") ChangeValue;
+		Contap_Point & ChangeValue (const Standard_Integer Index);
+		%feature("compactdefaultargs") Remove;
+		%feature("autodoc", "	:param Index:
+	:type Index: int
+	:rtype: None
+") Remove;
+		void Remove (const Standard_Integer Index);
+		%feature("compactdefaultargs") Remove;
+		%feature("autodoc", "	:param FromIndex:
+	:type FromIndex: int
+	:param ToIndex:
+	:type ToIndex: int
+	:rtype: None
+") Remove;
+		void Remove (const Standard_Integer FromIndex,const Standard_Integer ToIndex);
+};
+
+
+%feature("shadow") Contap_TheSequenceOfPoint::~Contap_TheSequenceOfPoint %{
+def __del__(self):
+	try:
+		self.thisown = False
+		GarbageCollector.garbage.collect_object(self)
+	except:
+		pass
+%}
+
+%extend Contap_TheSequenceOfPoint {
 	void _kill_pointed() {
 		delete $self;
 	}

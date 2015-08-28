@@ -1,5 +1,5 @@
 /*
-Copyright 2008-2014 Thomas Paviot (tpaviot@gmail.com)
+Copyright 2008-2015 Thomas Paviot (tpaviot@gmail.com)
 
 
 This file is part of pythonOCC.
@@ -28,7 +28,6 @@ along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
 %}
 
 %include ../common/CommonIncludes.i
-%include ../common/StandardDefines.i
 %include ../common/ExceptionCatcher.i
 %include ../common/FunctionTransformers.i
 %include ../common/Operators.i
@@ -39,10 +38,14 @@ along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
 /* end typedefs declaration */
 
 /* public enums */
-enum StdSelect_DisplayMode {
-	StdSelect_DM_Wireframe = 0,
-	StdSelect_DM_Shading = 1,
-	StdSelect_DM_HLR = 2,
+enum StdSelect_TypeOfFace {
+	StdSelect_AnyFace = 0,
+	StdSelect_Plane = 1,
+	StdSelect_Cylinder = 2,
+	StdSelect_Sphere = 3,
+	StdSelect_Torus = 4,
+	StdSelect_Revol = 5,
+	StdSelect_Cone = 6,
 };
 
 enum StdSelect_SensitivityMode {
@@ -56,19 +59,15 @@ enum StdSelect_TypeOfEdge {
 	StdSelect_Circle = 2,
 };
 
-enum StdSelect_TypeOfFace {
-	StdSelect_AnyFace = 0,
-	StdSelect_Plane = 1,
-	StdSelect_Cylinder = 2,
-	StdSelect_Sphere = 3,
-	StdSelect_Torus = 4,
-	StdSelect_Revol = 5,
-	StdSelect_Cone = 6,
-};
-
 enum StdSelect_TypeOfResult {
 	StdSelect_TOR_SIMPLE = 0,
 	StdSelect_TOR_MULTIPLE = 1,
+};
+
+enum StdSelect_DisplayMode {
+	StdSelect_DM_Wireframe = 0,
+	StdSelect_DM_Shading = 1,
+	StdSelect_DM_HLR = 2,
 };
 
 /* end public enums declaration */

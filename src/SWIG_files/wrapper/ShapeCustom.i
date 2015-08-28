@@ -1,5 +1,5 @@
 /*
-Copyright 2008-2014 Thomas Paviot (tpaviot@gmail.com)
+Copyright 2008-2015 Thomas Paviot (tpaviot@gmail.com)
 
 
 This file is part of pythonOCC.
@@ -28,7 +28,6 @@ along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
 %}
 
 %include ../common/CommonIncludes.i
-%include ../common/StandardDefines.i
 %include ../common/ExceptionCatcher.i
 %include ../common/FunctionTransformers.i
 %include ../common/Operators.i
@@ -42,9 +41,9 @@ along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
 /* end public enums declaration */
 
 %rename(shapecustom) ShapeCustom;
-%nodefaultctor ShapeCustom;
 class ShapeCustom {
 	public:
+		%feature("compactdefaultargs") ApplyModifier;
 		%feature("autodoc", "	* Applies modifier to shape and checks sharing in the case assemblies.
 
 	:param S:
@@ -55,9 +54,14 @@ class ShapeCustom {
 	:type context: TopTools_DataMapOfShapeShape &
 	:param MD:
 	:type MD: BRepTools_Modifier &
+	:param aProgress: default value is NULL
+	:type aProgress: Handle_Message_ProgressIndicator &
+	:param aReShape: default value is NULL
+	:type aReShape: Handle_ShapeBuild_ReShape &
 	:rtype: TopoDS_Shape
 ") ApplyModifier;
-		static TopoDS_Shape ApplyModifier (const TopoDS_Shape & S,const Handle_BRepTools_Modification & M,TopTools_DataMapOfShapeShape & context,BRepTools_Modifier & MD);
+		static TopoDS_Shape ApplyModifier (const TopoDS_Shape & S,const Handle_BRepTools_Modification & M,TopTools_DataMapOfShapeShape & context,BRepTools_Modifier & MD,const Handle_Message_ProgressIndicator & aProgress = NULL,const Handle_ShapeBuild_ReShape & aReShape = NULL);
+		%feature("compactdefaultargs") DirectFaces;
 		%feature("autodoc", "	* Returns a new shape without indirect surfaces.
 
 	:param S:
@@ -65,6 +69,7 @@ class ShapeCustom {
 	:rtype: TopoDS_Shape
 ") DirectFaces;
 		static TopoDS_Shape DirectFaces (const TopoDS_Shape & S);
+		%feature("compactdefaultargs") ScaleShape;
 		%feature("autodoc", "	* Returns a new shape which is scaled original
 
 	:param S:
@@ -74,6 +79,7 @@ class ShapeCustom {
 	:rtype: TopoDS_Shape
 ") ScaleShape;
 		static TopoDS_Shape ScaleShape (const TopoDS_Shape & S,const Standard_Real scale);
+		%feature("compactdefaultargs") BSplineRestriction;
 		%feature("autodoc", "	* Returns a new shape with all surfaces, curves and pcurves which type is BSpline/Bezier or based on them converted having Degree less than <MaxDegree> or number of spans less than <NbMaxSegment> in dependence on parameter priority <Degree>. <GmaxDegree> and <GMaxSegments> are maximum possible degree and number of spans correspondingly. These values will be used in those cases when approximation with specified parameters is impossible and one of GmaxDegree or GMaxSegments is selected in dependence on priority. Note that even if approximation is impossible with <GMaxDegree> then number of spans can exceed specified <GMaxSegment> <Rational> specifies if to convert Rational BSpline/Bezier into polynomial B-Spline. If flags ConvOffSurf,ConvOffCurve3d,ConvOffCurve2d are Standard_True there are means that Offset surfaces , Offset curves 3d and Offset curves 2d are converted to BSPline correspondingly.
 
 	:param S:
@@ -83,9 +89,9 @@ class ShapeCustom {
 	:param Tol2d:
 	:type Tol2d: float
 	:param MaxDegree:
-	:type MaxDegree: Standard_Integer
+	:type MaxDegree: int
 	:param MaxNbSegment:
-	:type MaxNbSegment: Standard_Integer
+	:type MaxNbSegment: int
 	:param Continuity3d:
 	:type Continuity3d: GeomAbs_Shape
 	:param Continuity2d:
@@ -99,6 +105,7 @@ class ShapeCustom {
 	:rtype: TopoDS_Shape
 ") BSplineRestriction;
 		static TopoDS_Shape BSplineRestriction (const TopoDS_Shape & S,const Standard_Real Tol3d,const Standard_Real Tol2d,const Standard_Integer MaxDegree,const Standard_Integer MaxNbSegment,const GeomAbs_Shape Continuity3d,const GeomAbs_Shape Continuity2d,const Standard_Boolean Degree,const Standard_Boolean Rational,const Handle_ShapeCustom_RestrictionParameters & aParameters);
+		%feature("compactdefaultargs") ConvertToRevolution;
 		%feature("autodoc", "	* Returns a new shape with all elementary periodic surfaces converted to Geom_SurfaceOfRevolution
 
 	:param S:
@@ -106,6 +113,7 @@ class ShapeCustom {
 	:rtype: TopoDS_Shape
 ") ConvertToRevolution;
 		static TopoDS_Shape ConvertToRevolution (const TopoDS_Shape & S);
+		%feature("compactdefaultargs") SweptToElementary;
 		%feature("autodoc", "	* Returns a new shape with all surfaces of revolution and linear extrusion convert to elementary periodic surfaces
 
 	:param S:
@@ -113,6 +121,7 @@ class ShapeCustom {
 	:rtype: TopoDS_Shape
 ") SweptToElementary;
 		static TopoDS_Shape SweptToElementary (const TopoDS_Shape & S);
+		%feature("compactdefaultargs") ConvertToBSpline;
 		%feature("autodoc", "	* Returns a new shape with all surfaces of linear extrusion, revolution, offset, and planar surfaces converted according to flags to Geom_BSplineSurface (with same parameterisation).
 
 	:param S:
@@ -148,9 +157,11 @@ def __del__(self):
 %nodefaultctor ShapeCustom_ConvertToBSpline;
 class ShapeCustom_ConvertToBSpline : public BRepTools_Modification {
 	public:
+		%feature("compactdefaultargs") ShapeCustom_ConvertToBSpline;
 		%feature("autodoc", "	:rtype: None
 ") ShapeCustom_ConvertToBSpline;
 		 ShapeCustom_ConvertToBSpline ();
+		%feature("compactdefaultargs") SetExtrusionMode;
 		%feature("autodoc", "	* Sets mode for convertion of Surfaces of Linear extrusion.
 
 	:param extrMode:
@@ -158,6 +169,7 @@ class ShapeCustom_ConvertToBSpline : public BRepTools_Modification {
 	:rtype: None
 ") SetExtrusionMode;
 		void SetExtrusionMode (const Standard_Boolean extrMode);
+		%feature("compactdefaultargs") SetRevolutionMode;
 		%feature("autodoc", "	* Sets mode for convertion of Surfaces of Revolution.
 
 	:param revolMode:
@@ -165,6 +177,7 @@ class ShapeCustom_ConvertToBSpline : public BRepTools_Modification {
 	:rtype: None
 ") SetRevolutionMode;
 		void SetRevolutionMode (const Standard_Boolean revolMode);
+		%feature("compactdefaultargs") SetOffsetMode;
 		%feature("autodoc", "	* Sets mode for convertion of Offset surfaces.
 
 	:param offsetMode:
@@ -172,6 +185,7 @@ class ShapeCustom_ConvertToBSpline : public BRepTools_Modification {
 	:rtype: None
 ") SetOffsetMode;
 		void SetOffsetMode (const Standard_Boolean offsetMode);
+		%feature("compactdefaultargs") SetPlaneMode;
 		%feature("autodoc", "	* Sets mode for convertion of Plane surfaces.
 
 	:param planeMode:
@@ -179,6 +193,7 @@ class ShapeCustom_ConvertToBSpline : public BRepTools_Modification {
 	:rtype: None
 ") SetPlaneMode;
 		void SetPlaneMode (const Standard_Boolean planeMode);
+		%feature("compactdefaultargs") NewSurface;
 		%feature("autodoc", "	* Returns Standard_True if the face <F> has been modified. In this case, <S> is the new geometric support of the face, <L> the new location, <Tol> the new tolerance. Otherwise, returns Standard_False, and <S>, <L>, <Tol> are not significant.
 
 	:param F:
@@ -195,7 +210,8 @@ class ShapeCustom_ConvertToBSpline : public BRepTools_Modification {
 	:type RevFace: bool
 	:rtype: bool
 ") NewSurface;
-		Standard_Boolean NewSurface (const TopoDS_Face & F,Handle_Geom_Surface & S,TopLoc_Location & L,Standard_Real &OutValue,Standard_Boolean & RevWires,Standard_Boolean & RevFace);
+		Standard_Boolean NewSurface (const TopoDS_Face & F,Handle_Geom_Surface & S,TopLoc_Location & L,Standard_Real &OutValue,Standard_Boolean &OutValue,Standard_Boolean &OutValue);
+		%feature("compactdefaultargs") NewCurve;
 		%feature("autodoc", "	* Returns Standard_True if the edge <E> has been modified. In this case, <C> is the new geometric support of the edge, <L> the new location, <Tol> the new tolerance. Otherwise, returns Standard_False, and <C>, <L>, <Tol> are not significant.
 
 	:param E:
@@ -209,6 +225,7 @@ class ShapeCustom_ConvertToBSpline : public BRepTools_Modification {
 	:rtype: bool
 ") NewCurve;
 		Standard_Boolean NewCurve (const TopoDS_Edge & E,Handle_Geom_Curve & C,TopLoc_Location & L,Standard_Real &OutValue);
+		%feature("compactdefaultargs") NewPoint;
 		%feature("autodoc", "	* Returns Standard_True if the vertex <V> has been modified. In this case, <P> is the new geometric support of the vertex, <Tol> the new tolerance. Otherwise, returns Standard_False, and <P>, <Tol> are not significant.
 
 	:param V:
@@ -220,7 +237,8 @@ class ShapeCustom_ConvertToBSpline : public BRepTools_Modification {
 	:rtype: bool
 ") NewPoint;
 		Standard_Boolean NewPoint (const TopoDS_Vertex & V,gp_Pnt & P,Standard_Real &OutValue);
-		%feature("autodoc", "	* Returns Standard_True if the edge <E> has a new curve on surface on the face <F>.In this case, <C> is the new geometric support of the edge, <L> the new location, <Tol> the new tolerance.  Otherwise, returns Standard_False, and <C>, <L>, <Tol> are not significant.  <NewE> is the new edge created from <E>. <NewF> is the new face created from <F>. They may be usefull.
+		%feature("compactdefaultargs") NewCurve2d;
+		%feature("autodoc", "	* Returns Standard_True if the edge <E> has a new curve on surface on the face <F>.In this case, <C> is the new geometric support of the edge, <L> the new location, <Tol> the new tolerance. //! Otherwise, returns Standard_False, and <C>, <L>, <Tol> are not significant. //! <NewE> is the new edge created from <E>. <NewF> is the new face created from <F>. They may be usefull.
 
 	:param E:
 	:type E: TopoDS_Edge &
@@ -237,6 +255,7 @@ class ShapeCustom_ConvertToBSpline : public BRepTools_Modification {
 	:rtype: bool
 ") NewCurve2d;
 		Standard_Boolean NewCurve2d (const TopoDS_Edge & E,const TopoDS_Face & F,const TopoDS_Edge & NewE,const TopoDS_Face & NewF,Handle_Geom2d_Curve & C,Standard_Real &OutValue);
+		%feature("compactdefaultargs") NewParameter;
 		%feature("autodoc", "	* Returns Standard_True if the Vertex <V> has a new parameter on the edge <E>. In this case, <P> is the parameter, <Tol> the new tolerance. Otherwise, returns Standard_False, and <P>, <Tol> are not significant.
 
 	:param V:
@@ -250,7 +269,8 @@ class ShapeCustom_ConvertToBSpline : public BRepTools_Modification {
 	:rtype: bool
 ") NewParameter;
 		Standard_Boolean NewParameter (const TopoDS_Vertex & V,const TopoDS_Edge & E,Standard_Real &OutValue,Standard_Real &OutValue);
-		%feature("autodoc", "	* Returns the continuity of <NewE> between <NewF1> and <NewF2>.  <NewE> is the new edge created from <E>. <NewF1> (resp. <NewF2>) is the new face created from <F1> (resp. <F2>).
+		%feature("compactdefaultargs") Continuity;
+		%feature("autodoc", "	* Returns the continuity of <NewE> between <NewF1> and <NewF2>. //! <NewE> is the new edge created from <E>. <NewF1> (resp. <NewF2>) is the new face created from <F1> (resp. <F2>).
 
 	:param E:
 	:type E: TopoDS_Edge &
@@ -326,19 +346,23 @@ def __del__(self):
 %nodefaultctor ShapeCustom_Curve;
 class ShapeCustom_Curve {
 	public:
+		%feature("compactdefaultargs") ShapeCustom_Curve;
 		%feature("autodoc", "	:rtype: None
 ") ShapeCustom_Curve;
 		 ShapeCustom_Curve ();
+		%feature("compactdefaultargs") ShapeCustom_Curve;
 		%feature("autodoc", "	:param C:
 	:type C: Handle_Geom_Curve &
 	:rtype: None
 ") ShapeCustom_Curve;
 		 ShapeCustom_Curve (const Handle_Geom_Curve & C);
+		%feature("compactdefaultargs") Init;
 		%feature("autodoc", "	:param C:
 	:type C: Handle_Geom_Curve &
 	:rtype: None
 ") Init;
 		void Init (const Handle_Geom_Curve & C);
+		%feature("compactdefaultargs") ConvertToPeriodic;
 		%feature("autodoc", "	* Tries to convert the Curve to the Periodic form Returns the resulting curve Works only if the Curve is BSpline and is closed with Precision::Confusion() Else, or in case of failure, returns a Null Handle
 
 	:param substitute:
@@ -365,9 +389,9 @@ def __del__(self):
 		delete $self;
 	}
 };
-%nodefaultctor ShapeCustom_Curve2d;
 class ShapeCustom_Curve2d {
 	public:
+		%feature("compactdefaultargs") IsLinear;
 		%feature("autodoc", "	* Check if poleses is in the plane with given precision Returns false if no.
 
 	:param thePoles:
@@ -379,6 +403,7 @@ class ShapeCustom_Curve2d {
 	:rtype: bool
 ") IsLinear;
 		static Standard_Boolean IsLinear (const TColgp_Array1OfPnt2d & thePoles,const Standard_Real theTolerance,Standard_Real &OutValue);
+		%feature("compactdefaultargs") ConvertToLine2d;
 		%feature("autodoc", "	* Try to convert BSpline2d or Bezier2d to line 2d only if it is linear. Recalculate first and last parameters. Returns line2d or null curve2d.
 
 	:param theCurve:
@@ -398,6 +423,7 @@ class ShapeCustom_Curve2d {
 	:rtype: Handle_Geom2d_Line
 ") ConvertToLine2d;
 		static Handle_Geom2d_Line ConvertToLine2d (const Handle_Geom2d_Curve & theCurve,const Standard_Real theFirstIn,const Standard_Real theLastIn,const Standard_Real theTolerance,Standard_Real &OutValue,Standard_Real &OutValue,Standard_Real &OutValue);
+		%feature("compactdefaultargs") SimplifyBSpline2d;
 		%feature("autodoc", "	* Try to remove knots from bspline where local derivatives are the same. Remove knots with given precision. Returns false if Bsplien was not modified
 
 	:param theBSpline2d:
@@ -427,9 +453,11 @@ def __del__(self):
 %nodefaultctor ShapeCustom_DirectModification;
 class ShapeCustom_DirectModification : public BRepTools_Modification {
 	public:
+		%feature("compactdefaultargs") ShapeCustom_DirectModification;
 		%feature("autodoc", "	:rtype: None
 ") ShapeCustom_DirectModification;
 		 ShapeCustom_DirectModification ();
+		%feature("compactdefaultargs") NewSurface;
 		%feature("autodoc", "	* Returns Standard_True if the face <F> has been modified. In this case, <S> is the new geometric support of the face, <L> the new location, <Tol> the new tolerance. Otherwise, returns Standard_False, and <S>, <L>, <Tol> are not significant.
 
 	:param F:
@@ -446,7 +474,8 @@ class ShapeCustom_DirectModification : public BRepTools_Modification {
 	:type RevFace: bool
 	:rtype: bool
 ") NewSurface;
-		Standard_Boolean NewSurface (const TopoDS_Face & F,Handle_Geom_Surface & S,TopLoc_Location & L,Standard_Real &OutValue,Standard_Boolean & RevWires,Standard_Boolean & RevFace);
+		Standard_Boolean NewSurface (const TopoDS_Face & F,Handle_Geom_Surface & S,TopLoc_Location & L,Standard_Real &OutValue,Standard_Boolean &OutValue,Standard_Boolean &OutValue);
+		%feature("compactdefaultargs") NewCurve;
 		%feature("autodoc", "	* Returns Standard_True if the edge <E> has been modified. In this case, <C> is the new geometric support of the edge, <L> the new location, <Tol> the new tolerance. Otherwise, returns Standard_False, and <C>, <L>, <Tol> are not significant.
 
 	:param E:
@@ -460,6 +489,7 @@ class ShapeCustom_DirectModification : public BRepTools_Modification {
 	:rtype: bool
 ") NewCurve;
 		Standard_Boolean NewCurve (const TopoDS_Edge & E,Handle_Geom_Curve & C,TopLoc_Location & L,Standard_Real &OutValue);
+		%feature("compactdefaultargs") NewPoint;
 		%feature("autodoc", "	* Returns Standard_True if the vertex <V> has been modified. In this case, <P> is the new geometric support of the vertex, <Tol> the new tolerance. Otherwise, returns Standard_False, and <P>, <Tol> are not significant.
 
 	:param V:
@@ -471,7 +501,8 @@ class ShapeCustom_DirectModification : public BRepTools_Modification {
 	:rtype: bool
 ") NewPoint;
 		Standard_Boolean NewPoint (const TopoDS_Vertex & V,gp_Pnt & P,Standard_Real &OutValue);
-		%feature("autodoc", "	* Returns Standard_True if the edge <E> has a new curve on surface on the face <F>.In this case, <C> is the new geometric support of the edge, <L> the new location, <Tol> the new tolerance.  Otherwise, returns Standard_False, and <C>, <L>, <Tol> are not significant.  <NewE> is the new edge created from <E>. <NewF> is the new face created from <F>. They may be usefull.
+		%feature("compactdefaultargs") NewCurve2d;
+		%feature("autodoc", "	* Returns Standard_True if the edge <E> has a new curve on surface on the face <F>.In this case, <C> is the new geometric support of the edge, <L> the new location, <Tol> the new tolerance. //! Otherwise, returns Standard_False, and <C>, <L>, <Tol> are not significant. //! <NewE> is the new edge created from <E>. <NewF> is the new face created from <F>. They may be usefull.
 
 	:param E:
 	:type E: TopoDS_Edge &
@@ -488,6 +519,7 @@ class ShapeCustom_DirectModification : public BRepTools_Modification {
 	:rtype: bool
 ") NewCurve2d;
 		Standard_Boolean NewCurve2d (const TopoDS_Edge & E,const TopoDS_Face & F,const TopoDS_Edge & NewE,const TopoDS_Face & NewF,Handle_Geom2d_Curve & C,Standard_Real &OutValue);
+		%feature("compactdefaultargs") NewParameter;
 		%feature("autodoc", "	* Returns Standard_True if the Vertex <V> has a new parameter on the edge <E>. In this case, <P> is the parameter, <Tol> the new tolerance. Otherwise, returns Standard_False, and <P>, <Tol> are not significant.
 
 	:param V:
@@ -501,7 +533,8 @@ class ShapeCustom_DirectModification : public BRepTools_Modification {
 	:rtype: bool
 ") NewParameter;
 		Standard_Boolean NewParameter (const TopoDS_Vertex & V,const TopoDS_Edge & E,Standard_Real &OutValue,Standard_Real &OutValue);
-		%feature("autodoc", "	* Returns the continuity of <NewE> between <NewF1> and <NewF2>.  <NewE> is the new edge created from <E>. <NewF1> (resp. <NewF2>) is the new face created from <F1> (resp. <F2>).
+		%feature("compactdefaultargs") Continuity;
+		%feature("autodoc", "	* Returns the continuity of <NewE> between <NewF1> and <NewF2>. //! <NewE> is the new edge created from <E>. <NewF1> (resp. <NewF2>) is the new face created from <F1> (resp. <F2>).
 
 	:param E:
 	:type E: TopoDS_Edge &
@@ -577,6 +610,7 @@ def __del__(self):
 %nodefaultctor ShapeCustom_RestrictionParameters;
 class ShapeCustom_RestrictionParameters : public MMgt_TShared {
 	public:
+		%feature("compactdefaultargs") ShapeCustom_RestrictionParameters;
 		%feature("autodoc", "	* Sets default parameters.
 
 	:rtype: None
@@ -849,25 +883,30 @@ def __del__(self):
 %nodefaultctor ShapeCustom_Surface;
 class ShapeCustom_Surface {
 	public:
+		%feature("compactdefaultargs") ShapeCustom_Surface;
 		%feature("autodoc", "	:rtype: None
 ") ShapeCustom_Surface;
 		 ShapeCustom_Surface ();
+		%feature("compactdefaultargs") ShapeCustom_Surface;
 		%feature("autodoc", "	:param S:
 	:type S: Handle_Geom_Surface &
 	:rtype: None
 ") ShapeCustom_Surface;
 		 ShapeCustom_Surface (const Handle_Geom_Surface & S);
+		%feature("compactdefaultargs") Init;
 		%feature("autodoc", "	:param S:
 	:type S: Handle_Geom_Surface &
 	:rtype: None
 ") Init;
 		void Init (const Handle_Geom_Surface & S);
+		%feature("compactdefaultargs") Gap;
 		%feature("autodoc", "	* Returns maximal deviation of converted surface from the original one computed by last call to ConvertToAnalytical
 
 	:rtype: float
 ") Gap;
 		Standard_Real Gap ();
-		%feature("autodoc", "	* Tries to convert the Surface to an Analytic form Returns the result Works only if the Surface is BSpline or Bezier. Else, or in case of failure, returns a Null Handle  If <substitute> is True, the new surface replaces the actual one in <self>  It works by analysing the case which can apply, creating the corresponding analytic surface, then checking coincidence Warning: Parameter laws are not kept, hence PCurves should be redone
+		%feature("compactdefaultargs") ConvertToAnalytical;
+		%feature("autodoc", "	* Tries to convert the Surface to an Analytic form Returns the result Works only if the Surface is BSpline or Bezier. Else, or in case of failure, returns a Null Handle //! If <substitute> is True, the new surface replaces the actual one in <self> //! It works by analysing the case which can apply, creating the corresponding analytic surface, then checking coincidence Warning: Parameter laws are not kept, hence PCurves should be redone
 
 	:param tol:
 	:type tol: float
@@ -876,6 +915,7 @@ class ShapeCustom_Surface {
 	:rtype: Handle_Geom_Surface
 ") ConvertToAnalytical;
 		Handle_Geom_Surface ConvertToAnalytical (const Standard_Real tol,const Standard_Boolean substitute);
+		%feature("compactdefaultargs") ConvertToPeriodic;
 		%feature("autodoc", "	* Tries to convert the Surface to the Periodic form Returns the resulting surface Works only if the Surface is BSpline and is closed with Precision::Confusion() Else, or in case of failure, returns a Null Handle
 
 	:param substitute:
@@ -905,6 +945,7 @@ def __del__(self):
 %nodefaultctor ShapeCustom_TrsfModification;
 class ShapeCustom_TrsfModification : public BRepTools_TrsfModification {
 	public:
+		%feature("compactdefaultargs") ShapeCustom_TrsfModification;
 		%feature("autodoc", "	* Empty constructor
 
 	:param T:
@@ -912,6 +953,7 @@ class ShapeCustom_TrsfModification : public BRepTools_TrsfModification {
 	:rtype: None
 ") ShapeCustom_TrsfModification;
 		 ShapeCustom_TrsfModification (const gp_Trsf & T);
+		%feature("compactdefaultargs") NewSurface;
 		%feature("autodoc", "	* Calls inherited method. Sets <Tol> as actual tolerance of <F> multiplied with scale factor.
 
 	:param F:
@@ -928,7 +970,8 @@ class ShapeCustom_TrsfModification : public BRepTools_TrsfModification {
 	:type RevFace: bool
 	:rtype: bool
 ") NewSurface;
-		Standard_Boolean NewSurface (const TopoDS_Face & F,Handle_Geom_Surface & S,TopLoc_Location & L,Standard_Real &OutValue,Standard_Boolean & RevWires,Standard_Boolean & RevFace);
+		Standard_Boolean NewSurface (const TopoDS_Face & F,Handle_Geom_Surface & S,TopLoc_Location & L,Standard_Real &OutValue,Standard_Boolean &OutValue,Standard_Boolean &OutValue);
+		%feature("compactdefaultargs") NewCurve;
 		%feature("autodoc", "	* Calls inherited method. Sets <Tol> as actual tolerance of <E> multiplied with scale factor.
 
 	:param E:
@@ -942,6 +985,7 @@ class ShapeCustom_TrsfModification : public BRepTools_TrsfModification {
 	:rtype: bool
 ") NewCurve;
 		Standard_Boolean NewCurve (const TopoDS_Edge & E,Handle_Geom_Curve & C,TopLoc_Location & L,Standard_Real &OutValue);
+		%feature("compactdefaultargs") NewPoint;
 		%feature("autodoc", "	* Calls inherited method. Sets <Tol> as actual tolerance of <V> multiplied with scale factor.
 
 	:param V:
@@ -953,6 +997,7 @@ class ShapeCustom_TrsfModification : public BRepTools_TrsfModification {
 	:rtype: bool
 ") NewPoint;
 		Standard_Boolean NewPoint (const TopoDS_Vertex & V,gp_Pnt & P,Standard_Real &OutValue);
+		%feature("compactdefaultargs") NewCurve2d;
 		%feature("autodoc", "	* Calls inherited method. Sets <Tol> as actual tolerance of <E> multiplied with scale factor.
 
 	:param E:
@@ -970,6 +1015,7 @@ class ShapeCustom_TrsfModification : public BRepTools_TrsfModification {
 	:rtype: bool
 ") NewCurve2d;
 		Standard_Boolean NewCurve2d (const TopoDS_Edge & E,const TopoDS_Face & F,const TopoDS_Edge & NewE,const TopoDS_Face & NewF,Handle_Geom2d_Curve & C,Standard_Real &OutValue);
+		%feature("compactdefaultargs") NewParameter;
 		%feature("autodoc", "	* Calls inherited method. Sets <Tol> as actual tolerance of <V> multiplied with scale factor.
 
 	:param V:

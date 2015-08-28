@@ -1,5 +1,5 @@
 /*
-Copyright 2008-2014 Thomas Paviot (tpaviot@gmail.com)
+Copyright 2008-2015 Thomas Paviot (tpaviot@gmail.com)
 
 
 This file is part of pythonOCC.
@@ -28,7 +28,6 @@ along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
 %}
 
 %include ../common/CommonIncludes.i
-%include ../common/StandardDefines.i
 %include ../common/ExceptionCatcher.i
 %include ../common/FunctionTransformers.i
 %include ../common/Operators.i
@@ -38,6 +37,7 @@ along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
 /* typedefs */
 typedef bool Standard_Boolean;
 typedef const char * Standard_CString;
+typedef std::istream Standard_IStream;
 typedef Standard_ExtCharacter * Standard_PExtCharacter;
 typedef std::time_t Standard_Time;
 typedef unsigned char Standard_Byte;
@@ -45,6 +45,7 @@ typedef void * Standard_Address;
 typedef Standard_Byte * Standard_PByte;
 typedef GUID Standard_UUID;
 typedef short Standard_ExtCharacter;
+typedef unsigned __int8 uint8_t;
 typedef double Standard_Real;
 typedef Standard_ErrorHandler * Standard_PErrorHandler;
 typedef int Standard_Integer;
@@ -56,23 +57,17 @@ typedef wchar_t Standard_WideChar;
 typedef char Standard_Character;
 typedef unsigned char Standard_Utf8UChar;
 typedef uint32_t Standard_Utf32Char;
-typedef Standard_Persistent * Standard_OId;
-typedef strstream Standard_SStream;
+typedef std::stringstream Standard_SStream;
 typedef uint16_t Standard_Utf16Char;
 typedef const short * Standard_ExtString;
 typedef unsigned __int32 uint32_t;
 typedef size_t Standard_Size;
-typedef ostream Standard_OStream;
+typedef std::ostream Standard_OStream;
+typedef unsigned __int64 uint64_t;
 typedef unsigned __int16 uint16_t;
 /* end typedefs declaration */
 
 /* public enums */
-enum Standard_HandlerStatus {
-	Standard_HandlerVoid = 0,
-	Standard_HandlerJumped = 1,
-	Standard_HandlerProcessed = 2,
-};
-
 enum Standard_InternalType {
 	Standard_Void = 0,
 	Standard_Char = 1,
@@ -90,13 +85,10 @@ enum Standard_InternalType {
 	Standard_Array = 13,
 };
 
-enum Standard_KindOfType {
-	Standard_IsUnKnown = 0,
-	Standard_IsClass = 1,
-	Standard_IsEnumeration = 2,
-	Standard_IsPrimitive = 3,
-	Standard_IsImported = 4,
-	Standard_IsPackage = 5,
+enum Standard_HandlerStatus {
+	Standard_HandlerVoid = 0,
+	Standard_HandlerJumped = 1,
+	Standard_HandlerProcessed = 2,
 };
 
 enum Standard_WayOfLife {
@@ -107,12 +99,21 @@ enum Standard_WayOfLife {
 	Standard_IsNotLoaded = 4,
 };
 
+enum Standard_KindOfType {
+	Standard_IsUnKnown = 0,
+	Standard_IsClass = 1,
+	Standard_IsEnumeration = 2,
+	Standard_IsPrimitive = 3,
+	Standard_IsImported = 4,
+	Standard_IsPackage = 5,
+};
+
 /* end public enums declaration */
 
 %rename(standard) Standard;
-%nodefaultctor Standard;
 class Standard {
 	public:
+		%feature("compactdefaultargs") Allocate;
 		%feature("autodoc", "	* Allocates memory blocks aSize - bytes to allocate
 
 	:param aSize:
@@ -120,6 +121,7 @@ class Standard {
 	:rtype: Standard_Address
 ") Allocate;
 		static Standard_Address Allocate (const Standard_Size aSize);
+		%feature("compactdefaultargs") Reallocate;
 		%feature("autodoc", "	* Reallocates memory blocks aStorage - previously allocated memory block aNewSize - new size in bytes
 
 	:param aStorage:
@@ -129,6 +131,17 @@ class Standard {
 	:rtype: Standard_Address
 ") Reallocate;
 		static Standard_Address Reallocate (const Standard_Address aStorage,const Standard_Size aNewSize);
+		%feature("compactdefaultargs") AllocateAligned;
+		%feature("autodoc", "	* Allocates aligned memory blocks. Should be used with CPU instructions which require specific alignment. For example: SSE requires 16 bytes, AVX requires 32 bytes. @param theSize bytes to allocate @param theAlign alignment in bytes
+
+	:param theSize:
+	:type theSize: Standard_Size
+	:param theAlign:
+	:type theAlign: Standard_Size
+	:rtype: Standard_Address
+") AllocateAligned;
+		static Standard_Address AllocateAligned (const Standard_Size theSize,const Standard_Size theAlign);
+		%feature("compactdefaultargs") Purge;
 		%feature("autodoc", "	* Deallocates the storage retained on the free list and clears the list. Returns non-zero if some memory has been actually freed.
 
 	:rtype: int
@@ -154,21 +167,25 @@ def __del__(self):
 %nodefaultctor Standard_ErrorHandler;
 class Standard_ErrorHandler {
 	public:
+		%feature("compactdefaultargs") Standard_ErrorHandler;
 		%feature("autodoc", "	* Create a ErrorHandler (to be used with try{}catch(){}). It uses the 'setjmp' and 'longjmp' routines.
 
 	:rtype: None
 ") Standard_ErrorHandler;
 		 Standard_ErrorHandler ();
+		%feature("compactdefaultargs") Destroy;
 		%feature("autodoc", "	* Unlinks and checks if there is a raised exception.
 
 	:rtype: None
 ") Destroy;
 		void Destroy ();
+		%feature("compactdefaultargs") Unlink;
 		%feature("autodoc", "	* Removes handler from the handlers list
 
 	:rtype: None
 ") Unlink;
 		void Unlink ();
+		%feature("compactdefaultargs") Catches;
 		%feature("autodoc", "	* Returns 'True' if the caught exception has the same type or inherits from 'aType'
 
 	:param aType:
@@ -176,21 +193,25 @@ class Standard_ErrorHandler {
 	:rtype: bool
 ") Catches;
 		Standard_Boolean Catches (const Handle_Standard_Type & aType);
+		%feature("compactdefaultargs") Label;
 		%feature("autodoc", "	* Returns label for jump
 
 	:rtype: Standard_JmpBuf
 ") Label;
 		Standard_JmpBuf & Label ();
+		%feature("compactdefaultargs") Error;
 		%feature("autodoc", "	* Returns the current Error.
 
 	:rtype: Handle_Standard_Failure
 ") Error;
 		Handle_Standard_Failure Error ();
+		%feature("compactdefaultargs") LastCaughtError;
 		%feature("autodoc", "	* Returns the caught exception.
 
 	:rtype: Handle_Standard_Failure
 ") LastCaughtError;
 		static Handle_Standard_Failure LastCaughtError ();
+		%feature("compactdefaultargs") IsInTryBlock;
 		%feature("autodoc", "	* Test if the code is currently running in a try block
 
 	:rtype: bool
@@ -216,16 +237,19 @@ def __del__(self):
 %nodefaultctor Standard_ErrorHandlerCallback;
 class Standard_ErrorHandlerCallback {
 	public:
+		%feature("compactdefaultargs") RegisterCallback;
 		%feature("autodoc", "	* Registers this callback object in the current error handler (if found).
 
 	:rtype: None
 ") RegisterCallback;
 		void RegisterCallback ();
+		%feature("compactdefaultargs") UnregisterCallback;
 		%feature("autodoc", "	* Unregisters this callback object from the error handler.
 
 	:rtype: None
 ") UnregisterCallback;
 		void UnregisterCallback ();
+		%feature("compactdefaultargs") DestroyCallback;
 		%feature("autodoc", "	* The callback function to perform necessary callback action. Called by the exception handler when it is being destroyed but still has this callback registered.
 
 	:rtype: void
@@ -251,9 +275,11 @@ def __del__(self):
 %nodefaultctor Standard_GUID;
 class Standard_GUID {
 	public:
+		%feature("compactdefaultargs") Standard_GUID;
 		%feature("autodoc", "	:rtype: None
 ") Standard_GUID;
 		 Standard_GUID ();
+		%feature("compactdefaultargs") Standard_GUID;
 		%feature("autodoc", "	* build a GUID from an ascii string with the following format: Length : 36 char '00000000-0000-0000-0000-000000000000'
 
 	:param aGuid:
@@ -261,15 +287,17 @@ class Standard_GUID {
 	:rtype: None
 ") Standard_GUID;
 		 Standard_GUID (const char * aGuid);
-		%feature("autodoc", "	* build a GUID from an unicode string with the following format:  '00000000-0000-0000-0000-000000000000'
+		%feature("compactdefaultargs") Standard_GUID;
+		%feature("autodoc", "	* build a GUID from an unicode string with the following format: //! '00000000-0000-0000-0000-000000000000'
 
 	:param aGuid:
 	:type aGuid: Standard_ExtString
 	:rtype: None
 ") Standard_GUID;
 		 Standard_GUID (const Standard_ExtString aGuid);
+		%feature("compactdefaultargs") Standard_GUID;
 		%feature("autodoc", "	:param a32b:
-	:type a32b: Standard_Integer
+	:type a32b: int
 	:param a16b1:
 	:type a16b1: Standard_ExtCharacter
 	:param a16b2:
@@ -291,33 +319,39 @@ class Standard_GUID {
 	:rtype: None
 ") Standard_GUID;
 		 Standard_GUID (const Standard_Integer a32b,const Standard_ExtCharacter a16b1,const Standard_ExtCharacter a16b2,const Standard_ExtCharacter a16b3,const Standard_Byte a8b1,const Standard_Byte a8b2,const Standard_Byte a8b3,const Standard_Byte a8b4,const Standard_Byte a8b5,const Standard_Byte a8b6);
+		%feature("compactdefaultargs") Standard_GUID;
 		%feature("autodoc", "	:param aGuid:
 	:type aGuid: Standard_UUID &
 	:rtype: None
 ") Standard_GUID;
 		 Standard_GUID (const Standard_UUID & aGuid);
+		%feature("compactdefaultargs") Standard_GUID;
 		%feature("autodoc", "	:param aGuid:
 	:type aGuid: Standard_GUID &
 	:rtype: None
 ") Standard_GUID;
 		 Standard_GUID (const Standard_GUID & aGuid);
+		%feature("compactdefaultargs") ToUUID;
 		%feature("autodoc", "	:rtype: Standard_UUID
 ") ToUUID;
 		Standard_UUID ToUUID ();
-		%feature("autodoc", "	* translate the GUID into ascii string the aStrGuid is allocated by user. the guid have the following format:  '00000000-0000-0000-0000-000000000000'
+		%feature("compactdefaultargs") ToCString;
+		%feature("autodoc", "	* translate the GUID into ascii string the aStrGuid is allocated by user. the guid have the following format: //! '00000000-0000-0000-0000-000000000000'
 
 	:param aStrGuid:
 	:type aStrGuid: Standard_PCharacter
 	:rtype: None
 ") ToCString;
 		void ToCString (const Standard_PCharacter aStrGuid);
-		%feature("autodoc", "	* translate the GUID into unicode string the aStrGuid is allocated by user. the guid have the following format:  '00000000-0000-0000-0000-000000000000'
+		%feature("compactdefaultargs") ToExtString;
+		%feature("autodoc", "	* translate the GUID into unicode string the aStrGuid is allocated by user. the guid have the following format: //! '00000000-0000-0000-0000-000000000000'
 
 	:param aStrGuid:
 	:type aStrGuid: Standard_PExtCharacter
 	:rtype: None
 ") ToExtString;
 		void ToExtString (const Standard_PExtCharacter aStrGuid);
+		%feature("compactdefaultargs") IsSame;
 		%feature("autodoc", "	:param uid:
 	:type uid: Standard_GUID &
 	:rtype: bool
@@ -337,7 +371,8 @@ class Standard_GUID {
             except:
                 return False
         }
-        		%feature("autodoc", "	:param uid:
+        		%feature("compactdefaultargs") IsNotSame;
+		%feature("autodoc", "	:param uid:
 	:type uid: Standard_GUID &
 	:rtype: bool
 ") IsNotSame;
@@ -356,21 +391,25 @@ class Standard_GUID {
             except:
                 return True
         }
-        		%feature("autodoc", "	:param uid:
+        		%feature("compactdefaultargs") Assign;
+		%feature("autodoc", "	:param uid:
 	:type uid: Standard_GUID &
 	:rtype: None
 ") Assign;
 		void Assign (const Standard_GUID & uid);
+		%feature("compactdefaultargs") operator =;
 		%feature("autodoc", "	:param uid:
 	:type uid: Standard_GUID &
 	:rtype: None
 ") operator=;
 		void operator = (const Standard_GUID & uid);
+		%feature("compactdefaultargs") Assign;
 		%feature("autodoc", "	:param uid:
 	:type uid: Standard_UUID &
 	:rtype: None
 ") Assign;
 		void Assign (const Standard_UUID & uid);
+		%feature("compactdefaultargs") operator =;
 		%feature("autodoc", "	:param uid:
 	:type uid: Standard_UUID &
 	:rtype: None
@@ -384,29 +423,33 @@ class Standard_GUID {
             self->ShallowDump(s);
             return s.str();}
         };
-        		%feature("autodoc", "	* Check the format of a GUID string. It checks the size, the position of the '-' and the correct size of fields.
+        		%feature("compactdefaultargs") CheckGUIDFormat;
+		%feature("autodoc", "	* Check the format of a GUID string. It checks the size, the position of the '-' and the correct size of fields.
 
 	:param aGuid:
 	:type aGuid: char *
 	:rtype: bool
 ") CheckGUIDFormat;
 		static Standard_Boolean CheckGUIDFormat (const char * aGuid);
+		%feature("compactdefaultargs") Hash;
 		%feature("autodoc", "	* Hash function for GUID.
 
 	:param Upper:
-	:type Upper: Standard_Integer
+	:type Upper: int
 	:rtype: int
 ") Hash;
 		Standard_Integer Hash (const Standard_Integer Upper);
+		%feature("compactdefaultargs") HashCode;
 		%feature("autodoc", "	* H method used by collections.
 
 	:param aguid:
 	:type aguid: Standard_GUID &
 	:param Upper:
-	:type Upper: Standard_Integer
+	:type Upper: int
 	:rtype: int
 ") HashCode;
 		static Standard_Integer HashCode (const Standard_GUID & aguid,const Standard_Integer Upper);
+		%feature("compactdefaultargs") IsEqual;
 		%feature("autodoc", "	* Returns True when the two GUID are the same.
 
 	:param string1:
@@ -416,81 +459,101 @@ class Standard_GUID {
 	:rtype: bool
 ") IsEqual;
 		static Standard_Boolean IsEqual (const Standard_GUID & string1,const Standard_GUID & string2);
+		%feature("compactdefaultargs") _CSFDB_GetStandard_GUIDmy32b;
 		%feature("autodoc", "	:rtype: int
 ") _CSFDB_GetStandard_GUIDmy32b;
 		Standard_Integer _CSFDB_GetStandard_GUIDmy32b ();
+		%feature("compactdefaultargs") _CSFDB_SetStandard_GUIDmy32b;
 		%feature("autodoc", "	:param p:
-	:type p: Standard_Integer
+	:type p: int
 	:rtype: None
 ") _CSFDB_SetStandard_GUIDmy32b;
 		void _CSFDB_SetStandard_GUIDmy32b (const Standard_Integer p);
+		%feature("compactdefaultargs") _CSFDB_GetStandard_GUIDmy16b1;
 		%feature("autodoc", "	:rtype: Standard_ExtCharacter
 ") _CSFDB_GetStandard_GUIDmy16b1;
 		Standard_ExtCharacter _CSFDB_GetStandard_GUIDmy16b1 ();
+		%feature("compactdefaultargs") _CSFDB_SetStandard_GUIDmy16b1;
 		%feature("autodoc", "	:param p:
 	:type p: Standard_ExtCharacter
 	:rtype: None
 ") _CSFDB_SetStandard_GUIDmy16b1;
 		void _CSFDB_SetStandard_GUIDmy16b1 (const Standard_ExtCharacter p);
+		%feature("compactdefaultargs") _CSFDB_GetStandard_GUIDmy16b2;
 		%feature("autodoc", "	:rtype: Standard_ExtCharacter
 ") _CSFDB_GetStandard_GUIDmy16b2;
 		Standard_ExtCharacter _CSFDB_GetStandard_GUIDmy16b2 ();
+		%feature("compactdefaultargs") _CSFDB_SetStandard_GUIDmy16b2;
 		%feature("autodoc", "	:param p:
 	:type p: Standard_ExtCharacter
 	:rtype: None
 ") _CSFDB_SetStandard_GUIDmy16b2;
 		void _CSFDB_SetStandard_GUIDmy16b2 (const Standard_ExtCharacter p);
+		%feature("compactdefaultargs") _CSFDB_GetStandard_GUIDmy16b3;
 		%feature("autodoc", "	:rtype: Standard_ExtCharacter
 ") _CSFDB_GetStandard_GUIDmy16b3;
 		Standard_ExtCharacter _CSFDB_GetStandard_GUIDmy16b3 ();
+		%feature("compactdefaultargs") _CSFDB_SetStandard_GUIDmy16b3;
 		%feature("autodoc", "	:param p:
 	:type p: Standard_ExtCharacter
 	:rtype: None
 ") _CSFDB_SetStandard_GUIDmy16b3;
 		void _CSFDB_SetStandard_GUIDmy16b3 (const Standard_ExtCharacter p);
+		%feature("compactdefaultargs") _CSFDB_GetStandard_GUIDmy8b1;
 		%feature("autodoc", "	:rtype: Standard_Byte
 ") _CSFDB_GetStandard_GUIDmy8b1;
 		Standard_Byte _CSFDB_GetStandard_GUIDmy8b1 ();
+		%feature("compactdefaultargs") _CSFDB_SetStandard_GUIDmy8b1;
 		%feature("autodoc", "	:param p:
 	:type p: Standard_Byte
 	:rtype: None
 ") _CSFDB_SetStandard_GUIDmy8b1;
 		void _CSFDB_SetStandard_GUIDmy8b1 (const Standard_Byte p);
+		%feature("compactdefaultargs") _CSFDB_GetStandard_GUIDmy8b2;
 		%feature("autodoc", "	:rtype: Standard_Byte
 ") _CSFDB_GetStandard_GUIDmy8b2;
 		Standard_Byte _CSFDB_GetStandard_GUIDmy8b2 ();
+		%feature("compactdefaultargs") _CSFDB_SetStandard_GUIDmy8b2;
 		%feature("autodoc", "	:param p:
 	:type p: Standard_Byte
 	:rtype: None
 ") _CSFDB_SetStandard_GUIDmy8b2;
 		void _CSFDB_SetStandard_GUIDmy8b2 (const Standard_Byte p);
+		%feature("compactdefaultargs") _CSFDB_GetStandard_GUIDmy8b3;
 		%feature("autodoc", "	:rtype: Standard_Byte
 ") _CSFDB_GetStandard_GUIDmy8b3;
 		Standard_Byte _CSFDB_GetStandard_GUIDmy8b3 ();
+		%feature("compactdefaultargs") _CSFDB_SetStandard_GUIDmy8b3;
 		%feature("autodoc", "	:param p:
 	:type p: Standard_Byte
 	:rtype: None
 ") _CSFDB_SetStandard_GUIDmy8b3;
 		void _CSFDB_SetStandard_GUIDmy8b3 (const Standard_Byte p);
+		%feature("compactdefaultargs") _CSFDB_GetStandard_GUIDmy8b4;
 		%feature("autodoc", "	:rtype: Standard_Byte
 ") _CSFDB_GetStandard_GUIDmy8b4;
 		Standard_Byte _CSFDB_GetStandard_GUIDmy8b4 ();
+		%feature("compactdefaultargs") _CSFDB_SetStandard_GUIDmy8b4;
 		%feature("autodoc", "	:param p:
 	:type p: Standard_Byte
 	:rtype: None
 ") _CSFDB_SetStandard_GUIDmy8b4;
 		void _CSFDB_SetStandard_GUIDmy8b4 (const Standard_Byte p);
+		%feature("compactdefaultargs") _CSFDB_GetStandard_GUIDmy8b5;
 		%feature("autodoc", "	:rtype: Standard_Byte
 ") _CSFDB_GetStandard_GUIDmy8b5;
 		Standard_Byte _CSFDB_GetStandard_GUIDmy8b5 ();
+		%feature("compactdefaultargs") _CSFDB_SetStandard_GUIDmy8b5;
 		%feature("autodoc", "	:param p:
 	:type p: Standard_Byte
 	:rtype: None
 ") _CSFDB_SetStandard_GUIDmy8b5;
 		void _CSFDB_SetStandard_GUIDmy8b5 (const Standard_Byte p);
+		%feature("compactdefaultargs") _CSFDB_GetStandard_GUIDmy8b6;
 		%feature("autodoc", "	:rtype: Standard_Byte
 ") _CSFDB_GetStandard_GUIDmy8b6;
 		Standard_Byte _CSFDB_GetStandard_GUIDmy8b6 ();
+		%feature("compactdefaultargs") _CSFDB_SetStandard_GUIDmy8b6;
 		%feature("autodoc", "	:param p:
 	:type p: Standard_Byte
 	:rtype: None
@@ -516,6 +579,7 @@ def __del__(self):
 %nodefaultctor Standard_MMgrRoot;
 class Standard_MMgrRoot {
 	public:
+		%feature("compactdefaultargs") Allocate;
 		%feature("autodoc", "	* Allocate specified number of bytes. The actually allocated space should be rounded up to double word size (4 bytes), as this is expected by implementation of some classes in OCC (e.g. TCollection_AsciiString)
 
 	:param theSize:
@@ -523,6 +587,7 @@ class Standard_MMgrRoot {
 	:rtype: Standard_Address
 ") Allocate;
 		virtual Standard_Address Allocate (const Standard_Size theSize);
+		%feature("compactdefaultargs") Reallocate;
 		%feature("autodoc", "	* Reallocate previously allocated memory to contain at least theSize bytes. In case of success, new pointer is returned.
 
 	:param thePtr:
@@ -532,6 +597,7 @@ class Standard_MMgrRoot {
 	:rtype: Standard_Address
 ") Reallocate;
 		virtual Standard_Address Reallocate (Standard_Address thePtr,const Standard_Size theSize);
+		%feature("compactdefaultargs") Free;
 		%feature("autodoc", "	* Frees previously allocated memory at specified address.
 
 	:param thePtr:
@@ -539,6 +605,7 @@ class Standard_MMgrRoot {
 	:rtype: void
 ") Free;
 		virtual void Free (Standard_Address thePtr);
+		%feature("compactdefaultargs") Purge;
 		%feature("autodoc", "	* Purge internally cached unused memory blocks (if any) by releasing them to the operating system. Must return non-zero if some memory has been actually released, or zero otherwise. If option isDestroyed is True, this means that memory manager is not expected to be used any more; note however that in general case it is still possible to have calls to that instance of memory manager after this (e.g. to free memory of static objects in OCC). Thus this option should command the memory manager to release any cached memory to the system and not cache any more, but still remain operable... //! Default implementation does nothing and returns 0.
 
 	:param isDestroyed: default value is Standard_False
@@ -566,6 +633,7 @@ def __del__(self):
 %nodefaultctor Standard_Static_Assert<true>;
 class Standard_Static_Assert<true> {
 	public:
+		%feature("compactdefaultargs") assert_ok;
 		%feature("autodoc", "	:rtype: void
 ") assert_ok;
 		static void assert_ok ();
@@ -586,16 +654,17 @@ def __del__(self):
 		delete $self;
 	}
 };
-%nodefaultctor Standard_Storable;
 class Standard_Storable {
 	public:
+		%feature("compactdefaultargs") Delete;
 		%feature("autodoc", "	:rtype: void
 ") Delete;
 		virtual void Delete ();
-		%feature("autodoc", "	* Returns a hashed value denoting <self>. This value is in  the range 1..<Upper>.
+		%feature("compactdefaultargs") HashCode;
+		%feature("autodoc", "	* Returns a hashed value denoting <self>. This value is in the range 1..<Upper>.
 
 	:param Upper:
-	:type Upper: Standard_Integer
+	:type Upper: int
 	:rtype: int
 ") HashCode;
 		virtual Standard_Integer HashCode (const Standard_Integer Upper);
@@ -605,7 +674,8 @@ class Standard_Storable {
             return $self->HashCode(2147483647);
             }
         };
-        		%feature("autodoc", "	* Returns true if the direct contents of <self> and  <Other> are memberwise equal.
+        		%feature("compactdefaultargs") IsEqual;
+		%feature("autodoc", "	* Returns true if the direct contents of <self> and <Other> are memberwise equal.
 
 	:param Other:
 	:type Other: Standard_Storable &
@@ -626,22 +696,15 @@ class Standard_Storable {
             except:
                 return False
         }
-        		%feature("autodoc", "	* Returns true if the Deep contents of <self> and  <Other> are memberwise equal.
+        		%feature("compactdefaultargs") IsSimilar;
+		%feature("autodoc", "	* Returns true if the Deep contents of <self> and <Other> are memberwise equal.
 
 	:param Other:
 	:type Other: Standard_Storable &
 	:rtype: bool
 ") IsSimilar;
 		Standard_Boolean IsSimilar (const Standard_Storable & Other);
-
-        %feature("autodoc", "1");
-        %extend{
-            std::string ShallowDumpToString() {
-            std::stringstream s;
-            self->ShallowDump(s);
-            return s.str();}
-        };
-        };
+};
 
 
 %feature("shadow") Standard_Storable::~Standard_Storable %{
@@ -661,11 +724,13 @@ def __del__(self):
 %nodefaultctor Standard_Transient;
 class Standard_Transient {
 	public:
+		%feature("compactdefaultargs") Standard_Transient;
 		%feature("autodoc", "	* Empty constructor
 
 	:rtype: None
 ") Standard_Transient;
 		 Standard_Transient ();
+		%feature("compactdefaultargs") Standard_Transient;
 		%feature("autodoc", "	* Copy constructor -- does nothing
 
 	:param &:
@@ -673,6 +738,7 @@ class Standard_Transient {
 	:rtype: None
 ") Standard_Transient;
 		 Standard_Transient (const Standard_Transient &);
+		%feature("compactdefaultargs") operator =;
 		%feature("autodoc", "	* Assignment operator, needed to avoid copying reference counter
 
 	:param &:
@@ -680,24 +746,19 @@ class Standard_Transient {
 	:rtype: Standard_Transient
 ") operator=;
 		Standard_Transient & operator = (const Standard_Transient &);
+		%feature("compactdefaultargs") Delete;
 		%feature("autodoc", "	* Memory deallocator for transient classes
 
 	:rtype: void
 ") Delete;
 		virtual void Delete ();
-
-        %feature("autodoc", "1");
-        %extend{
-            std::string ShallowDumpToString() {
-            std::stringstream s;
-            self->ShallowDump(s);
-            return s.str();}
-        };
-        		%feature("autodoc", "	* Returns a type information object about this object.
+		%feature("compactdefaultargs") DynamicType;
+		%feature("autodoc", "	* Returns a type information object about this object.
 
 	:rtype: Handle_Standard_Type
 ") DynamicType;
 		virtual const Handle_Standard_Type & DynamicType ();
+		%feature("compactdefaultargs") IsInstance;
 		%feature("autodoc", "	* Returns a true value if this is an instance of Type.
 
 	:param theType:
@@ -705,6 +766,7 @@ class Standard_Transient {
 	:rtype: bool
 ") IsInstance;
 		Standard_Boolean IsInstance (const Handle_Standard_Type & theType);
+		%feature("compactdefaultargs") IsInstance;
 		%feature("autodoc", "	* Returns a true value if this is an instance of TypeName.
 
 	:param theTypeName:
@@ -712,6 +774,7 @@ class Standard_Transient {
 	:rtype: bool
 ") IsInstance;
 		Standard_Boolean IsInstance (const char * theTypeName);
+		%feature("compactdefaultargs") IsKind;
 		%feature("autodoc", "	* Returns true if this is an instance of Type or an instance of any class that inherits from Type. Note that multiple inheritance is not supported by OCCT RTTI mechanism.
 
 	:param theType:
@@ -719,6 +782,7 @@ class Standard_Transient {
 	:rtype: bool
 ") IsKind;
 		Standard_Boolean IsKind (const Handle_Standard_Type & theType);
+		%feature("compactdefaultargs") IsKind;
 		%feature("autodoc", "	* Returns true if this is an instance of TypeName or an instance of any class that inherits from TypeName. Note that multiple inheritance is not supported by OCCT RTTI mechanism.
 
 	:param theTypeName:
@@ -726,11 +790,13 @@ class Standard_Transient {
 	:rtype: bool
 ") IsKind;
 		Standard_Boolean IsKind (const char * theTypeName);
+		%feature("compactdefaultargs") This;
 		%feature("autodoc", "	* Returns a Handle which references this object. Must never be called to objects created in stack.
 
 	:rtype: Handle_Standard_Transient
 ") This;
 		virtual Handle_Standard_Transient This ();
+		%feature("compactdefaultargs") GetRefCount;
 		%feature("autodoc", "	* Get the reference counter of this object.
 
 	:rtype: int
@@ -841,6 +907,7 @@ def __del__(self):
 %nodefaultctor Standard_MMgrOpt;
 class Standard_MMgrOpt : public Standard_MMgrRoot {
 	public:
+		%feature("compactdefaultargs") Standard_MMgrOpt;
 		%feature("autodoc", "	* Constructor. If aClear is True, the allocated emmory will be nullified. For description of other parameters, see description of the class above.
 
 	:param aClear: default value is Standard_True
@@ -850,12 +917,13 @@ class Standard_MMgrOpt : public Standard_MMgrRoot {
 	:param aCellSize: default value is 200
 	:type aCellSize: Standard_Size
 	:param aNbPages: default value is 10000
-	:type aNbPages: Standard_Integer
+	:type aNbPages: int
 	:param aThreshold: default value is 40000
 	:type aThreshold: Standard_Size
 	:rtype: None
 ") Standard_MMgrOpt;
 		 Standard_MMgrOpt (const Standard_Boolean aClear = Standard_True,const Standard_Boolean aMMap = Standard_True,const Standard_Size aCellSize = 200,const Standard_Integer aNbPages = 10000,const Standard_Size aThreshold = 40000);
+		%feature("compactdefaultargs") Allocate;
 		%feature("autodoc", "	* Allocate aSize bytes; see class description above
 
 	:param aSize:
@@ -863,6 +931,7 @@ class Standard_MMgrOpt : public Standard_MMgrRoot {
 	:rtype: Standard_Address
 ") Allocate;
 		virtual Standard_Address Allocate (const Standard_Size aSize);
+		%feature("compactdefaultargs") Reallocate;
 		%feature("autodoc", "	* Reallocate previously allocated aPtr to a new size; new address is returned. In case that aPtr is null, the function behaves exactly as Allocate.
 
 	:param thePtr:
@@ -872,6 +941,7 @@ class Standard_MMgrOpt : public Standard_MMgrRoot {
 	:rtype: Standard_Address
 ") Reallocate;
 		virtual Standard_Address Reallocate (Standard_Address thePtr,const Standard_Size theSize);
+		%feature("compactdefaultargs") Free;
 		%feature("autodoc", "	* Free previously allocated block. Note that block can not all blocks are released to the OS by this method (see class description)
 
 	:param thePtr:
@@ -879,6 +949,7 @@ class Standard_MMgrOpt : public Standard_MMgrRoot {
 	:rtype: void
 ") Free;
 		virtual void Free (Standard_Address thePtr);
+		%feature("compactdefaultargs") Purge;
 		%feature("autodoc", "	* Release medium-sized blocks of memory in free lists to the system. Returns number of actually freed blocks
 
 	:param isDestroyed:
@@ -906,6 +977,7 @@ def __del__(self):
 %nodefaultctor Standard_MMgrRaw;
 class Standard_MMgrRaw : public Standard_MMgrRoot {
 	public:
+		%feature("compactdefaultargs") Standard_MMgrRaw;
 		%feature("autodoc", "	* Constructor; if aClear is True, the memory will be nullified upon allocation.
 
 	:param aClear: default value is Standard_False
@@ -913,6 +985,7 @@ class Standard_MMgrRaw : public Standard_MMgrRoot {
 	:rtype: None
 ") Standard_MMgrRaw;
 		 Standard_MMgrRaw (const Standard_Boolean aClear = Standard_False);
+		%feature("compactdefaultargs") Allocate;
 		%feature("autodoc", "	* Allocate aSize bytes
 
 	:param aSize:
@@ -920,6 +993,7 @@ class Standard_MMgrRaw : public Standard_MMgrRoot {
 	:rtype: Standard_Address
 ") Allocate;
 		virtual Standard_Address Allocate (const Standard_Size aSize);
+		%feature("compactdefaultargs") Reallocate;
 		%feature("autodoc", "	* Reallocate aPtr to the size aSize. The new pointer is returned.
 
 	:param thePtr:
@@ -929,6 +1003,7 @@ class Standard_MMgrRaw : public Standard_MMgrRoot {
 	:rtype: Standard_Address
 ") Reallocate;
 		virtual Standard_Address Reallocate (Standard_Address thePtr,const Standard_Size theSize);
+		%feature("compactdefaultargs") Free;
 		%feature("autodoc", "	* Free allocated memory. The pointer is nullified.
 
 	:param thePtr:
@@ -956,6 +1031,7 @@ def __del__(self):
 %nodefaultctor Standard_MMgrTBBalloc;
 class Standard_MMgrTBBalloc : public Standard_MMgrRoot {
 	public:
+		%feature("compactdefaultargs") Standard_MMgrTBBalloc;
 		%feature("autodoc", "	* Constructor; if aClear is True, the memory will be nullified upon allocation.
 
 	:param aClear: default value is Standard_False
@@ -963,6 +1039,7 @@ class Standard_MMgrTBBalloc : public Standard_MMgrRoot {
 	:rtype: None
 ") Standard_MMgrTBBalloc;
 		 Standard_MMgrTBBalloc (const Standard_Boolean aClear = Standard_False);
+		%feature("compactdefaultargs") Allocate;
 		%feature("autodoc", "	* Allocate aSize bytes
 
 	:param aSize:
@@ -970,6 +1047,7 @@ class Standard_MMgrTBBalloc : public Standard_MMgrRoot {
 	:rtype: Standard_Address
 ") Allocate;
 		virtual Standard_Address Allocate (const Standard_Size aSize);
+		%feature("compactdefaultargs") Reallocate;
 		%feature("autodoc", "	* Reallocate aPtr to the size aSize. The new pointer is returned.
 
 	:param thePtr:
@@ -979,6 +1057,7 @@ class Standard_MMgrTBBalloc : public Standard_MMgrRoot {
 	:rtype: Standard_Address
 ") Reallocate;
 		virtual Standard_Address Reallocate (Standard_Address thePtr,const Standard_Size theSize);
+		%feature("compactdefaultargs") Free;
 		%feature("autodoc", "	* Free allocated memory
 
 	:param thePtr:
@@ -1006,21 +1085,25 @@ def __del__(self):
 %nodefaultctor Standard_Mutex;
 class Standard_Mutex : public Standard_ErrorHandlerCallback {
 	public:
+		%feature("compactdefaultargs") Standard_Mutex;
 		%feature("autodoc", "	* Constructor: creates a mutex object and initializes it. It is strongly recommended that mutexes were created as static objects whenever possible.
 
 	:rtype: None
 ") Standard_Mutex;
 		 Standard_Mutex ();
+		%feature("compactdefaultargs") Lock;
 		%feature("autodoc", "	* Method to lock the mutex; waits until the mutex is released by other threads, locks it and then returns
 
 	:rtype: None
 ") Lock;
 		void Lock ();
+		%feature("compactdefaultargs") TryLock;
 		%feature("autodoc", "	* Method to test the mutex; if the mutex is not hold by other thread, locks it and returns True; otherwise returns False without waiting mutex to be released.
 
 	:rtype: bool
 ") TryLock;
 		Standard_Boolean TryLock ();
+		%feature("compactdefaultargs") Unlock;
 		%feature("autodoc", "	* Method to unlock the mutex; releases it to other users
 
 	:rtype: None
@@ -1046,48 +1129,53 @@ def __del__(self):
 %nodefaultctor Standard_Type;
 class Standard_Type : public Standard_Transient {
 	public:
+		%feature("compactdefaultargs") Name;
 		%feature("autodoc", "	* Returns the type name of <self>.
 
 	:rtype: char *
 ") Name;
 		char * Name ();
+		%feature("compactdefaultargs") Size;
 		%feature("autodoc", "	* Returns the size of <self> in bytes.
 
 	:rtype: int
 ") Size;
 		Standard_Integer Size ();
+		%feature("compactdefaultargs") Standard_Type;
 		%feature("autodoc", "	* The constructor for a imported type.
 
 	:param aName:
 	:type aName: char *
 	:param aSize:
-	:type aSize: Standard_Integer
+	:type aSize: int
 	:rtype: None
 ") Standard_Type;
 		 Standard_Type (const char * aName,const Standard_Integer aSize);
+		%feature("compactdefaultargs") Standard_Type;
 		%feature("autodoc", "	* The constructor for a primitive.
 
 	:param aName:
 	:type aName: char *
 	:param aSize:
-	:type aSize: Standard_Integer
+	:type aSize: int
 	:param aNumberOfParent:
-	:type aNumberOfParent: Standard_Integer
+	:type aNumberOfParent: int
 	:param aAncestors:
 	:type aAncestors: Standard_Address
 	:rtype: None
 ") Standard_Type;
 		 Standard_Type (const char * aName,const Standard_Integer aSize,const Standard_Integer aNumberOfParent,const Standard_Address aAncestors);
+		%feature("compactdefaultargs") Standard_Type;
 		%feature("autodoc", "	* The constructor for an enumeration.
 
 	:param aName:
 	:type aName: char *
 	:param aSize:
-	:type aSize: Standard_Integer
+	:type aSize: int
 	:param aNumberOfElement:
-	:type aNumberOfElement: Standard_Integer
+	:type aNumberOfElement: int
 	:param aNumberOfParent:
-	:type aNumberOfParent: Standard_Integer
+	:type aNumberOfParent: int
 	:param anAncestors:
 	:type anAncestors: Standard_Address
 	:param aElements:
@@ -1095,14 +1183,15 @@ class Standard_Type : public Standard_Transient {
 	:rtype: None
 ") Standard_Type;
 		 Standard_Type (const char * aName,const Standard_Integer aSize,const Standard_Integer aNumberOfElement,const Standard_Integer aNumberOfParent,const Standard_Address anAncestors,const Standard_Address aElements);
+		%feature("compactdefaultargs") Standard_Type;
 		%feature("autodoc", "	* The constructor for a class.
 
 	:param aName:
 	:type aName: char *
 	:param aSize:
-	:type aSize: Standard_Integer
+	:type aSize: int
 	:param aNumberOfParent:
-	:type aNumberOfParent: Standard_Integer
+	:type aNumberOfParent: int
 	:param anAncestors:
 	:type anAncestors: Standard_Address
 	:param aFields:
@@ -1110,6 +1199,7 @@ class Standard_Type : public Standard_Transient {
 	:rtype: None
 ") Standard_Type;
 		 Standard_Type (const char * aName,const Standard_Integer aSize,const Standard_Integer aNumberOfParent,const Standard_Address anAncestors,const Standard_Address aFields);
+		%feature("compactdefaultargs") SubType;
 		%feature("autodoc", "	* Returns 'True', if <self> is the same as <aOther>, or inherits from <aOther>. Note that multiple inheritance is not supported.
 
 	:param aOther:
@@ -1117,6 +1207,7 @@ class Standard_Type : public Standard_Transient {
 	:rtype: bool
 ") SubType;
 		Standard_Boolean SubType (const Handle_Standard_Type & aOther);
+		%feature("compactdefaultargs") SubType;
 		%feature("autodoc", "	* Returns 'True', if <self> or one of its ancestors has the name equal to theName. Note that multiple inheritance is not supported.
 
 	:param theName:
@@ -1124,50 +1215,43 @@ class Standard_Type : public Standard_Transient {
 	:rtype: bool
 ") SubType;
 		Standard_Boolean SubType (const char * theName);
+		%feature("compactdefaultargs") IsImported;
 		%feature("autodoc", "	* Returns 'True', if the type is imported.
 
 	:rtype: bool
 ") IsImported;
 		Standard_Boolean IsImported ();
+		%feature("compactdefaultargs") IsPrimitive;
 		%feature("autodoc", "	* Returns 'True', if the type is a primitive.
 
 	:rtype: bool
 ") IsPrimitive;
 		Standard_Boolean IsPrimitive ();
+		%feature("compactdefaultargs") IsEnumeration;
 		%feature("autodoc", "	* Returns 'True', if the type is an 'Enumeration'.
 
 	:rtype: bool
 ") IsEnumeration;
 		Standard_Boolean IsEnumeration ();
+		%feature("compactdefaultargs") IsClass;
 		%feature("autodoc", "	* Returns 'True', if the type is a 'Class'.
 
 	:rtype: bool
 ") IsClass;
 		Standard_Boolean IsClass ();
+		%feature("compactdefaultargs") NumberOfParent;
 		%feature("autodoc", "	* Returns the number of direct parents of the class.
 
 	:rtype: int
 ") NumberOfParent;
 		Standard_Integer NumberOfParent ();
+		%feature("compactdefaultargs") NumberOfAncestor;
 		%feature("autodoc", "	* Returns the number of ancestors of the class.
 
 	:rtype: int
 ") NumberOfAncestor;
 		Standard_Integer NumberOfAncestor ();
-		%feature("autodoc", "	* Prints the Information about type.
 
-	:rtype: None
-") ShallowDump;
-		void ShallowDump ();
-
-        %feature("autodoc", "1");
-        %extend{
-            std::string ShallowDumpToString() {
-            std::stringstream s;
-            self->ShallowDump(s);
-            return s.str();}
-        };
-        
         %feature("autodoc", "1");
         %extend{
             std::string PrintToString() {

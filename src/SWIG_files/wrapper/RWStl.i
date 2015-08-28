@@ -1,5 +1,5 @@
 /*
-Copyright 2008-2014 Thomas Paviot (tpaviot@gmail.com)
+Copyright 2008-2015 Thomas Paviot (tpaviot@gmail.com)
 
 
 This file is part of pythonOCC.
@@ -28,7 +28,6 @@ along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
 %}
 
 %include ../common/CommonIncludes.i
-%include ../common/StandardDefines.i
 %include ../common/ExceptionCatcher.i
 %include ../common/FunctionTransformers.i
 %include ../common/Operators.i
@@ -42,10 +41,10 @@ along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
 /* end public enums declaration */
 
 %rename(rwstl) RWStl;
-%nodefaultctor RWStl;
 class RWStl {
 	public:
-		%feature("autodoc", "	* write the meshing in a file following the  binary format of an STL file.  Returns false if the cannot be opened;
+		%feature("compactdefaultargs") WriteBinary;
+		%feature("autodoc", "	* write the meshing in a file following the binary format of an STL file. Returns false if the cannot be opened;
 
 	:param aMesh:
 	:type aMesh: Handle_StlMesh_Mesh &
@@ -56,7 +55,8 @@ class RWStl {
 	:rtype: bool
 ") WriteBinary;
 		static Standard_Boolean WriteBinary (const Handle_StlMesh_Mesh & aMesh,const OSD_Path & aPath,const Handle_Message_ProgressIndicator & aProgInd = NULL);
-		%feature("autodoc", "	* write the meshing in a file following the  Ascii format of an STL file.  Returns false if the cannot be opened;
+		%feature("compactdefaultargs") WriteAscii;
+		%feature("autodoc", "	* write the meshing in a file following the Ascii format of an STL file. Returns false if the cannot be opened;
 
 	:param aMesh:
 	:type aMesh: Handle_StlMesh_Mesh &
@@ -67,7 +67,8 @@ class RWStl {
 	:rtype: bool
 ") WriteAscii;
 		static Standard_Boolean WriteAscii (const Handle_StlMesh_Mesh & aMesh,const OSD_Path & aPath,const Handle_Message_ProgressIndicator & aProgInd = NULL);
-		%feature("autodoc", "	* This method will chwck if the file is a binary  file or an AsciiFile testing the 5 first  characters of the file wich are :'solid' in an  ascii file. If we do not find that word we assume  that it is a binary file.
+		%feature("compactdefaultargs") ReadFile;
+		%feature("autodoc", "	* This method will chwck if the file is a binary file or an AsciiFile testing the 5 first characters of the file wich are :'solid' in an ascii file. If we do not find that word we assume that it is a binary file.
 
 	:param aPath:
 	:type aPath: OSD_Path &
@@ -76,6 +77,7 @@ class RWStl {
 	:rtype: Handle_StlMesh_Mesh
 ") ReadFile;
 		static Handle_StlMesh_Mesh ReadFile (const OSD_Path & aPath,const Handle_Message_ProgressIndicator & aProgInd = NULL);
+		%feature("compactdefaultargs") ReadBinary;
 		%feature("autodoc", "	* Read a meshing from a binary file Raises NoMoreObject from Standard if a statement does not contain the right number of tokens Raises TypeMisMatch if a token has not the good type (often real)
 
 	:param aPath:
@@ -85,6 +87,7 @@ class RWStl {
 	:rtype: Handle_StlMesh_Mesh
 ") ReadBinary;
 		static Handle_StlMesh_Mesh ReadBinary (const OSD_Path & aPath,const Handle_Message_ProgressIndicator & aProgInd = NULL);
+		%feature("compactdefaultargs") ReadAscii;
 		%feature("autodoc", "	* Read a meshing from a binary file Raises NoMoreObject from Standard if a statement does not contain the right number of tokens Raises TypeMisMatch if a token has not the good type (often real) Raises MoMoreObject if a file is finished before having found the word endsolid;
 
 	:param aPath:

@@ -25,7 +25,6 @@
 #include <V3d_Viewer.hxx>
 #include <V3d_View.hxx>
 #include <AIS_Shape.hxx>
-#include <Graphic3d.hxx>
 #include <Aspect_DisplayConnection.hxx>
 
 #include <cstdlib>
